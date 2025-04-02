@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://bpnl5pn3ydite"]
+
+[ext_resource type="Script" uid="uid://cb3gdybtwy0ry" path="res://src/core/main.gd" id="1_avv2o"]
+[ext_resource type="Resource" uid="uid://diqdv1fn7q7ai" path="res://manifest.tres" id="2_ukt3u"]
+
+[node name="Main" type="Container"]
+script = ExtResource("1_avv2o")
+manifest = ExtResource("2_ukt3u")
