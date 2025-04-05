@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://ef20k8ml1qrb"]
+
+[ext_resource type="Theme" uid="uid://jlt4ctadl0vs" path="res://src/ui/main_theme.tres" id="1_jr2ih"]
+
+[node name="TerrainText" type="Label"]
+theme = ExtResource("1_jr2ih")

@@ -1,0 +1,174 @@
+[gd_scene load_steps=3 format=3 uid="uid://thlo5sibg4is"]
+
+[ext_resource type="Script" uid="uid://1rf0lx7805j" path="res://src/levels/level_fragment.gd" id="1_m6lhr"]
+[ext_resource type="PackedScene" uid="uid://ef20k8ml1qrb" path="res://src/levels/terrain_text.tscn" id="2_nffvw"]
+
+[node name="LevelFragmentScratch" type="Node2D"]
+script = ExtResource("1_m6lhr")
+
+[node name="SmallHump" type="Node2D" parent="."]
+
+[node name="TerrainText" parent="SmallHump" instance=ExtResource("2_nffvw")]
+offset_right = 57.0
+offset_bottom = 245.0
+text = "\\
+ \\
+  \\
+   \\
+   /
+  /
+ /
+/"
+
+[node name="Area2D" type="Area2D" parent="SmallHump"]
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="SmallHump/Area2D"]
+polygon = PackedVector2Array(56, 122, -1, 247, 0, -3)
+
+[node name="MediumHump" type="Node2D" parent="."]
+
+[node name="TerrainText" parent="MediumHump" instance=ExtResource("2_nffvw")]
+offset_right = 57.0
+offset_bottom = 245.0
+text = "\\
+ \\
+  \\
+   \\
+    \\
+     \\
+      \\
+      /
+     /
+    /
+   /
+  /
+ /
+/"
+
+[node name="Area2D" type="Area2D" parent="MediumHump"]
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MediumHump/Area2D"]
+polygon = PackedVector2Array(97, 214, -1, 433, 0, -3)
+
+[node name="LargeHump" type="Node2D" parent="."]
+
+[node name="TerrainText" parent="LargeHump" instance=ExtResource("2_nffvw")]
+offset_right = 57.0
+offset_bottom = 245.0
+text = "\\
+ \\
+  \\
+   \\
+    \\
+     \\
+      \\
+       \\
+        \\
+         \\
+          \\
+          /
+         /
+        /
+       /
+      /
+     /
+    /
+   /
+  /
+ /
+/"
+
+[node name="Area2D" type="Area2D" parent="LargeHump"]
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="LargeHump/Area2D"]
+polygon = PackedVector2Array(153, 339, -1, 682, 0, -3)
+
+[node name="XLHump" type="Node2D" parent="."]
+
+[node name="TerrainText" parent="XLHump" instance=ExtResource("2_nffvw")]
+offset_right = 57.0
+offset_bottom = 245.0
+text = "\\
+ \\
+  \\
+   \\
+    \\
+     \\
+      \\
+       \\
+        \\
+         \\
+          \\
+           \\
+            \\
+             \\
+              \\
+               \\
+                \\
+                 \\
+                  \\
+                  /
+                 /
+                /
+               /
+              /
+             /
+            /
+           /
+          /
+         /
+        /
+       /
+      /
+     /
+    /
+   /
+  /
+ /
+/"
+
+[node name="Area2D" type="Area2D" parent="XLHump"]
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="XLHump/Area2D"]
+polygon = PackedVector2Array(265, 587, -1, 1177, 0, -3)
+
+[node name="Ledge" type="Node2D" parent="."]
+position = Vector2(246, 0)
+
+[node name="TerrainText" parent="Ledge" instance=ExtResource("2_nffvw")]
+offset_right = 57.0
+offset_bottom = 245.0
+text = "\\
+ \\
+  \\
+   \\
+    \\_________________
+                      |
+                     /
+                    /
+                  ,'
+                _/
+          ____,'
+  ______,'
+ /
+/"
+
+[node name="Area2D" type="Area2D" parent="Ledge"]
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Ledge/Area2D"]
+polygon = PackedVector2Array(314, 146, 68, 147, 0, -1, 4, 426, 30, 364, 118, 363, 247, 298, 315, 181)

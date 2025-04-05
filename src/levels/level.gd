@@ -36,6 +36,8 @@ func _ready() -> void:
 
     S.log.print("Level ready")
 
+    # TODO(Alden): Start playing music!
+
     _start_main_menu_animation()
 
 
@@ -123,12 +125,15 @@ func _start_game() -> void:
     pass
 
 
-func _game_over() -> void:
+func game_game_over() -> void:
     _transition_out_of_state(State.PLAYING)
     player.play_death_animation()
     # TODO:
     # - Stop scrolling.
     # - Show game-over text (from clippy)
+    pass
+
+    # TODO(Alden): SFX
     pass
 
 

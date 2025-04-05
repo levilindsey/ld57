@@ -1,6 +1,16 @@
 class_name GameManifest
 extends ScaffolderManifest
 
+const PLAYER_COLLISION_LAYER := 1 << 0
+const ENEMY_COLLISION_LAYER := 1 << 1
+const TERRAIN_COLLISION_LAYER := 1 << 2
+const PICKUP_COLLISION_LAYER := 1 << 3
+const PLAYER_PROJECTILE_COLLISION_LAYER := 1 << 4
+const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
+
+@export var starting_health := 3
+
+@export_group("Colors")
 @export var background_color_start := Color("#f5fcfcff")
 @export var background_color_end := Color("#00020aff")
 
@@ -21,6 +31,7 @@ extends ScaffolderManifest
 
 @export var background_bubble_color_start := Color("#0000004d")
 @export var background_bubble_color_end := Color("#0000004d")
+@export_group("")
 
 @export var player_outline_size := 12.0
 @export var enemy_outline_size := 12.0
@@ -40,3 +51,7 @@ extends ScaffolderManifest
 @export var gameplay_camera_zoom := 1.0
 
 @export var player_scene: PackedScene
+
+@export var fragments: Array[PackedScene] = [
+    preload("res://src/levels/level_fragment_1.tscn"),
+]

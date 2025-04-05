@@ -28,6 +28,15 @@ window/size/initial_position_type=5
 window/stretch/mode="canvas_items"
 window/handheld/orientation=1
 
+[layer_names]
+
+2d_physics/layer_1="player"
+2d_physics/layer_2="enemy"
+2d_physics/layer_3="terrain"
+2d_physics/layer_4="pickup"
+2d_physics/layer_5="player_projectile"
+2d_physics/layer_6="enemy_projectile"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

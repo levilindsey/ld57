@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://cowo6nbf33hgk"]
+[gd_scene load_steps=3 format=3 uid="uid://cowo6nbf33hgk"]
 
 [ext_resource type="Script" uid="uid://7bmh67xrvva2" path="res://src/levels/level.gd" id="1_ub47v"]
+[ext_resource type="PackedScene" uid="uid://bsvjkmgny0imc" path="res://src/levels/level_fragment_1.tscn" id="2_ub47v"]
 
 [node name="Level" type="Node2D"]
 script = ExtResource("1_ub47v")
+
+[node name="REMOVE_ME" parent="." instance=ExtResource("2_ub47v")]
