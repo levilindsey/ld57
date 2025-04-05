@@ -1,21 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://c27n63xtklrk0"]
+[gd_scene load_steps=10 format=3 uid="uid://c27n63xtklrk0"]
 
 [ext_resource type="Theme" uid="uid://jlt4ctadl0vs" path="res://src/ui/main_theme.tres" id="1_ipegf"]
 [ext_resource type="Script" uid="uid://eufiq7k4j51k" path="res://src/ui/game_hud.gd" id="1_tgp1m"]
+[ext_resource type="LabelSettings" uid="uid://cvda6imkaip2f" path="res://src/ui/hud_label_settings.tres" id="3_46cb0"]
 [ext_resource type="Texture2D" uid="uid://b67c62rhrrefc" path="res://icon.svg" id="3_tgp1m"]
+[ext_resource type="StyleBox" uid="uid://bi7habawrsdmn" path="res://src/ui/hud_panel.tres" id="4_fa4ld"]
+[ext_resource type="PackedScene" uid="uid://bc1qluy2ieskk" path="res://src/ui/hud_row.tscn" id="5_40ywv"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bgesr"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tgp1m"]
-content_margin_left = 12.0
-content_margin_top = 12.0
-content_margin_right = 12.0
-content_margin_bottom = 12.0
-bg_color = Color(0, 0, 0, 0.294118)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_46cb0"]
 atlas = ExtResource("3_tgp1m")
@@ -58,29 +50,33 @@ size_flags_vertical = 0
 mouse_filter = 2
 theme_override_constants/separation = 20
 
-[node name="InfoList" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_styles/panel = ExtResource("4_fa4ld")
+
+[node name="InfoList" type="VBoxContainer" parent="MarginContainer/HBoxContainer/PanelContainer"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 
-[node name="DepthLabel" type="HBoxContainer" parent="MarginContainer/HBoxContainer/InfoList"]
+[node name="DepthRow" parent="MarginContainer/HBoxContainer/PanelContainer/InfoList" instance=ExtResource("5_40ywv")]
+unique_name_in_owner = true
 layout_mode = 2
-
-[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/InfoList/DepthLabel"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Depth:"
-
-[node name="Value" type="Label" parent="MarginContainer/HBoxContainer/InfoList/DepthLabel"]
-layout_mode = 2
-text = "0"
-horizontal_alignment = 2
+label = "Depth:"
 
 [node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 
-[node name="AbilitiesList" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+[node name="AbilitiesListWrapper" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_styles/panel = ExtResource("4_fa4ld")
+
+[node name="AbilitiesList" type="VBoxContainer" parent="MarginContainer/HBoxContainer/AbilitiesListWrapper"]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer"]
@@ -103,21 +99,25 @@ layout_mode = 2
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/HBoxContainer2/HBoxContainer/MarginContainer"]
+[node name="ClippyTextWrapper" type="PanelContainer" parent="MarginContainer/HBoxContainer2/HBoxContainer/MarginContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_tgp1m")
+theme_override_styles/panel = ExtResource("4_fa4ld")
 
-[node name="Label" type="Label" parent="MarginContainer/HBoxContainer2/HBoxContainer/MarginContainer/PanelContainer"]
+[node name="ClippyText" type="Label" parent="MarginContainer/HBoxContainer2/HBoxContainer/MarginContainer/ClippyTextWrapper"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Hi, I'm Clippy,
 your new best friend!"
+label_settings = ExtResource("3_46cb0")
 
 [node name="Control" type="Control" parent="MarginContainer/HBoxContainer2/HBoxContainer"]
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 
-[node name="PUT_CLIPPY_HERE" type="AnimatedSprite2D" parent="MarginContainer/HBoxContainer2/HBoxContainer/Control"]
+[node name="Clippy" type="AnimatedSprite2D" parent="MarginContainer/HBoxContainer2/HBoxContainer/Control"]
+unique_name_in_owner = true
 position = Vector2(64, 64)
 sprite_frames = SubResource("SpriteFrames_fa4ld")

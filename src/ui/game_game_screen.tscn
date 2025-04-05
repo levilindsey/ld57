@@ -1,9 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://574as3677v4o"]
+[gd_scene load_steps=2 format=3 uid="uid://574as3677v4o"]
 
 [ext_resource type="Script" uid="uid://cl2np78rr17cf" path="res://src/ui/game_game_screen.gd" id="1_kuwec"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kuwec"]
-bg_color = Color(0.203922, 0.6, 0.6, 1)
 
 [node name="GameScreen" type="PanelContainer"]
 offset_right = 1152.0
@@ -11,7 +8,6 @@ offset_bottom = 648.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_kuwec")
 script = ExtResource("1_kuwec")
 canvas_layer = "game"
 pauses_game_when_open = false

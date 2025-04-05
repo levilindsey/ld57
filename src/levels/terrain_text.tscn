@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://ef20k8ml1qrb"]
+[gd_scene load_steps=3 format=3 uid="uid://ef20k8ml1qrb"]
 
 [ext_resource type="Theme" uid="uid://jlt4ctadl0vs" path="res://src/ui/main_theme.tres" id="1_jr2ih"]
+[ext_resource type="LabelSettings" uid="uid://dmhlo1reiiqm8" path="res://src/ui/terrain_label_settings.tres" id="2_ryajc"]
 
 [node name="TerrainText" type="Label"]
 theme = ExtResource("1_jr2ih")
+label_settings = ExtResource("2_ryajc")

@@ -94,6 +94,10 @@ func _set_scratch_text_position() -> void:
     character.queue_free()
 
 
+func set_text_color(color: Color) -> void:
+    %Cursor.modulate = color
+
+
 func on_enter() -> void:
     pass
 

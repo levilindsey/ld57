@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://bc1qluy2ieskk"]
+
+[ext_resource type="Script" uid="uid://bo2xtky7o6tbd" path="res://src/ui/hud_row.gd" id="1_j6v78"]
+[ext_resource type="LabelSettings" uid="uid://cvda6imkaip2f" path="res://src/ui/hud_label_settings.tres" id="2_cxsrl"]
+
+[node name="HudRow" type="HBoxContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_j6v78")
+
+[node name="Label" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+label_settings = ExtResource("2_cxsrl")
+
+[node name="Value" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+label_settings = ExtResource("2_cxsrl")
+horizontal_alignment = 2

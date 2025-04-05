@@ -18,6 +18,8 @@ var is_enter_pressed := false
 var is_space_pressed := false
 var is_backspace_pressed := false
 
+var progress_to_max_difficulty = 0.0
+
 var start_time_sec := 0.0
 var last_color_update_time_sec := 0.0
 var current_time_sec := 0.0
@@ -35,6 +37,11 @@ func _ready() -> void:
     G.level = self
     G.manifest = S.manifest
 
+    # Have the background color extend beyond the viewport a smidge.
+    %BackgroundColor.size = G.manifest.game_area_size * 2 + Vector2i.ONE * 2
+    %BackgroundColor.position = -(G.manifest.game_area_size / 2 + Vector2i.ONE)
+    %BackgroundColor.color = G.manifest.get_start_color(GameManifest.ColorType.BACKGROUND)
+
     # Start zoomed in.
     %Camera2D.zoom = G.manifest.main_menu_camera_zoom * Vector2.ONE
     %Camera2D.offset.y = G.manifest.main_menu_camera_offset_y
@@ -44,6 +51,8 @@ func _ready() -> void:
     #player.position = Vector2(G.manifest.game_area_padding.x * 2.0, 0)
     player.position = %Camera2D.position
     add_child(player)
+
+    _update_colors()
 
     player.main_menu_finished.connect(_on_main_menu_animation_finished)
     player.death_finished.connect(_on_game_over_animation_finished)
@@ -121,6 +130,8 @@ func _input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
     current_time_sec = Time.get_ticks_msec() / 1000.0
 
+    progress_to_max_difficulty = clampf((current_time_sec - start_time_sec) / G.manifest.time_to_max_difficulty_sec, 0, 1)
+
     if state == State.PLAYING:
         if is_space_pressed and current_time_sec >= last_space_trigger_time_sec + G.manifest.space_key_throttle_period_sec:
             _trigger_space()
@@ -131,6 +142,12 @@ func _process(delta: float) -> void:
 
         if current_time_sec >= last_color_update_time_sec + G.manifest.color_update_period_sec:
             _update_colors()
+
+        # Scroll.
+        var scroll_speed := lerpf(G.manifest.start_scroll_speed, G.manifest.end_scroll_speed, progress_to_max_difficulty)
+        var vertical_movement := scroll_speed * delta
+        player.position.y += vertical_movement
+        %Camera2D.position.y += vertical_movement
 
 
 func _trigger_space() -> void:
@@ -155,17 +172,43 @@ func _update_colors() -> void:
     var enemy_outline_color := get_color(GameManifest.ColorType.ENEMY_OUTLINE)
     var terrain_outline_color := get_color(GameManifest.ColorType.TERRAIN_OUTLINE)
     var pickup_outline_color := get_color(GameManifest.ColorType.PICKUP_OUTLINE)
-    var bubble_outline_color := get_color(GameManifest.ColorType.BUBBLE_OUTLINE)
+    var bubble_color := get_color(GameManifest.ColorType.BUBBLE)
 
-    # TODO
-    pass
+    %BackgroundColor.color = background_color
+    var hud_panel_style_alpha := G.manifest.hud_panel_style.bg_color.a
+    G.manifest.hud_panel_style.bg_color = background_color
+    G.manifest.hud_panel_style.bg_color.a = hud_panel_style_alpha
+
+    player.set_text_color(text_color)
+
+    G.manifest.player_label_settings.font_color = text_color
+    G.manifest.enemy_label_settings.font_color = text_color
+    G.manifest.pickup_label_settings.font_color = text_color
+    G.manifest.terrain_label_settings.font_color = text_color
+    G.manifest.hud_label_settings.font_color = text_color
+
+    G.manifest.player_label_settings.outline_color = player_outline_color
+    G.manifest.enemy_label_settings.outline_color = enemy_outline_color
+    G.manifest.terrain_label_settings.outline_color = terrain_outline_color
+    G.manifest.pickup_label_settings.outline_color = pickup_outline_color
+
+    G.manifest.bubble_label_settings.font_color = bubble_color
 
 
 func get_color(type: GameManifest.ColorType) -> Color:
+    if type == GameManifest.ColorType.TEXT:
+        var using_light_text_color: bool = (
+            progress_to_max_difficulty >=
+                G.manifest.progress_to_switch_to_light_text_color
+        )
+        if using_light_text_color:
+            return G.manifest.get_end_color(type)
+        else:
+            return G.manifest.get_start_color(type)
+
     var start_color := G.manifest.get_start_color(type)
     var end_color := G.manifest.get_end_color(type)
-    var progress := clampf((current_time_sec - start_time_sec) / G.manifest.color_transition_duration_sec, 0, 1)
-    return lerp(start_color, end_color, progress)
+    return lerp(start_color, end_color, progress_to_max_difficulty)
 
 
 func _transition_out_of_state(expected_old_state: Variant) -> void:
@@ -214,13 +257,6 @@ func _on_main_menu_animation_finished() -> void:
 func _start_game() -> void:
     _transition_out_of_state(State.MAIN_MENU_FINISHED)
 
-    start_time_sec = Time.get_ticks_msec() / 1000
-    current_time_sec = Time.get_ticks_msec() / 1000
-    last_space_trigger_time_sec = 0.0
-    last_backspace_trigger_time_sec = 0.0
-    last_enter_trigger_time_sec = 0.0
-    last_color_update_time_sec = 0.0
-
     _set_zoom(false)
     player.on_game_started()
 
@@ -251,9 +287,20 @@ func _on_game_over_animation_finished() -> void:
 
 func _game_reset() -> void:
     _transition_out_of_state(State.GAME_OVER_FINISHED)
+
+    progress_to_max_difficulty = 0.0
+    start_time_sec = Time.get_ticks_msec() / 1000
+    current_time_sec = Time.get_ticks_msec() / 1000
+    last_space_trigger_time_sec = 0.0
+    last_backspace_trigger_time_sec = 0.0
+    last_enter_trigger_time_sec = 0.0
+    last_color_update_time_sec = 0.0
+
+    _update_colors()
     _set_zoom(true)
     player.play_reset_animation()
     G.hud.reset()
+
     # TODO:
     # - Fade-out enemies, level fragments, and background bubbles.
     # - Fade level and player colors back to starting values.

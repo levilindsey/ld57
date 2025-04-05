@@ -8,7 +8,7 @@ enum ColorType {
     ENEMY_OUTLINE,
     TERRAIN_OUTLINE,
     PICKUP_OUTLINE,
-    BUBBLE_OUTLINE,
+    BUBBLE,
 }
 
 const PLAYER_COLLISION_LAYER := 1 << 0
@@ -39,8 +39,8 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var pickup_outline_color_start := Color("#c2fc034d")
 @export var pickup_outline_color_end := Color("#c2fc034d")
 
-@export var background_bubble_color_start := Color("#0000004d")
-@export var background_bubble_color_end := Color("#0000004d")
+@export var bubble_color_start := Color("#0000004d")
+@export var bubble_color_end := Color("#0000004d")
 
 @export var cursor_blink_in_alpha := 1.0
 @export var cursor_blink_out_alpha := 0.1
@@ -52,7 +52,8 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var pickup_outline_size := 12.0
 
 @export var color_update_period_sec := 1.0
-@export var color_transition_duration_sec := 120.0
+@export var time_to_max_difficulty_sec := 120.0
+@export var progress_to_switch_to_light_text_color := 0.5
 
 @export var main_menu_animation_duration_sec := 2.0
 @export var player_death_animation_duration_sec := 4.0
@@ -64,6 +65,9 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var cursor_blink_period_sec := 0.5
 
 @export var space_key_throttle_period_sec := 0.05
+
+@export var start_scroll_speed := 100.0
+@export var end_scroll_speed := 400.0
 
 @export var main_menu_camera_zoom := 3.0
 @export var gameplay_camera_zoom := 1.0
@@ -88,10 +92,14 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var terrain_label_settings := preload("res://src/ui/terrain_label_settings.tres")
 @export var pickup_label_settings := preload("res://src/ui/pickup_label_settings.tres")
 @export var bubble_label_settings := preload("res://src/ui/bubble_label_settings.tres")
+@export var hud_label_settings := preload("res://src/ui/hud_label_settings.tres")
 @export_group("")
+
+@export var hud_panel_style := preload("res://src/ui/hud_panel.tres")
 
 @export var player_scene := preload("res://src/player/player.tscn")
 @export var character_scene := preload("res://src/player/character.tscn")
+@export var hud_row_scene := preload("res://src/ui/hud_row.tscn")
 
 
 func get_start_color(type: ColorType) -> Color:
@@ -108,8 +116,8 @@ func get_start_color(type: ColorType) -> Color:
             return terrain_outline_color_start
         ColorType.PICKUP_OUTLINE:
             return pickup_outline_color_start
-        ColorType.BUBBLE_OUTLINE:
-            return background_bubble_color_start
+        ColorType.BUBBLE:
+            return bubble_color_start
     return Color.MAGENTA
 
 
@@ -127,6 +135,6 @@ func get_end_color(type: ColorType) -> Color:
             return terrain_outline_color_end
         ColorType.PICKUP_OUTLINE:
             return pickup_outline_color_end
-        ColorType.BUBBLE_OUTLINE:
-            return background_bubble_color_end
+        ColorType.BUBBLE:
+            return bubble_color_end
     return Color.MAGENTA
