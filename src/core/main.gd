@@ -1,4 +1,4 @@
-@icon("res://addons/scaffolder2/assets/editor_icons/Node.svg")
+@icon("res://addons/scaffolder2/assets/editor_icons/ScaffolderNode.svg")
 class_name Main
 extends Container
 

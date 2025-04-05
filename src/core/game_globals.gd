@@ -8,4 +8,4 @@ extends Node
 
 
 var main: Main
-var level: TestLevel
+var level: Level

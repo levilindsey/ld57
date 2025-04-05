@@ -1,4 +1,4 @@
-class_name TestLevel
+class_name Level
 extends ScaffolderLevel
 
 

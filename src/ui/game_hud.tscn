@@ -1,0 +1,57 @@
+[gd_scene load_steps=4 format=3 uid="uid://c27n63xtklrk0"]
+
+[ext_resource type="Theme" uid="uid://jlt4ctadl0vs" path="res://src/ui/main_theme.tres" id="1_ipegf"]
+[ext_resource type="Script" uid="uid://eufiq7k4j51k" path="res://src/ui/game_hud.gd" id="1_tgp1m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bgesr"]
+
+[node name="Hud" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("1_ipegf")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_bgesr")
+script = ExtResource("1_tgp1m")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 20
+
+[node name="InfoList" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+
+[node name="DepthLabel" type="HBoxContainer" parent="MarginContainer/HBoxContainer/InfoList"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/InfoList/DepthLabel"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Depth:"
+
+[node name="Value" type="Label" parent="MarginContainer/HBoxContainer/InfoList/DepthLabel"]
+layout_mode = 2
+text = "0"
+horizontal_alignment = 2
+
+[node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="AbilitiesList" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
