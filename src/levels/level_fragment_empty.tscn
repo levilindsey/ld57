@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://br1vkcfha0syq"]
+
+[ext_resource type="Script" uid="uid://1rf0lx7805j" path="res://src/levels/level_fragment.gd" id="1_gt826"]
+[ext_resource type="PackedScene" uid="uid://ba2606v4wkoum" path="res://src/levels/fragment_bottom.tscn" id="3_ia0lu"]
+
+[node name="LevelFragmentEmpty" type="Node2D"]
+script = ExtResource("1_gt826")
+
+[node name="FragmentBottom" parent="." instance=ExtResource("3_ia0lu")]
+position = Vector2(1, 784)

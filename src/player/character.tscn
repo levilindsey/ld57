@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://n6lw7r40aajb"]
+
+[ext_resource type="Script" uid="uid://dlmdwmojdojwj" path="res://src/player/character.gd" id="1_brae4"]
+[ext_resource type="Theme" uid="uid://jlt4ctadl0vs" path="res://src/ui/main_theme.tres" id="2_1bt7d"]
+
+[node name="Character" type="Node2D"]
+script = ExtResource("1_brae4")
+
+[node name="Label" type="Label" parent="."]
+unique_name_in_owner = true
+offset_right = 1.0
+offset_bottom = 23.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = ExtResource("2_1bt7d")

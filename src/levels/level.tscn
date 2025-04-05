@@ -6,4 +6,32 @@
 [node name="Level" type="Node2D"]
 script = ExtResource("1_ub47v")
 
-[node name="REMOVE_ME" parent="." instance=ExtResource("2_ub47v")]
+[node name="Camera2D" type="Camera2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(384, 0)
+
+[node name="Fragments" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="REMOVE_ME" parent="Fragments" instance=ExtResource("2_ub47v")]
+
+[node name="AbandonedText" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="PendingText" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Pickups" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Players" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Enemies" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="EnemyProjectiles" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="PlayerProjectiles" type="Node2D" parent="."]
+unique_name_in_owner = true

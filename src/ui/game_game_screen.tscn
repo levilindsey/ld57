@@ -35,5 +35,7 @@ handle_input_locally = false
 audio_listener_enable_2d = true
 physics_object_picking = true
 physics_object_picking_sort = true
+gui_snap_controls_to_pixels = false
 size = Vector2i(1152, 648)
+size_2d_override = Vector2i(768, 768)
 render_target_update_mode = 4
