@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://bd0oy4phn6nu1"]
+
+[ext_resource type="Script" uid="uid://bg6jq3krvjgkr" path="res://src/player/player.gd" id="1_4anbu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4anbu"]
+
+[node name="Player" type="Node2D"]
+script = ExtResource("1_4anbu")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+unique_name_in_owner = true
+offset = Vector2(0, 200)
+
+[node name="ScratchLabel" type="Label" parent="."]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_4anbu")

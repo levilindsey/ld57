@@ -9,3 +9,4 @@ extends Node
 
 var main: Main
 var level: Level
+var manifest: GameManifest
