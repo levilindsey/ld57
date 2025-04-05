@@ -1,0 +1,46 @@
+[gd_resource type="AudioStreamRandomizer" load_steps=21 format=3 uid="uid://dhk2vjqcgtiea"]
+
+[ext_resource type="AudioStream" uid="uid://r83s1x12pmmr" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-02.wav" id="1_6na5g"]
+[ext_resource type="AudioStream" uid="uid://bufexhxmpjdko" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-04.wav" id="2_uc3ww"]
+[ext_resource type="AudioStream" uid="uid://cfk7gbxkv714x" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-24.wav" id="3_0i388"]
+[ext_resource type="AudioStream" uid="uid://dvxkox17yph17" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-28.wav" id="4_xpfiq"]
+[ext_resource type="AudioStream" uid="uid://dxbt4i5e1hfvj" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-30.wav" id="5_qmpwb"]
+[ext_resource type="AudioStream" uid="uid://coqx8xddi3ilj" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-32.wav" id="6_0j6au"]
+[ext_resource type="AudioStream" uid="uid://rkp6ljdo3t0e" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-34.wav" id="7_qhjy2"]
+[ext_resource type="AudioStream" uid="uid://crfg6nljwk321" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-36.wav" id="8_10sfa"]
+[ext_resource type="AudioStream" uid="uid://bt7k2qd6kiy1r" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-38.wav" id="9_llwq2"]
+[ext_resource type="AudioStream" uid="uid://cy0d7f8vgava3" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-40.wav" id="10_ryl7x"]
+[ext_resource type="AudioStream" uid="uid://y7e5mepa3e7y" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-42.wav" id="11_vm8d1"]
+[ext_resource type="AudioStream" uid="uid://c7p7fdoc0sty8" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-44.wav" id="12_ngjqs"]
+[ext_resource type="AudioStream" uid="uid://ba3jspbhjbad7" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-06.wav" id="13_261hx"]
+[ext_resource type="AudioStream" uid="uid://d25nwfafieixt" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-08.wav" id="14_i7y1h"]
+[ext_resource type="AudioStream" uid="uid://ch2wktryjc3ge" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-10.wav" id="15_thmcy"]
+[ext_resource type="AudioStream" uid="uid://csl78sabu305p" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-12.wav" id="16_sa1s3"]
+[ext_resource type="AudioStream" uid="uid://c55q6w4hi4roi" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-14.wav" id="17_lo66k"]
+[ext_resource type="AudioStream" uid="uid://dean8bd3dmmdg" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-16.wav" id="18_06dkx"]
+[ext_resource type="AudioStream" uid="uid://ce14kh4jqabth" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-18.wav" id="19_wqj18"]
+[ext_resource type="AudioStream" uid="uid://bd1qk3fahow1u" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-22.wav" id="20_subin"]
+
+[resource]
+random_pitch = 1.1
+streams_count = 20
+stream_0/stream = ExtResource("1_6na5g")
+stream_1/stream = ExtResource("2_uc3ww")
+stream_2/stream = ExtResource("13_261hx")
+stream_3/stream = ExtResource("14_i7y1h")
+stream_4/stream = ExtResource("15_thmcy")
+stream_5/stream = ExtResource("16_sa1s3")
+stream_6/stream = ExtResource("17_lo66k")
+stream_7/stream = ExtResource("18_06dkx")
+stream_8/stream = ExtResource("19_wqj18")
+stream_9/stream = ExtResource("20_subin")
+stream_10/stream = ExtResource("3_0i388")
+stream_11/stream = ExtResource("4_xpfiq")
+stream_12/stream = ExtResource("5_qmpwb")
+stream_13/stream = ExtResource("6_0j6au")
+stream_14/stream = ExtResource("7_qhjy2")
+stream_15/stream = ExtResource("8_10sfa")
+stream_16/stream = ExtResource("9_llwq2")
+stream_17/stream = ExtResource("10_ryl7x")
+stream_18/stream = ExtResource("11_vm8d1")
+stream_19/stream = ExtResource("12_ngjqs")

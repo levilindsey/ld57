@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://d25nwfafieixt"
+path="res://.godot/imported/my keyboard.cm-08.wav-20d3a9c5d90c803ce1b7f15400b6278a.sample"
+
+[deps]
+
+source_file="res://assets/Audio/Keyboard Clicks/my keyboard.cm-08.wav"
+dest_files=["res://.godot/imported/my keyboard.cm-08.wav-20d3a9c5d90c803ce1b7f15400b6278a.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
