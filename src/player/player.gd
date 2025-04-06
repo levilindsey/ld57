@@ -27,6 +27,7 @@ func _ready() -> void:
     health = G.manifest.starting_health
 
     %InvicibleFromDamageTimer.wait_time = G.manifest.invincible_from_damage_cooldown_sec
+    %CancelPendingTextTimer.wait_time = G.manifest.cancel_pending_text_delay_sec
 
     _update_cursor_blink_period()
     %InvicibleFromDamageTimer.connect("timeout", _on_invincible_from_damage_timeout)

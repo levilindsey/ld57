@@ -522,7 +522,7 @@ func cancel_pending_characters() -> void:
         # FIXME: LEFT OFF HERE: TEST THIS!!
 
         # Upward and very slightly leftward.
-        var direction_angle := -(PI / 4 - PI / 32)
+        var direction_angle := -(PI / 2 + PI / 16)
 
         var config := {
             node = character,
@@ -531,19 +531,19 @@ func cancel_pending_characters() -> void:
             ease_name = "ease_in_out",
 
             direction_angle = direction_angle,
-            direction_deviaton_angle_max = PI / 16,
+            direction_deviaton_angle_max = PI / 32,
 
             # These can all be either a single number, or an array of two numbers.
-            duration_sec = [3.0, 5.0], # If omitted, the animation won't stop.
+            duration_sec = [1.0, 3.0], # If omitted, the animation won't stop.
             end_opacity = 0.0,
             #interval_sec = [0.3, 2.0], # If ommitted, duration_sec must be included.
-            speed = [50, 90],
-            acceleration = [-10, 0.0],
+            speed = [0, 0.5],
+            acceleration = [30, 0.0],
             rotation_speed = [0.01, 0.5],
-            perpendicular_oscillation_amplitude = [0, 10.0],
-            #scale_x = [0.9, 1.1],
-            #scale_y = [0.9, 1.1],
-            #skew = [0, PI / 8],
+            perpendicular_oscillation_amplitude = [0, 100.0],
+            #scale_x = [0.5, 4.0],
+            #scale_y = [0.5, 4.0],
+            skew = [-PI, PI],
         }
 
         Anim.start_animation(config)

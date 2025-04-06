@@ -36,7 +36,7 @@ const _interval_keys := [
     "speed",
     "acceleration",
     "rotation_speed",
-    "perpendicular_offset",
+    "perpendicular_oscillation_amplitude",
     "scale_x",
     "scale_y",
     "skew",
@@ -141,6 +141,9 @@ func start() -> void:
 
 
 func update(current_time_sec: float) -> void:
+    if not is_instance_valid(node):
+        return
+
     for key in _interval_keys:
         if not intervals.has(key):
             continue
@@ -193,7 +196,11 @@ func _trigger(interval: DimensionInterval, current_time_sec: float) -> void:
 
 
 func is_complete(current_time_sec: float) -> bool:
-    return duration_sec > 0 and current_time_sec >= start_time_sec + duration_sec
+    return (
+        not is_instance_valid(node) or
+        duration_sec > 0
+        and current_time_sec >= start_time_sec + duration_sec
+    )
 
 
 func _apply_value_to_node(interval: DimensionInterval, elapsed_sec: float) -> void:

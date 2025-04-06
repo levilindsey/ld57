@@ -29,6 +29,7 @@
 [resource]
 script = ExtResource("8_h5d7k")
 speed_up_level_state_transitions = false
+using_custom_fast_space = false
 starting_health = 1
 main_menu_text = "Hit Enter"
 clippy_intro_text = "Hi, I'm Clippy,
@@ -72,7 +73,7 @@ hud_fade_in_duration_sec = 0.2
 hud_fade_out_duration_sec = 0.1
 show_clippy_duration_sec = 0.3
 hide_clippy_duration_sec = 0.2
-cancel_pending_text_delay_sec = 0.8
+cancel_pending_text_delay_sec = 0.008
 cursor_blink_period_sec = 0.5
 cursor_invincible_blink_period_sec = 0.06
 space_key_throttle_period_sec = 0.05
