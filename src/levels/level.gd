@@ -31,6 +31,30 @@ var last_backspace_trigger_time_sec := 0.0
 var player: Player
 
 
+# TODO:
+#
+# - Make rapid cursor blink start instantly, rather than waiting for next slow
+#   interval to finish.
+# - Add support for deleting pending letter with backspace.
+# - Implement pending text usage.
+# - Add abilities system.
+# - Add fragment spawning.
+# - Add pickups.
+# - Add enemy spawning.
+# - Add bubble spawning.
+#
+#
+# >>> Stuff Alden could do: <<<
+#
+# - Game name!!
+# - Music
+# - SFX (look for `TODO(Alden)`)
+# - Add Clippy GIF.
+# - Add Clippy text.
+# - Make some level fragments.
+# -
+
+
 func _ready() -> void:
     super._ready()
 

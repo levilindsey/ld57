@@ -53,7 +53,6 @@ func set_clippy_text(text: String, duration_sec: float) -> void:
         %ClippyTextClearTimer.start()
 
 
-# TODO: Call this.
 func update_depth(depth: int) -> void:
     %DepthRow.value = str(depth)
 

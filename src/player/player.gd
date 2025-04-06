@@ -332,7 +332,10 @@ func _update_cursor_blink_period() -> void:
         if is_invincible_from_damage
         else G.manifest.cursor_blink_period_sec
     )
+    %CursorBlinkTimer.stop()
     %CursorBlinkTimer.wait_time = period
+    %CursorWrapper.modulate.a = G.manifest.cursor_blink_in_alpha
+    %CursorBlinkTimer.start()
 
 
 func _on_area_2d_area_entered(area: Area2D) -> void:
