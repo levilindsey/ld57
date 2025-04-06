@@ -168,12 +168,14 @@ func on_space() -> void:
         # Space entered successfully.
         self.position.x = desired_position_x
 
-        # TODO(Alden): SFX
+        # SFX
+        $AudioStreamPlayer_keyboard.play()
         pass
     else:
         # Space failed.
 
-        # TODO(Alden): SFX
+        # SFX
+        $AudioStreamPlayer_failure.play()
         pass
 
     character.queue_free()
@@ -194,12 +196,14 @@ func on_backspace() -> void:
         # Backspace entered successfully.
         self.position.x = desired_position_x
 
-        # TODO(Alden): SFX
+        # SFX
+        $AudioStreamPlayer_keyboard.play()
         pass
     else:
         # Backspace failed.
-
-        # TODO(Alden): SFX
+        
+        # SFX
+        $AudioStreamPlayer_failure.play()
         pass
 
     character.queue_free()
@@ -246,12 +250,16 @@ func on_character_entered(text: String) -> void:
         # Character entered successfully.
         self.position.x = desired_position_x
         last_text_entered = text.to_upper()
+        $AudioStreamPlayer_keyboard.play()
+        print("audio")
         %CancelPendingTextTimer.start()
     else:
         # Character failed.
         character.queue_free()
 
-        # TODO(Alden): SFX
+        # SFX
+        $AudioStreamPlayer_failure.play()
+        
         pass
 
         return
@@ -275,7 +283,8 @@ func on_character_entered(text: String) -> void:
         # TODO:
         pass
 
-        # TODO(Alden): SFX
+        # SFX
+        $AudioStreamPlayer_word.play()
         pass
     else:
         # TODO:

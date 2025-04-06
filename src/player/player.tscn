@@ -1,7 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://bd0oy4phn6nu1"]
+[gd_scene load_steps=11 format=3 uid="uid://bd0oy4phn6nu1"]
 
 [ext_resource type="Script" uid="uid://bg6jq3krvjgkr" path="res://src/player/player.gd" id="1_4anbu"]
 [ext_resource type="Texture2D" uid="uid://bw58vgx70t0hr" path="res://assets/images/cursor_simple.png" id="2_rxibo"]
+[ext_resource type="AudioStream" uid="uid://dhk2vjqcgtiea" path="res://assets/Audio/keyboard_clicks.tres" id="3_244u8"]
+[ext_resource type="AudioStream" uid="uid://bi82igr2akq7n" path="res://assets/Audio/word approved.cm_01.wav" id="4_5f2sf"]
+[ext_resource type="AudioStream" uid="uid://b7do5ljsa8a7" path="res://assets/Audio/Failure.cm.wav" id="5_5f2sf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mf2ua"]
 size = Vector2(6, 18)
@@ -141,6 +144,21 @@ unique_name_in_owner = true
 libraries = {
 &"": SubResource("AnimationLibrary_jiejy")
 }
+
+[node name="AudioStreamPlayer_keyboard" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_244u8")
+volume_db = -5.571
+bus = &"SFX"
+
+[node name="AudioStreamPlayer_word" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_5f2sf")
+max_polyphony = 10
+bus = &"SFX"
+
+[node name="AudioStreamPlayer_failure" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_5f2sf")
+volume_db = -34.048
+bus = &"SFX"
 
 [connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
 [connection signal="area_exited" from="Area2D" to="." method="_on_area_2d_area_exited"]
