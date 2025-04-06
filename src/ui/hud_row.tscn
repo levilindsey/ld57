@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bc1qluy2ieskk"]
 
 [ext_resource type="Script" uid="uid://bo2xtky7o6tbd" path="res://src/ui/hud_row.gd" id="1_j6v78"]
-[ext_resource type="LabelSettings" uid="uid://cvda6imkaip2f" path="res://src/ui/hud_label_settings.tres" id="2_cxsrl"]
+[ext_resource type="LabelSettings" uid="uid://cvda6imkaip2f" path="res://src/ui/styles/hud_label_settings.tres" id="2_cxsrl"]
 
 [node name="HudRow" type="HBoxContainer"]
 size_flags_horizontal = 3

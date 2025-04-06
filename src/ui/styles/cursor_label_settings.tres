@@ -1,0 +1,8 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://bdl75aflxruyu"]
+
+[ext_resource type="FontFile" uid="uid://2cjwh1j4kbkm" path="res://assets/fonts/Courier_Prime/CourierPrime-Regular.ttf" id="1_2ijks"]
+
+[resource]
+font = ExtResource("1_2ijks")
+font_size = 24
+outline_size = 8

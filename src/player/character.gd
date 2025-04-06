@@ -3,7 +3,8 @@ extends Node2D
 
 
 enum Type {
-    PLAYER,
+    TYPED_TEXT,
+    ABILITY,
     ENEMY,
     TERRAIN,
     PICKUP,
@@ -50,8 +51,10 @@ func get_size() -> Vector2:
 
 func _get_label_settings(type: Type) -> LabelSettings:
     match type:
-        Type.PLAYER:
-            return G.manifest.player_label_settings
+        Type.TYPED_TEXT:
+            return G.manifest.typed_text_label_settings
+        Type.ABILITY:
+            return G.manifest.ability_label_settings
         Type.ENEMY:
             return G.manifest.enemy_label_settings
         Type.TERRAIN:

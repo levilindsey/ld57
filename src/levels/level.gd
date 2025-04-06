@@ -33,15 +33,36 @@ var player: Player
 
 # TODO:
 #
-# - Make rapid cursor blink start instantly, rather than waiting for next slow
-#   interval to finish.
+# - Fix outlines.
 # - Add support for deleting pending letter with backspace.
 # - Implement pending text usage.
+#   - Have each character drift upward at a fixed slow rate, but have the overall container follow the player.
+#   - When triggering a word, animate each letter downward.
+#     - Consider giving a different duration to each letter tween, so closer letters take less time.
+#     - Tween the overall container down two, with a bounce-back at the end.
+#     - Ease-in tweens for all.
 # - Add abilities system.
 # - Add fragment spawning.
 # - Add pickups.
 # - Add enemy spawning.
 # - Add bubble spawning.
+# - Add camera-boundary exit detection, and cleanup items:
+#   - AbandonedText, Fragments, Bubbles, Pickups, Enemies, EnemyProjectiles, PlayerProjectiles.
+# - Health bar in HUD.
+# - Floating-away character animations:
+#   - Drifting with random sideways oscillations.
+#   - Random vertical acceleration.
+#   - Random spin.
+#   - Fade-out.
+#   - Then delete them!
+# - Add extra animations:
+#   - Word animations for enemies and triggered abilities.
+#   - Character-by-character animations for enemies and triggered abilities.
+# - Make pickups spawn longer words as you go.
+# - Make pending-text last longer as long as it's a valid prefix for a current ability.
+# - Highlight ability text in the hud when the pending letters are a matching prefix.
+# - If the current pending letters fully match a word, but also have a junk prefix,
+#   chop them in two, discard the junk, use the word match.
 #
 #
 # >>> Stuff Alden could do: <<<
@@ -51,6 +72,13 @@ var player: Player
 # - SFX (look for `TODO(Alden)`)
 # - Add Clippy GIF.
 # - Add Clippy text.
+#   - Say something for each new word you pickup?
+#   - Say random nautical nonsense occasionally?
+#   - Say something different for each type of enemy (and terrain) that can do
+#     damage to you.
+#   - Say some descriptive starting text.
+#     - We could have him say a sequence of different messages, with a small
+#       delay between them, if we want.
 # - Make some level fragments.
 # -
 
@@ -205,7 +233,9 @@ func _add_scroll(increment: float) -> void:
 func _update_colors() -> void:
     var background_color := get_color(GameManifest.ColorType.BACKGROUND)
     var text_color := get_color(GameManifest.ColorType.TEXT)
-    var player_outline_color := get_color(GameManifest.ColorType.PLAYER_OUTLINE)
+    var cursor_outline_color := get_color(GameManifest.ColorType.CURSOR_OUTLINE)
+    var typed_text_outline_color := get_color(GameManifest.ColorType.TYPED_TEXT_OUTLINE)
+    var ability_outline_color := get_color(GameManifest.ColorType.ABILITY_OUTLINE)
     var enemy_outline_color := get_color(GameManifest.ColorType.ENEMY_OUTLINE)
     var terrain_outline_color := get_color(GameManifest.ColorType.TERRAIN_OUTLINE)
     var pickup_outline_color := get_color(GameManifest.ColorType.PICKUP_OUTLINE)
@@ -218,13 +248,17 @@ func _update_colors() -> void:
 
     player.set_text_color(text_color)
 
-    G.manifest.player_label_settings.font_color = text_color
+    G.manifest.cursor_label_settings.font_color = text_color
+    G.manifest.typed_text_label_settings.font_color = text_color
+    G.manifest.ability_label_settings.font_color = text_color
     G.manifest.enemy_label_settings.font_color = text_color
     G.manifest.pickup_label_settings.font_color = text_color
     G.manifest.terrain_label_settings.font_color = text_color
     G.manifest.hud_label_settings.font_color = text_color
 
-    G.manifest.player_label_settings.outline_color = player_outline_color
+    G.manifest.cursor_label_settings.outline_color = cursor_outline_color
+    G.manifest.typed_text_label_settings.outline_color = typed_text_outline_color
+    G.manifest.ability_label_settings.outline_color = ability_outline_color
     G.manifest.enemy_label_settings.outline_color = enemy_outline_color
     G.manifest.terrain_label_settings.outline_color = terrain_outline_color
     G.manifest.pickup_label_settings.outline_color = pickup_outline_color

@@ -1,28 +1,30 @@
-[gd_resource type="Resource" script_class="GameManifest" load_steps=24 format=3 uid="uid://diqdv1fn7q7ai"]
+[gd_resource type="Resource" script_class="GameManifest" load_steps=26 format=3 uid="uid://diqdv1fn7q7ai"]
 
 [ext_resource type="PackedScene" uid="uid://cowo6nbf33hgk" path="res://src/levels/level.tscn" id="1_a47xt"]
-[ext_resource type="LabelSettings" uid="uid://bxxo0wsx1h0sw" path="res://src/ui/bubble_label_settings.tres" id="1_e05c0"]
+[ext_resource type="LabelSettings" uid="uid://cdso1r85pk7hc" path="res://src/ui/styles/ability_label_settings.tres" id="1_hkaoq"]
+[ext_resource type="LabelSettings" uid="uid://bxxo0wsx1h0sw" path="res://src/ui/styles/bubble_label_settings.tres" id="1_jmnv0"]
 [ext_resource type="PackedScene" uid="uid://c27n63xtklrk0" path="res://src/ui/game_hud.tscn" id="2_443y3"]
 [ext_resource type="PackedScene" uid="uid://bsvjkmgny0imc" path="res://src/levels/level_fragment_1.tscn" id="2_e8rv8"]
 [ext_resource type="PackedScene" uid="uid://bd0oy4phn6nu1" path="res://src/player/player.tscn" id="2_jrmap"]
-[ext_resource type="Theme" uid="uid://jlt4ctadl0vs" path="res://src/ui/main_theme.tres" id="2_nnvfo"]
 [ext_resource type="PackedScene" uid="uid://n6lw7r40aajb" path="res://src/player/character.tscn" id="2_swhmb"]
-[ext_resource type="LabelSettings" uid="uid://do32fel5lqa8q" path="res://src/ui/enemy_label_settings.tres" id="4_tr08y"]
+[ext_resource type="LabelSettings" uid="uid://do32fel5lqa8q" path="res://src/ui/styles/enemy_label_settings.tres" id="4_ncyll"]
 [ext_resource type="PackedScene" uid="uid://cfb2gmm7xhvgn" path="res://addons/scaffolder2/src/ui/screens/credits/credits_screen.tscn" id="5_fxhmy"]
 [ext_resource type="PackedScene" uid="uid://574as3677v4o" path="res://src/ui/game_game_screen.tscn" id="6_443y3"]
-[ext_resource type="LabelSettings" uid="uid://cvda6imkaip2f" path="res://src/ui/hud_label_settings.tres" id="6_jmnv0"]
+[ext_resource type="LabelSettings" uid="uid://cvda6imkaip2f" path="res://src/ui/styles/hud_label_settings.tres" id="6_hkaoq"]
 [ext_resource type="PackedScene" uid="uid://1t038urjp73n" path="res://addons/scaffolder2/src/ui/screens/game_over/game_over_screen.tscn" id="6_pwtdj"]
-[ext_resource type="StyleBox" uid="uid://bi7habawrsdmn" path="res://src/ui/hud_panel.tres" id="7_ncyll"]
+[ext_resource type="StyleBox" uid="uid://bi7habawrsdmn" path="res://src/ui/styles/hud_panel.tres" id="7_lx0xc"]
 [ext_resource type="Script" uid="uid://c4to1w0fm01fy" path="res://src/core/game_manifest.gd" id="8_h5d7k"]
 [ext_resource type="PackedScene" uid="uid://bc1qluy2ieskk" path="res://src/ui/hud_row.tscn" id="8_hkaoq"]
-[ext_resource type="LabelSettings" uid="uid://nkfjwbnoi8d3" path="res://src/ui/pickup_label_settings.tres" id="8_jmnv0"]
 [ext_resource type="PackedScene" uid="uid://bxmph3ye6mk0i" path="res://addons/scaffolder2/src/ui/screens/main_menu/main_menu_screen.tscn" id="8_rn5de"]
-[ext_resource type="LabelSettings" uid="uid://bdl75aflxruyu" path="res://src/ui/player_label_settings.tres" id="9_ncyll"]
 [ext_resource type="PackedScene" uid="uid://bc5n0nmh6rv0c" path="res://addons/scaffolder2/src/ui/screens/pause/pause_screen.tscn" id="9_opie4"]
 [ext_resource type="PackedScene" uid="uid://cn5n2vl7vmqeg" path="res://addons/scaffolder2/src/ui/screens/settings/settings_screen.tscn" id="10_ay283"]
+[ext_resource type="Theme" uid="uid://jlt4ctadl0vs" path="res://src/ui/styles/main_theme.tres" id="10_x2iix"]
+[ext_resource type="LabelSettings" uid="uid://nkfjwbnoi8d3" path="res://src/ui/styles/pickup_label_settings.tres" id="11_gb07o"]
+[ext_resource type="LabelSettings" uid="uid://bdl75aflxruyu" path="res://src/ui/styles/cursor_label_settings.tres" id="12_bkucw"]
 [ext_resource type="PackedScene" uid="uid://cabuqalxveq14" path="res://addons/scaffolder2/src/core/scaffolder_shell.tscn" id="18_a47xt"]
 [ext_resource type="PackedScene" uid="uid://cttwbnovsef3h" path="res://addons/scaffolder2/src/ui/hud/super_hud.tscn" id="19_pwtdj"]
-[ext_resource type="LabelSettings" uid="uid://dmhlo1reiiqm8" path="res://src/ui/terrain_label_settings.tres" id="20_hkaoq"]
+[ext_resource type="LabelSettings" uid="uid://dmhlo1reiiqm8" path="res://src/ui/styles/terrain_label_settings.tres" id="23_u8u6k"]
+[ext_resource type="LabelSettings" uid="uid://wa6fn3oob5xv" path="res://src/ui/styles/typed_text_label_settings.tres" id="25_lx0xc"]
 
 [resource]
 script = ExtResource("8_h5d7k")
@@ -38,12 +40,16 @@ background_color_start = Color(0.960784, 0.988235, 0.988235, 1)
 background_color_end = Color(0, 0.00784314, 0.0392157, 1)
 text_color_start = Color(0, 0, 0, 1)
 text_color_end = Color(0.901961, 0.901961, 0.901961, 1)
-player_outline_color_start = Color(0.0117647, 0.988235, 0.564706, 0.301961)
-player_outline_color_end = Color(0.0117647, 0.988235, 0.564706, 0.301961)
+cursor_outline_color_start = Color(0.0117647, 0.988235, 0.564706, 0.0627451)
+cursor_outline_color_end = Color(0.0117647, 0.988235, 0.564706, 0.0627451)
+typed_text_outline_color_start = Color(0.0117647, 0.988235, 0.564706, 0)
+typed_text_outline_color_end = Color(0.0117647, 0.988235, 0.564706, 0)
+ability_outline_color_start = Color(0.0117647, 0.988235, 0.564706, 0.188235)
+ability_outline_color_end = Color(0.0117647, 0.988235, 0.564706, 0.188235)
 enemy_outline_color_start = Color(0.988235, 0.596078, 0.0117647, 0.2)
 enemy_outline_color_end = Color(0.988235, 0.596078, 0.0117647, 0.2)
-terrain_outline_color_start = Color(0.988235, 0.564706, 0.0117647, 0.0509804)
-terrain_outline_color_end = Color(0.843137, 0.0117647, 0.988235, 0.0509804)
+terrain_outline_color_start = Color(0.988235, 0.564706, 0.0117647, 0.12549)
+terrain_outline_color_end = Color(0.843137, 0.0117647, 0.988235, 0.12549)
 pickup_outline_color_start = Color(0.760784, 0.988235, 0.0117647, 0.301961)
 pickup_outline_color_end = Color(0.760784, 0.988235, 0.0117647, 0.301961)
 bubble_color_start = Color(0, 0, 0, 0.301961)
@@ -84,13 +90,15 @@ default_cursor_scale = 0.3
 game_area_size = Vector2i(768, 768)
 game_area_padding = Vector2i(20, 20)
 fragments = Array[PackedScene]([ExtResource("2_e8rv8")])
-player_label_settings = ExtResource("9_ncyll")
-enemy_label_settings = ExtResource("4_tr08y")
-terrain_label_settings = ExtResource("20_hkaoq")
-pickup_label_settings = ExtResource("8_jmnv0")
-bubble_label_settings = ExtResource("1_e05c0")
-hud_label_settings = ExtResource("6_jmnv0")
-hud_panel_style = ExtResource("7_ncyll")
+cursor_label_settings = ExtResource("12_bkucw")
+typed_text_label_settings = ExtResource("25_lx0xc")
+ability_label_settings = ExtResource("1_hkaoq")
+enemy_label_settings = ExtResource("4_ncyll")
+terrain_label_settings = ExtResource("23_u8u6k")
+pickup_label_settings = ExtResource("11_gb07o")
+bubble_label_settings = ExtResource("1_jmnv0")
+hud_label_settings = ExtResource("6_hkaoq")
+hud_panel_style = ExtResource("7_lx0xc")
 player_scene = ExtResource("2_jrmap")
 character_scene = ExtResource("2_swhmb")
 hud_row_scene = ExtResource("8_hkaoq")
@@ -99,7 +107,7 @@ dev_mode = true
 skip_main_menu_in_dev_mode = true
 pauses_on_focus_out = false
 show_hud = true
-main_theme = ExtResource("2_nnvfo")
+main_theme = ExtResource("10_x2iix")
 dev_mode_level = ExtResource("1_a47xt")
 main_level = ExtResource("1_a47xt")
 hud_scene = ExtResource("2_443y3")

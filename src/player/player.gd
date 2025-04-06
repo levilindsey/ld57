@@ -116,8 +116,8 @@ func _on_cursor_blink_timeout() -> void:
 
 
 func _initialize_sizes() -> void:
-    var character := await Character.create(%ScratchText, "M", Character.Type.PLAYER)
-    var two_lines := await Character.create(%ScratchText, "M\nM", Character.Type.PLAYER)
+    var character := await Character.create(%ScratchText, "M", Character.Type.TYPED_TEXT)
+    var two_lines := await Character.create(%ScratchText, "M\nM", Character.Type.TYPED_TEXT)
 
     # TODO: Check if this delay is needed.
     await get_tree().process_frame
@@ -156,7 +156,7 @@ func on_tab() -> void:
 
 
 func on_space() -> void:
-    var character := await Character.create(%ScratchText, "M", Character.Type.PLAYER)
+    var character := await Character.create(%ScratchText, "M", Character.Type.TYPED_TEXT)
 
     # TODO: Check if this delay is needed.
     await get_tree().process_frame
@@ -184,7 +184,7 @@ func on_space() -> void:
 
 
 func on_backspace() -> void:
-    var character := await Character.create(%ScratchText, "M", Character.Type.PLAYER)
+    var character := await Character.create(%ScratchText, "M", Character.Type.TYPED_TEXT)
 
     # TODO: Check if this delay is needed.
     await get_tree().process_frame
@@ -212,7 +212,7 @@ func on_backspace() -> void:
 
 
 func _on_main_menu_character_entered(text: String) -> void:
-    var character := await Character.create(%ScratchText, text.to_upper(), Character.Type.PLAYER)
+    var character := await Character.create(%ScratchText, text.to_upper(), Character.Type.TYPED_TEXT)
 
     # TODO: Check if this delay is needed.
     await get_tree().process_frame
@@ -238,7 +238,7 @@ func _on_main_menu_character_entered(text: String) -> void:
 
 
 func on_character_entered(text: String) -> void:
-    var character := await Character.create(%ScratchText, text.to_upper(), Character.Type.PLAYER)
+    var character := await Character.create(%ScratchText, text.to_upper(), Character.Type.TYPED_TEXT)
 
     # TODO: Check if this delay is needed.
     await get_tree().process_frame

@@ -1,7 +1,0 @@
-[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://do32fel5lqa8q"]
-
-[ext_resource type="FontFile" uid="uid://2cjwh1j4kbkm" path="res://assets/fonts/Courier_Prime/CourierPrime-Regular.ttf" id="1_i5dvo"]
-
-[resource]
-font = ExtResource("1_i5dvo")
-font_size = 24

@@ -4,8 +4,10 @@ extends ScaffolderManifest
 enum ColorType {
     BACKGROUND,
     TEXT,
-    PLAYER_OUTLINE,
+    CURSOR_OUTLINE,
+    TYPED_TEXT_OUTLINE,
     ENEMY_OUTLINE,
+    ABILITY_OUTLINE,
     TERRAIN_OUTLINE,
     PICKUP_OUTLINE,
     BUBBLE,
@@ -38,14 +40,20 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var text_color_start := Color("#000000ff")
 @export var text_color_end := Color("#e6e6e6ff")
 
-@export var player_outline_color_start := Color("#03fc904d")
-@export var player_outline_color_end := Color("#03fc904d")
+@export var cursor_outline_color_start := Color("#03fc9010")
+@export var cursor_outline_color_end := Color("#03fc9010")
+
+@export var typed_text_outline_color_start := Color("#03fc9000")
+@export var typed_text_outline_color_end := Color("#03fc9000")
+
+@export var ability_outline_color_start := Color("#03fc9030")
+@export var ability_outline_color_end := Color("#03fc9030")
 
 @export var enemy_outline_color_start := Color("#fc980333")
 @export var enemy_outline_color_end := Color("#fc980333")
 
-@export var terrain_outline_color_start := Color("#fc90030d")
-@export var terrain_outline_color_end := Color("#d703fc0d")
+@export var terrain_outline_color_start := Color("#fc900320")
+@export var terrain_outline_color_end := Color("#d703fc20")
 
 @export var pickup_outline_color_start := Color("#c2fc034d")
 @export var pickup_outline_color_end := Color("#c2fc034d")
@@ -110,15 +118,17 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 ]
 
 @export_group("LabelSettings")
-@export var player_label_settings := preload("res://src/ui/player_label_settings.tres")
-@export var enemy_label_settings := preload("res://src/ui/enemy_label_settings.tres")
-@export var terrain_label_settings := preload("res://src/ui/terrain_label_settings.tres")
-@export var pickup_label_settings := preload("res://src/ui/pickup_label_settings.tres")
-@export var bubble_label_settings := preload("res://src/ui/bubble_label_settings.tres")
-@export var hud_label_settings := preload("res://src/ui/hud_label_settings.tres")
+@export var cursor_label_settings := preload("res://src/ui/styles/cursor_label_settings.tres")
+@export var typed_text_label_settings := preload("res://src/ui/styles/typed_text_label_settings.tres")
+@export var ability_label_settings := preload("res://src/ui/styles/ability_label_settings.tres")
+@export var enemy_label_settings := preload("res://src/ui/styles/enemy_label_settings.tres")
+@export var terrain_label_settings := preload("res://src/ui/styles/terrain_label_settings.tres")
+@export var pickup_label_settings := preload("res://src/ui/styles/pickup_label_settings.tres")
+@export var bubble_label_settings := preload("res://src/ui/styles/bubble_label_settings.tres")
+@export var hud_label_settings := preload("res://src/ui/styles/hud_label_settings.tres")
 @export_group("")
 
-@export var hud_panel_style := preload("res://src/ui/hud_panel.tres")
+@export var hud_panel_style := preload("res://src/ui/styles/hud_panel.tres")
 
 @export var player_scene := preload("res://src/player/player.tscn")
 @export var character_scene := preload("res://src/player/character.tscn")
@@ -131,8 +141,12 @@ func get_start_color(type: ColorType) -> Color:
             return background_color_start
         ColorType.TEXT:
             return text_color_start
-        ColorType.PLAYER_OUTLINE:
-            return player_outline_color_start
+        ColorType.CURSOR_OUTLINE:
+            return cursor_outline_color_start
+        ColorType.TYPED_TEXT_OUTLINE:
+            return typed_text_outline_color_start
+        ColorType.ABILITY_OUTLINE:
+            return ability_outline_color_start
         ColorType.ENEMY_OUTLINE:
             return enemy_outline_color_start
         ColorType.TERRAIN_OUTLINE:
@@ -150,8 +164,12 @@ func get_end_color(type: ColorType) -> Color:
             return background_color_end
         ColorType.TEXT:
             return text_color_end
-        ColorType.PLAYER_OUTLINE:
-            return player_outline_color_end
+        ColorType.CURSOR_OUTLINE:
+            return cursor_outline_color_end
+        ColorType.TYPED_TEXT_OUTLINE:
+            return typed_text_outline_color_end
+        ColorType.ABILITY_OUTLINE:
+            return ability_outline_color_end
         ColorType.ENEMY_OUTLINE:
             return enemy_outline_color_end
         ColorType.TERRAIN_OUTLINE:
