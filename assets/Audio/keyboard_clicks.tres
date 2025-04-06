@@ -22,6 +22,7 @@
 [ext_resource type="AudioStream" uid="uid://bd1qk3fahow1u" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-22.wav" id="20_subin"]
 
 [resource]
+playback_mode = 2
 random_pitch = 1.1
 streams_count = 20
 stream_0/stream = ExtResource("1_6na5g")
