@@ -14,7 +14,7 @@ func _process(delta: float) -> void:
 
     for job in _animation_jobs.keys():
         job.update(current_time)
-        if job.is_complete():
+        if job.is_complete(current_time):
             _animation_jobs.erase(job)
 
     for job in _staggered_character_jobs.keys():

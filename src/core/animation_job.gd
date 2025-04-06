@@ -7,14 +7,19 @@ signal stopped
 
 var node: Node2D
 
+var destroys_node_when_done: bool
 var is_one_shot: bool
+var ease_name := "ease_in_out"
 
 var start_time_sec := 0.0
 
 var duration_sec := 0.0
+
+var start_opacity: float
 var end_opacity := -1.0
 
 var anchor_position: Vector2
+var is_clockwise := false
 
 var interval_min_sec := 0.0
 var interval_max_sec := 0.0
@@ -27,7 +32,7 @@ const _job_keys := [
 ]
 
 const _interval_keys := [
-    "direction",
+    "direction_angle",
     "speed",
     "acceleration",
     "rotation_speed",
@@ -41,10 +46,14 @@ const _interval_keys := [
 # AnimationJob.new({
 #     node: node,
 #
+#     destroys_node_when_done: true,
+#
 #     # If recurring, then interval_sec must be included.
 #     is_one_shot: false,
 #
-#     direction?: away,
+#     ease_name?: "ease_in_out",
+#
+#     direction_angle?: -PI / 4,
 #     direction_deviaton_angle_max?: PI / 8,
 #
 #     # These can all be either a single number, or an array of two numbers.
@@ -64,9 +73,17 @@ func _init(config: Dictionary) -> void:
     S.utils.ensure(config.has("is_one_shot"))
 
     node = config.node
+    destroys_node_when_done = config.destroys_node_when_done
     is_one_shot = config.is_one_shot
 
     anchor_position = node.position
+    start_opacity = node.modulate.a
+
+    if config.has("rotation_speed"):
+        is_clockwise = randf() < 0.5
+
+    if config.has("ease_name"):
+        ease_name = config.ease_name
 
     for key in _job_keys:
         if config.has(key):
@@ -85,20 +102,19 @@ func _init(config: Dictionary) -> void:
     if interval_min_sec == 0.0:
         S.utils.ensure(config.has("duration_sec"))
 
-    if config.has("direction"):
+    if config.has("direction_angle"):
         var interval := DimensionInterval.new()
-        intervals["direction"] = interval
+        intervals["direction_angle"] = interval
 
-        var target_direction_angle: float = config.direction.angle()
         var direction_deviaton_angle_max: float = (
             config.direction_deviaton_angle_max
             if config.has("direction_deviaton_angle_max")
             else 0.0
         )
         interval.set_range(
-            "direction",
-            target_direction_angle - direction_deviaton_angle_max,
-            target_direction_angle + direction_deviaton_angle_max)
+            "direction_angle",
+            config.direction_angle - direction_deviaton_angle_max,
+            config.direction_angle + direction_deviaton_angle_max)
 
     for key in _interval_keys:
         if config.has(key):
@@ -140,16 +156,28 @@ func update(current_time_sec: float) -> void:
 
         var elapsed_sec := current_time_sec - interval.current_time_sec
         interval.current_time_sec = current_time_sec
-        var progress := (
+        var progress := clampf(
             (interval.current_time_sec - interval.start_time_sec) /
-            (interval.end_time_sec - interval.start_time_sec)
+            (interval.end_time_sec - interval.start_time_sec),
+            0,
+            1
         )
+        progress = S.utils.ease_by_name(progress, ease_name)
         interval.current_value = lerpf(
             interval.start_value, interval.end_value, progress)
         _apply_value_to_node(interval, elapsed_sec)
 
-    # FIXME: LEFT OFF HERE:
-    # - Use end_opacity.
+    if end_opacity >= 0 and duration_sec > 0:
+        var progress := clampf(
+            (current_time_sec - start_time_sec) / duration_sec,
+            0,
+            1
+        )
+        progress = S.utils.ease_by_name(progress, ease_name)
+        node.modulate.a = lerp(start_opacity, end_opacity, progress)
+
+    if is_complete(current_time_sec) and destroys_node_when_done:
+        node.queue_free()
 
 
 func _trigger(interval: DimensionInterval, current_time_sec: float) -> void:
@@ -168,32 +196,27 @@ func is_complete(current_time_sec: float) -> bool:
     return duration_sec > 0 and current_time_sec >= start_time_sec + duration_sec
 
 
-# FIXME: LEFT OFF HERE
-# - Add easing.
-# - A single job-level value.
-# - Applied to progress calculation in update.
-# - Applied to end_opacity calculation.
-
-
 func _apply_value_to_node(interval: DimensionInterval, elapsed_sec: float) -> void:
     match interval.key:
-        "direction":
+        "direction_angle":
             # Do nothing on the node directly.
             # Other dimensions will use this.
             pass
         "perpendicular_oscillation_amplitude":
-            var progress := (
+            var progress := clampf(
                 (interval.current_time_sec - interval.start_time_sec) /
-                (interval.end_time_sec - interval.start_time_sec)
+                (interval.end_time_sec - interval.start_time_sec),
+                0,
+                1
             )
             # Use interval.current_value as the current anchor_amplitude for the
             # oscillation calculation.
             var perpendicular_offset := interval.current_value * sin(progress * PI)
-            var direction := Vector2.from_angle(intervals.direction.current_value)
+            var direction := Vector2.from_angle(intervals.direction_angle.current_value)
             var displacement := direction.orthogonal() * perpendicular_offset
             node.position = anchor_position + displacement
         "speed":
-            var direction := Vector2.from_angle(intervals.direction.current_value)
+            var direction := Vector2.from_angle(intervals.direction_angle.current_value)
             var displacement := direction * interval.current_value
             anchor_position += displacement
             node.position += displacement
@@ -203,23 +226,23 @@ func _apply_value_to_node(interval: DimensionInterval, elapsed_sec: float) -> vo
             intervals.speed.min += delta
             intervals.speed.max += delta
         "rotation_speed":
-            # FIXME: LEFT OFF HERE
-            pass
+            var delta := interval.current_value * elapsed_sec
+            if is_clockwise:
+                delta *= -1
+            node.rotation += delta
         "scale_x":
-            # FIXME: LEFT OFF HERE
-            pass
+            node.scale.x = interval.current_value
         "scale_y":
-            # FIXME: LEFT OFF HERE
-            pass
+            node.scale.y = interval.current_value
         "skew":
-            # FIXME: LEFT OFF HERE
-            pass
-    S.utils.ensure(false)
+            node.skew = interval.current_value
+        _:
+            S.utils.ensure(false)
 
 
 func _get_initial_value(interval: DimensionInterval) -> float:
     match interval.key:
-        "direction", \
+        "direction_angle", \
         "speed", \
         "acceleration", \
         "rotation_speed":

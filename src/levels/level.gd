@@ -229,7 +229,11 @@ func _input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
     current_time_sec = Anim.get_current_time_sec()
 
-    progress_to_max_difficulty = clampf((current_time_sec - start_time_sec) / G.manifest.time_to_max_difficulty_sec, 0, 1)
+    progress_to_max_difficulty = clampf(
+        (current_time_sec - start_time_sec) / G.manifest.time_to_max_difficulty_sec,
+        0,
+        1
+    )
 
     if state == State.PLAYING:
         if G.manifest.using_custom_fast_space:
@@ -512,11 +516,37 @@ func _set_zoom(zoomed_in: bool) -> void:
 
 
 func cancel_pending_characters() -> void:
-    # FIXME: LEFT OFF HERE:
-    # - Trigger some animations.
-    # - Use the new AnimationJob.
     for character in %PendingText.get_children():
         character.reparent(%AbandonedText, true)
+
+        # FIXME: LEFT OFF HERE: TEST THIS!!
+
+        # Upward and very slightly leftward.
+        var direction_angle := -(PI / 4 - PI / 32)
+
+        var config := {
+            node = character,
+            destroys_node_when_done = true,
+            is_one_shot = true,
+            ease_name = "ease_in_out",
+
+            direction_angle = direction_angle,
+            direction_deviaton_angle_max = PI / 16,
+
+            # These can all be either a single number, or an array of two numbers.
+            duration_sec = [3.0, 5.0], # If omitted, the animation won't stop.
+            end_opacity = 0.0,
+            #interval_sec = [0.3, 2.0], # If ommitted, duration_sec must be included.
+            speed = [50, 90],
+            acceleration = [-10, 0.0],
+            rotation_speed = [0.01, 0.5],
+            perpendicular_oscillation_amplitude = [0, 10.0],
+            #scale_x = [0.9, 1.1],
+            #scale_y = [0.9, 1.1],
+            #skew = [0, PI / 8],
+        }
+
+        Anim.start_animation(config)
 
 
 func add_pending_character(character: Character) -> void:
