@@ -37,14 +37,31 @@ var keyboard_bus = AudioServer.get_bus_index("Keyboard")
 
 # TODO:
 #
-# - Add support for deleting pending letter with backspace.
+# - Finish AnimationJob, and use it for AbandonedText.
 # - Implement pending text usage.
-#   - Have each character drift upward at a fixed slow rate, but have the overall container follow the player.
+#   - Have each character drift upward at a fixed slow rate, but have the overall
+#     container follow the player.
 #   - When triggering a word, animate each letter downward.
-#     - Consider giving a different duration to each letter tween, so closer letters take less time.
+#     - Consider giving a different duration to each letter tween, so closer
+#       letters take less time.
 #     - Tween the overall container down two, with a bounce-back at the end.
 #     - Ease-in tweens for all.
 # - Add abilities system.
+#   - Detect word matches.
+#   - Discard junk prefixes.
+#   - Register a list of Abilities.
+#   - Register a list of words, mapped to abilities.
+#   - For each registered Ability:
+#     - Implement a parent class.
+#     - Implement a class subclass for each ability.
+#     - This takes the collection of Characters, and reparents them.
+#     - This then animates the overall word.
+#     - This then implements collision detection (in the parent class).
+#     - This then implements custom logic for whatever.
+#   - Highlight ability text in the hud when the pending letters are a matching
+#     prefix.
+#     - Clear highlights on game over.
+#   - Slow-down timeout for discarding text when there is a potential match.
 # - Add fragment spawning.
 # - Add pickups.
 # - Add enemy spawning.
@@ -492,6 +509,14 @@ func _set_zoom(zoomed_in: bool) -> void:
     var tween := get_tree().create_tween()
     tween.tween_property(%Camera2D, "zoom", zoom, duration)
     tween.tween_property(%Camera2D, "offset:y", offset_y, duration)
+
+
+func cancel_pending_characters() -> void:
+    # FIXME: LEFT OFF HERE:
+    # - Trigger some animations.
+    # - Use the new AnimationJob.
+    for character in %PendingText.get_children():
+        character.reparent(%AbandonedText, true)
 
 
 func add_pending_character(character: Character) -> void:

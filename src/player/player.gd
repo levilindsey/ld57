@@ -21,7 +21,6 @@ var active_damage_collisions: Dictionary[Area2D, bool]
 var main_menu_staggered_character_job: StaggeredCharacterJob
 
 
-
 func _ready() -> void:
     %Cursor.scale = G.manifest.default_cursor_scale * Vector2.ONE
 
@@ -126,7 +125,7 @@ func _initialize_sizes() -> void:
     default_character_size = character.get_size()
     default_line_height = two_lines.get_size().y - default_character_size.y
 
-    %ScratchText.position.x = -default_character_size.x * 0.5
+    %ScratchText.position.x = - default_character_size.x * 0.5
     %ScratchText.position.y = default_character_size.y * 0.075
 
     character.queue_free()
@@ -177,7 +176,6 @@ func on_space(is_held_key_duplicate_press: bool) -> void:
         
     else:
         # Space failed.
-
         # SFX
         $AudioStreamPlayer_failure.play()
         print("OH NO LEVI")
@@ -203,7 +201,6 @@ func on_backspace(is_held_key_duplicate_press: bool) -> void:
         $AudioStreamPlayer_keyboard.play()
     else:
         # Backspace failed.
-
         # SFX
         $AudioStreamPlayer_failure.play()
         print("OH NO LEVI")
@@ -261,7 +258,6 @@ func on_character_entered(text: String, is_held_key_duplicate_press: bool) -> vo
         # SFX
         $AudioStreamPlayer_failure.play()
         print("OH NO LEVI")
-        pass
 
         return
 
@@ -286,7 +282,6 @@ func on_character_entered(text: String, is_held_key_duplicate_press: bool) -> vo
 
         # SFX
         $AudioStreamPlayer_word.play()
-        pass
     else:
         # TODO:
         pass
@@ -308,8 +303,8 @@ func _cancel_pending_text() -> void:
     S.log.print("Pending text canceled: %s" % pending_text)
 
     %CancelPendingTextTimer.stop()
-    # TODO: Implement this.
-    pass
+
+    G.level.cancel_pending_characters()
 
 
 func _consume_pending_text_for_ability() -> void:
@@ -317,6 +312,7 @@ func _consume_pending_text_for_ability() -> void:
             G.level.get_pending_text())
 
     %CancelPendingTextTimer.stop()
+
     # TODO:
     # - Call this.
     # - Implement this.
