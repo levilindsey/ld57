@@ -196,19 +196,19 @@ func on_backspace() -> void:
         # Backspace entered successfully.
         self.position.x = desired_position_x
 
+        %CancelPendingTextTimer.start()
+
         # SFX
         $AudioStreamPlayer_keyboard.play()
-        pass
     else:
         # Backspace failed.
-        
+
         # SFX
         $AudioStreamPlayer_failure.play()
-        pass
 
     character.queue_free()
 
-    _cancel_pending_text()
+    G.level.remove_last_pending_character()
 
 
 func _on_main_menu_character_entered(text: String) -> void:
@@ -251,7 +251,6 @@ func on_character_entered(text: String) -> void:
         self.position.x = desired_position_x
         last_text_entered = text.to_upper()
         $AudioStreamPlayer_keyboard.play()
-        print("audio")
         %CancelPendingTextTimer.start()
     else:
         # Character failed.
@@ -259,7 +258,7 @@ func on_character_entered(text: String) -> void:
 
         # SFX
         $AudioStreamPlayer_failure.play()
-        
+
         pass
 
         return

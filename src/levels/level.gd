@@ -33,7 +33,6 @@ var player: Player
 
 # TODO:
 #
-# - Fix outlines.
 # - Add support for deleting pending letter with backspace.
 # - Implement pending text usage.
 #   - Have each character drift upward at a fixed slow rate, but have the overall container follow the player.
@@ -58,6 +57,9 @@ var player: Player
 # - Add extra animations:
 #   - Word animations for enemies and triggered abilities.
 #   - Character-by-character animations for enemies and triggered abilities.
+#   - A destroyed animation.
+#     - Have each character move away from center, in a slightly random direction,
+#       with rotation, and a fade-out, then queue_free.
 # - Make pickups spawn longer words as you go.
 # - Make pending-text last longer as long as it's a valid prefix for a current ability.
 # - Highlight ability text in the hud when the pending letters are a matching prefix.
@@ -467,3 +469,14 @@ func _set_zoom(zoomed_in: bool) -> void:
 
 func add_pending_character(character: Character) -> void:
     character.reparent(%PendingText, true)
+
+
+func remove_last_pending_character() -> bool:
+    var pending_characters := %PendingText.get_children()
+
+    if pending_characters.is_empty():
+        return false
+
+    pending_characters.back().queue_free()
+
+    return true
