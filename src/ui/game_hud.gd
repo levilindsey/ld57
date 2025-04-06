@@ -5,6 +5,8 @@ extends ScaffolderHud
 
 var ability_name_to_row: Dictionary[String, HudRow]
 
+var current_clippy_staggered_character_job: StaggeredCharacterJob
+
 
 func _ready() -> void:
     G.hud = self
@@ -30,7 +32,12 @@ func set_clippy_visible(visible: bool) -> void:
 
 # TODO: Call this.
 func set_clippy_text(text: String) -> void:
-    %ClippyText.text = text
+    G.stop_stagger_character_job(current_clippy_staggered_character_job)
+    current_clippy_staggered_character_job = G.stagger_calls_for_each_character(
+            text,
+            G.manifest.clippy_character_interval_sec,
+            %ClippyText,
+            false)
 
 
 # TODO: Call this.

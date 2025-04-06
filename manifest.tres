@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GameManifest" load_steps=21 format=3 uid="uid://diqdv1fn7q7ai"]
+[gd_resource type="Resource" script_class="GameManifest" load_steps=24 format=3 uid="uid://diqdv1fn7q7ai"]
 
 [ext_resource type="PackedScene" uid="uid://cowo6nbf33hgk" path="res://src/levels/level.tscn" id="1_a47xt"]
 [ext_resource type="LabelSettings" uid="uid://bxxo0wsx1h0sw" path="res://src/ui/bubble_label_settings.tres" id="1_e05c0"]
@@ -10,8 +10,11 @@
 [ext_resource type="LabelSettings" uid="uid://do32fel5lqa8q" path="res://src/ui/enemy_label_settings.tres" id="4_tr08y"]
 [ext_resource type="PackedScene" uid="uid://cfb2gmm7xhvgn" path="res://addons/scaffolder2/src/ui/screens/credits/credits_screen.tscn" id="5_fxhmy"]
 [ext_resource type="PackedScene" uid="uid://574as3677v4o" path="res://src/ui/game_game_screen.tscn" id="6_443y3"]
+[ext_resource type="LabelSettings" uid="uid://cvda6imkaip2f" path="res://src/ui/hud_label_settings.tres" id="6_jmnv0"]
 [ext_resource type="PackedScene" uid="uid://1t038urjp73n" path="res://addons/scaffolder2/src/ui/screens/game_over/game_over_screen.tscn" id="6_pwtdj"]
+[ext_resource type="StyleBox" uid="uid://bi7habawrsdmn" path="res://src/ui/hud_panel.tres" id="7_ncyll"]
 [ext_resource type="Script" uid="uid://c4to1w0fm01fy" path="res://src/core/game_manifest.gd" id="8_h5d7k"]
+[ext_resource type="PackedScene" uid="uid://bc1qluy2ieskk" path="res://src/ui/hud_row.tscn" id="8_hkaoq"]
 [ext_resource type="LabelSettings" uid="uid://nkfjwbnoi8d3" path="res://src/ui/pickup_label_settings.tres" id="8_jmnv0"]
 [ext_resource type="PackedScene" uid="uid://bxmph3ye6mk0i" path="res://addons/scaffolder2/src/ui/screens/main_menu/main_menu_screen.tscn" id="8_rn5de"]
 [ext_resource type="LabelSettings" uid="uid://bdl75aflxruyu" path="res://src/ui/player_label_settings.tres" id="9_ncyll"]
@@ -23,7 +26,11 @@
 
 [resource]
 script = ExtResource("8_h5d7k")
-starting_health = 3
+speed_up_level_state_transitions = false
+starting_health = 1
+main_menu_text = "Hit Enter"
+clippy_intro_text = "Hi, I'm Clippy,
+your new best friend!"
 background_color_start = Color(0.960784, 0.988235, 0.988235, 1)
 background_color_end = Color(0, 0.00784314, 0.0392157, 1)
 text_color_start = Color(0, 0, 0, 1)
@@ -36,8 +43,8 @@ terrain_outline_color_start = Color(0.988235, 0.564706, 0.0117647, 0.0509804)
 terrain_outline_color_end = Color(0.843137, 0.0117647, 0.988235, 0.0509804)
 pickup_outline_color_start = Color(0.760784, 0.988235, 0.0117647, 0.301961)
 pickup_outline_color_end = Color(0.760784, 0.988235, 0.0117647, 0.301961)
-background_bubble_color_start = Color(0, 0, 0, 0.301961)
-background_bubble_color_end = Color(0, 0, 0, 0.301961)
+bubble_color_start = Color(0, 0, 0, 0.301961)
+bubble_color_end = Color(0, 0, 0, 0.301961)
 cursor_blink_in_alpha = 1.0
 cursor_blink_out_alpha = 0.1
 player_outline_size = 12.0
@@ -45,15 +52,24 @@ enemy_outline_size = 12.0
 terrain_outline_size = 12.0
 pickup_outline_size = 12.0
 color_update_period_sec = 1.0
-color_transition_duration_sec = 120.0
-main_menu_animation_duration_sec = 0.2
-player_death_animation_duration_sec = 4.0
-level_reset_animation_duration_sec = 1.0
-main_menu_zoom_out_duration_sec = 0.5
-reset_zoom_in_duration_sec = 1.0
+time_to_max_difficulty_sec = 120.0
+progress_to_switch_to_light_text_color = 0.5
+main_menu_animation_duration_sec = 2.0
+player_death_animation_duration_sec = 0.75
+level_reset_animation_duration_sec = 0.3
+main_menu_zoom_out_duration_sec = 0.3
+reset_zoom_in_duration_sec = 0.3
+hud_fade_in_duration_sec = 0.2
+hud_fade_out_duration_sec = 0.1
 cancel_pending_text_delay_sec = 0.8
 cursor_blink_period_sec = 0.5
+cursor_invincible_blink_period_sec = 0.06
 space_key_throttle_period_sec = 0.05
+main_menu_character_interval_sec = 0.09
+clippy_character_interval_sec = 0.06
+invincible_from_damage_cooldown_sec = 3.0
+start_scroll_speed = 100.0
+end_scroll_speed = 400.0
 main_menu_camera_zoom = 3.0
 gameplay_camera_zoom = 1.0
 main_menu_camera_offset_y = 0.0
@@ -68,8 +84,11 @@ enemy_label_settings = ExtResource("4_tr08y")
 terrain_label_settings = ExtResource("20_hkaoq")
 pickup_label_settings = ExtResource("8_jmnv0")
 bubble_label_settings = ExtResource("1_e05c0")
+hud_label_settings = ExtResource("6_jmnv0")
+hud_panel_style = ExtResource("7_ncyll")
 player_scene = ExtResource("2_jrmap")
 character_scene = ExtResource("2_swhmb")
+hud_row_scene = ExtResource("8_hkaoq")
 god_mode = false
 dev_mode = true
 skip_main_menu_in_dev_mode = true

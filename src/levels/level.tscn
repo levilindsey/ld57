@@ -16,6 +16,9 @@ offset_left = -384.0
 offset_right = 384.0
 offset_bottom = 768.0
 
+[node name="Bubbles" type="Node2D" parent="."]
+unique_name_in_owner = true
+
 [node name="Fragments" type="Node2D" parent="."]
 unique_name_in_owner = true
 

@@ -1,10 +1,100 @@
-[gd_scene load_steps=4 format=3 uid="uid://bd0oy4phn6nu1"]
+[gd_scene load_steps=8 format=3 uid="uid://bd0oy4phn6nu1"]
 
 [ext_resource type="Script" uid="uid://bg6jq3krvjgkr" path="res://src/player/player.gd" id="1_4anbu"]
 [ext_resource type="Texture2D" uid="uid://cijkmr57e0u6o" path="res://assets/images/cursor.png" id="2_rxibo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mf2ua"]
 size = Vector2(6, 18)
+
+[sub_resource type="Animation" id="Animation_rxibo"]
+resource_name = "die"
+length = 0.75
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CursorWrapper:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.25, 0.5, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(1.3, -0.3), Vector2(6.5, 0.5), Vector2(13, 9), Vector2(16, 9)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CursorWrapper:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.5708]
+}
+
+[sub_resource type="Animation" id="Animation_mf2ua"]
+resource_name = "resurrect"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CursorWrapper:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(16, 9), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CursorWrapper:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.5708, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_5f2sf"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CursorWrapper:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CursorWrapper:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jiejy"]
+_data = {
+&"RESET": SubResource("Animation_5f2sf"),
+&"die": SubResource("Animation_rxibo"),
+&"resurrect": SubResource("Animation_mf2ua")
+}
 
 [node name="Player" type="Node2D"]
 script = ExtResource("1_4anbu")
@@ -33,8 +123,24 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("2_rxibo")
+metadata/_edit_lock_ = true
 
 [node name="CursorBlinkTimer" type="Timer" parent="."]
 unique_name_in_owner = true
 
+[node name="InvicibleFromDamageTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true
+
+[node name="CancelPendingTextTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+&"": SubResource("AnimationLibrary_jiejy")
+}
+
 [connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
+[connection signal="area_exited" from="Area2D" to="." method="_on_area_2d_area_exited"]

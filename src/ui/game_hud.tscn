@@ -63,6 +63,7 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 label = "Depth:"
+value = "0"
 
 [node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -109,8 +110,6 @@ theme_override_styles/panel = ExtResource("4_fa4ld")
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Hi, I'm Clippy,
-your new best friend!"
 label_settings = ExtResource("3_46cb0")
 
 [node name="Control" type="Control" parent="MarginContainer/HBoxContainer2/HBoxContainer"]

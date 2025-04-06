@@ -37,6 +37,9 @@ func _ready() -> void:
     G.level = self
     G.manifest = S.manifest
 
+    player = G.manifest.player_scene.instantiate()
+    add_child(player)
+
     # Have the background color extend beyond the viewport a smidge.
     %BackgroundColor.size = G.manifest.game_area_size * 2 + Vector2i.ONE * 2
     %BackgroundColor.position = -(G.manifest.game_area_size / 2 + Vector2i.ONE)
@@ -47,10 +50,7 @@ func _ready() -> void:
     %Camera2D.offset.y = G.manifest.main_menu_camera_offset_y
     %Camera2D.position = Vector2(G.manifest.game_area_size.x * 0.5, 0)
 
-    player = G.manifest.player_scene.instantiate()
-    #player.position = Vector2(G.manifest.game_area_padding.x * 2.0, 0)
-    player.position = %Camera2D.position
-    add_child(player)
+    G.hud.modulate.a = 0.0
 
     _update_colors()
 
@@ -61,6 +61,8 @@ func _ready() -> void:
     S.log.print("Level ready")
 
     # TODO(Alden): Start playing music!
+
+    await get_tree().create_timer(0.1).timeout
 
     _start_main_menu_animation()
 
@@ -128,7 +130,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
-    current_time_sec = Time.get_ticks_msec() / 1000.0
+    current_time_sec = G.get_current_time_sec()
 
     progress_to_max_difficulty = clampf((current_time_sec - start_time_sec) / G.manifest.time_to_max_difficulty_sec, 0, 1)
 
@@ -148,6 +150,9 @@ func _process(delta: float) -> void:
         var vertical_movement := scroll_speed * delta
         player.position.y += vertical_movement
         %Camera2D.position.y += vertical_movement
+
+        var depth := floori(player.position.y / player.default_line_height)
+        G.hud.update_depth(depth)
 
 
 func _trigger_space() -> void:
@@ -245,6 +250,7 @@ func _transition_out_of_state(expected_old_state: Variant) -> void:
 
 
 func _start_main_menu_animation() -> void:
+    await get_tree().create_timer(0.1).timeout
     _transition_out_of_state([State.LEVEL_LOADING, State.RESETTING_LEVEL])
     player.play_main_menu_animation()
 
@@ -260,19 +266,26 @@ func _start_game() -> void:
     _set_zoom(false)
     player.on_game_started()
 
+    # Fade-in items.
+    var tween := get_tree().create_tween()
+    tween.tween_method(
+        _interpolate_fade_opacity, 0.0, 1.0, G.manifest.hud_fade_out_duration_sec
+    ).set_delay(G.manifest.main_menu_zoom_out_duration_sec)
+
     # TODO:
-    # - Start level scroll
     # - Start spawning enemies and other level fragments (or is that just from collision detection with scroll movement?)
     # - Start spawning bubbles
-    # - Fade-in HUD.
+    # - Show clippy.
+    # - Show clippy text (G.manifest.clippy_intro_text).
+
     pass
 
 
 func game_game_over() -> void:
     _transition_out_of_state(State.PLAYING)
     player.play_death_animation()
+
     # TODO:
-    # - Stop scrolling.
     # - Show game-over text (from clippy)
     pass
 
@@ -289,8 +302,8 @@ func _game_reset() -> void:
     _transition_out_of_state(State.GAME_OVER_FINISHED)
 
     progress_to_max_difficulty = 0.0
-    start_time_sec = Time.get_ticks_msec() / 1000
-    current_time_sec = Time.get_ticks_msec() / 1000
+    start_time_sec = G.get_current_time_sec()
+    current_time_sec = G.get_current_time_sec()
     last_space_trigger_time_sec = 0.0
     last_backspace_trigger_time_sec = 0.0
     last_enter_trigger_time_sec = 0.0
@@ -299,20 +312,57 @@ func _game_reset() -> void:
     _update_colors()
     _set_zoom(true)
     player.play_reset_animation()
-    G.hud.reset()
 
-    # TODO:
-    # - Fade-out enemies, level fragments, and background bubbles.
-    # - Fade level and player colors back to starting values.
-    # - Fade-out HUD.
-    pass
+    # Fade-out items.
+    var tween := get_tree().create_tween()
+    tween.tween_method(
+        _interpolate_fade_opacity, 1.0, 0.0, G.manifest.hud_fade_out_duration_sec
+    )
+    # Transition colors.
+    tween.tween_method(
+        _interpolate_colors, progress_to_max_difficulty, 0.0, G.manifest.hud_fade_out_duration_sec)
+    # Reposition the player.
+    tween.tween_property(
+        player, "position:x", player.get_start_position().x, G.manifest.reset_zoom_in_duration_sec / 6.0)
 
 
 func _on_reset_finished() -> void:
-    # TODO:
-    # - Remove enemies, level-fragments, and background bubbles.
-    # - Spawn starting level fragment, and reset player and camera position.
+    G.hud.reset()
+
+    # Remove items.
+    for collection in _get_collections():
+        for child in collection.get_children():
+            child.queue_free()
+
+    # TODO: Spawn starting level fragment.
+    pass
+
+    await get_tree().create_timer(0.1).timeout
+
     _start_main_menu_animation()
+
+
+func _interpolate_colors(progress: float) -> void:
+    progress_to_max_difficulty = progress
+    _update_colors()
+
+
+func _interpolate_fade_opacity(opacity: float) -> void:
+    G.hud.modulate.a = opacity
+    for collection in _get_collections():
+        collection.modulate.a = opacity
+
+
+func _get_collections() -> Array[Node2D]:
+    return [
+        %Bubbles,
+        %Fragments,
+        %AbandonedText,
+        %Pickups,
+        %Enemies,
+        %EnemyProjectiles,
+        %PlayerProjectiles,
+    ]
 
 
 func _set_zoom(zoomed_in: bool) -> void:
@@ -331,6 +381,8 @@ func _set_zoom(zoomed_in: bool) -> void:
         if zoomed_in
         else G.manifest.main_menu_zoom_out_duration_sec
     )
+    if G.manifest.speed_up_level_state_transitions:
+        duration *= 0.1
 
     var tween := get_tree().create_tween()
     tween.tween_property(%Camera2D, "zoom", zoom, duration)

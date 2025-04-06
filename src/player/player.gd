@@ -6,15 +6,19 @@ signal main_menu_finished
 signal death_finished
 signal reset_finished
 
-@export var default_cursor_margin := 1.0
+var default_character_size := Vector2.ZERO
+var default_line_height := 0.0
 
-var is_invincible_from_damage_cooldown := false
 var is_invincible_from_power_up := false
+var is_invincible_from_damage := false
 
 var health := 0
 
-var last_text_time_sec := 0.0
 var last_text_entered := ""
+
+var active_damage_collisions: Dictionary[Area2D, bool]
+
+var main_menu_staggered_character_job: StaggeredCharacterJob
 
 
 func _ready() -> void:
@@ -22,40 +26,65 @@ func _ready() -> void:
 
     health = G.manifest.starting_health
 
-    _set_scratch_text_position()
+    %InvicibleFromDamageTimer.wait_time = G.manifest.invincible_from_damage_cooldown_sec
 
-    %CursorBlinkTimer.wait_time = G.manifest.cursor_blink_period_sec
+    _update_cursor_blink_period()
+    %InvicibleFromDamageTimer.connect("timeout", _on_invincible_from_damage_timeout)
     %CursorBlinkTimer.connect("timeout", _on_cursor_blink_timeout)
+    %CancelPendingTextTimer.connect("timeout", _on_cancel_pending_text_timeout)
+
+    await _initialize_sizes()
+
+    position = get_start_position()
 
 
 func _process(delta: float) -> void:
-    var current_time_sec := Time.get_ticks_msec() / 1000.0
-    if (last_text_time_sec > 0.0 and
-            current_time_sec > last_text_time_sec + G.manifest.cancel_pending_text_delay_sec):
-        _cancel_pending_text()
+    if (G.level.state == Level.State.PLAYING and
+            not active_damage_collisions.is_empty() and
+            not is_invincible_from_damage):
+        _take_damage()
 
 
 func play_main_menu_animation() -> void:
+    is_invincible_from_power_up = false
+    is_invincible_from_damage = false
+
+    health = G.manifest.starting_health
+
+    last_text_entered = ""
+
+    active_damage_collisions.clear()
+
+    _update_cursor_blink_period()
+
     %CursorWrapper.modulate.a = G.manifest.cursor_blink_in_alpha
     %CursorBlinkTimer.start()
 
-    # TODO: Play the main-menu typing animation.
+    G.stop_stagger_character_job(main_menu_staggered_character_job)
+    main_menu_staggered_character_job = G.stagger_calls_for_each_character(
+            G.manifest.main_menu_text,
+            G.manifest.main_menu_character_interval_sec,
+            _on_main_menu_character_entered,
+            false)
 
-    await get_tree().create_timer(
-        G.manifest.main_menu_animation_duration_sec).timeout
+    await main_menu_staggered_character_job.stopped
+    main_menu_staggered_character_job = null
 
     main_menu_finished.emit()
 
 
 func on_game_started() -> void:
-    pass
+    # Fade-away the main-menu text.
+    _cancel_pending_text()
 
 
 func play_death_animation() -> void:
+    %InvicibleFromDamageTimer.stop()
     %CursorBlinkTimer.stop()
+    %CancelPendingTextTimer.stop()
     %CursorWrapper.modulate.a = G.manifest.cursor_blink_in_alpha
 
-    # TODO: Animate cursor rotation sideways and float upward (use an animation tree?).
+    %AnimationPlayer.play("die")
 
     await get_tree().create_timer(
         G.manifest.player_death_animation_duration_sec).timeout
@@ -66,12 +95,17 @@ func play_death_animation() -> void:
 func play_reset_animation() -> void:
     health = G.manifest.starting_health
 
-    # TODO: Rotate player back to starting orientation (use an animation tree?).
+    %AnimationPlayer.play("resurrect")
 
     await get_tree().create_timer(
         G.manifest.level_reset_animation_duration_sec).timeout
 
     reset_finished.emit()
+
+
+func _on_invincible_from_damage_timeout() -> void:
+    is_invincible_from_damage = false
+    _update_cursor_blink_period()
 
 
 func _on_cursor_blink_timeout() -> void:
@@ -82,16 +116,25 @@ func _on_cursor_blink_timeout() -> void:
     )
 
 
-func _set_scratch_text_position() -> void:
+func _initialize_sizes() -> void:
     var character := await Character.create(%ScratchText, "M", Character.Type.PLAYER)
+    var two_lines := await Character.create(%ScratchText, "M\nM", Character.Type.PLAYER)
 
     # TODO: Check if this delay is needed.
     await get_tree().process_frame
 
-    %ScratchText.position.x = -character.get_size().x * 0.5
-    %ScratchText.position.y = character.get_size().y * 0.075
+    default_character_size = character.get_size()
+    default_line_height = two_lines.get_size().y - default_character_size.y
+
+    %ScratchText.position.x = -default_character_size.x * 0.5
+    %ScratchText.position.y = default_character_size.y * 0.075
 
     character.queue_free()
+
+
+func get_start_position() -> Vector2:
+    var main_menu_offset_x := G.manifest.main_menu_text.length() * default_character_size.x / 2.0
+    return Vector2(G.manifest.game_area_size.x * 0.5 - main_menu_offset_x, 0)
 
 
 func set_text_color(color: Color) -> void:
@@ -152,6 +195,29 @@ func on_backspace() -> void:
     _cancel_pending_text()
 
 
+func _on_main_menu_character_entered(text: String) -> void:
+    var character := await Character.create(%ScratchText, text.to_upper(), Character.Type.PLAYER)
+
+    # TODO: Check if this delay is needed.
+    await get_tree().process_frame
+
+    self.position.x += character.get_size().x
+    last_text_entered = text.to_upper()
+
+    if text == " " or text == "\t":
+        # Remove the character.
+        character.queue_free()
+    else:
+        # Reparent the character.
+        G.level.add_pending_character(character)
+
+    # TODO: Check if this delay is needed.
+    await get_tree().process_frame
+
+    # TODO: Add the character to the pending string.
+    pass
+
+
 func on_character_entered(text: String) -> void:
     var character := await Character.create(%ScratchText, text.to_upper(), Character.Type.PLAYER)
 
@@ -165,7 +231,7 @@ func on_character_entered(text: String) -> void:
         # Character entered successfully.
         self.position.x = desired_position_x
         last_text_entered = text.to_upper()
-        last_text_time_sec = Time.get_ticks_msec() / 1000.0
+        %CancelPendingTextTimer.start()
     else:
         # Character failed.
         character.queue_free()
@@ -204,13 +270,18 @@ func on_character_entered(text: String) -> void:
         pass
 
 
+func _on_cancel_pending_text_timeout() -> void:
+    _cancel_pending_text()
+
+
 func _cancel_pending_text() -> void:
-    last_text_time_sec = 0.0
+    %CancelPendingTextTimer.stop()
     # TODO: Implement this.
     pass
 
 
 func _consume_pending_text_for_ability() -> void:
+    %CancelPendingTextTimer.stop()
     # TODO:
     # - Call this.
     # - Implement this.
@@ -218,40 +289,49 @@ func _consume_pending_text_for_ability() -> void:
 
 
 func _take_damage() -> void:
-    if is_invincible_from_damage_cooldown or is_invincible_from_power_up or health <= 0:
+    if (G.level.state != Level.State.PLAYING or
+            is_invincible_from_damage or
+            is_invincible_from_power_up or
+            health <= 0):
         # Cannot take damage right now.
         return
 
+    S.log.print("Player taking damage")
+
     health = max(health - 1, 0)
+    is_invincible_from_damage = true
+    %InvicibleFromDamageTimer.start()
+    _update_cursor_blink_period()
 
     if health <= 0:
+        S.log.print("Player died")
         G.level.game_game_over()
     else:
         # TODO(Alden): SFX
         pass
 
 
+func _update_cursor_blink_period() -> void:
+    var period := (
+        G.manifest.cursor_invincible_blink_period_sec
+        if is_invincible_from_damage
+        else G.manifest.cursor_blink_period_sec
+    )
+    %CursorBlinkTimer.wait_time = period
+
+
 func _on_area_2d_area_entered(area: Area2D) -> void:
-    if area.collision_layer & GameManifest.TERRAIN_COLLISION_LAYER:
-        _on_collided_with_terrain(area)
-    elif area.collision_layer & GameManifest.ENEMY_COLLISION_LAYER:
-        _on_collided_with_enemy(area)
+    if (area.collision_layer & GameManifest.TERRAIN_COLLISION_LAYER or
+            area.collision_layer & GameManifest.ENEMY_COLLISION_LAYER or
+            area.collision_layer & GameManifest.ENEMY_PROJECTILE_COLLISION_LAYER):
+        _take_damage()
+        active_damage_collisions[area] = true
     elif area.collision_layer & GameManifest.PICKUP_COLLISION_LAYER:
         _on_collided_with_pickup(area)
-    elif area.collision_layer & GameManifest.ENEMY_PROJECTILE_COLLISION_LAYER:
-        _on_collided_with_enemy_projectile(area)
 
 
-func _on_collided_with_terrain(area: Area2D) -> void:
-    _take_damage()
-
-
-func _on_collided_with_enemy(area: Area2D) -> void:
-    _take_damage()
-
-
-func _on_collided_with_enemy_projectile(area: Area2D) -> void:
-    _take_damage()
+func _on_area_2d_area_exited(area: Area2D) -> void:
+    active_damage_collisions.erase(area)
 
 
 func _on_collided_with_pickup(area: Area2D) -> void:

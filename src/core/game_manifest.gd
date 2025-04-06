@@ -18,7 +18,15 @@ const PICKUP_COLLISION_LAYER := 1 << 3
 const PLAYER_PROJECTILE_COLLISION_LAYER := 1 << 4
 const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 
+@export var speed_up_level_state_transitions := false
+
 @export var starting_health := 3
+
+@export var main_menu_text := "Hit Enter"
+
+@export_group("Clippy text")
+@export var clippy_intro_text := "Hi, I'm Clippy,\nyour new best friend!"
+@export_group("")
 
 @export_group("Colors")
 @export var background_color_start := Color("#f5fcfcff")
@@ -56,15 +64,24 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var progress_to_switch_to_light_text_color := 0.5
 
 @export var main_menu_animation_duration_sec := 2.0
-@export var player_death_animation_duration_sec := 4.0
-@export var level_reset_animation_duration_sec := 1.0
-@export var main_menu_zoom_out_duration_sec := 0.5
-@export var reset_zoom_in_duration_sec := 1.0
+@export var player_death_animation_duration_sec := 0.75
+@export var level_reset_animation_duration_sec := 0.3
+@export var main_menu_zoom_out_duration_sec := 0.3
+@export var reset_zoom_in_duration_sec := 0.3
+
+@export var hud_fade_in_duration_sec := 0.2
+@export var hud_fade_out_duration_sec := 0.1
 
 @export var cancel_pending_text_delay_sec := 0.8
 @export var cursor_blink_period_sec := 0.5
+@export var cursor_invincible_blink_period_sec := 0.06
 
 @export var space_key_throttle_period_sec := 0.05
+
+@export var main_menu_character_interval_sec := 0.09
+@export var clippy_character_interval_sec := 0.06
+
+@export var invincible_from_damage_cooldown_sec := 3.0
 
 @export var start_scroll_speed := 100.0
 @export var end_scroll_speed := 400.0
