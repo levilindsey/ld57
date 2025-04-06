@@ -18,6 +18,8 @@ var is_enter_pressed := false
 var is_space_pressed := false
 var is_backspace_pressed := false
 
+var previous_pressed_key_code := 0
+
 var progress_to_max_difficulty = 0.0
 
 var start_time_sec := 0.0
@@ -125,20 +127,27 @@ func _input(event: InputEvent) -> void:
     if event is InputEventKey:
         var key_event: InputEventKey = event
         var key_code := key_event.keycode
+        var is_held_key_duplicate_press := false
 
         match key_code:
             KEY_SPACE:
+                is_held_key_duplicate_press = is_space_pressed and event.pressed
                 is_space_pressed = event.pressed
                 if not is_space_pressed:
                     last_space_trigger_time_sec = 0.0
             KEY_BACKSPACE, KEY_DELETE:
+                is_held_key_duplicate_press = is_backspace_pressed and event.pressed
                 is_backspace_pressed = event.pressed
                 if not is_backspace_pressed:
                     last_backspace_trigger_time_sec = 0.0
             KEY_ENTER:
+                is_held_key_duplicate_press = is_enter_pressed and event.pressed
                 is_enter_pressed = event.pressed
                 if not is_enter_pressed:
                     last_enter_trigger_time_sec = 0.0
+
+        if not event.pressed:
+            previous_pressed_key_code = 0
 
         if event.pressed:
             match state:
@@ -148,29 +157,31 @@ func _input(event: InputEvent) -> void:
                             # We call this separately with our own custom throttle period, so we
                             # don't have to tolerate the initial delay before repeated key entries
                             # are fired.
-                            if last_space_trigger_time_sec == 0.0:
-                                _trigger_space()
-                            #player.on_space()
+                            if not G.manifest.using_custom_fast_space or last_space_trigger_time_sec == 0.0:
+                                _trigger_space(is_held_key_duplicate_press)
+                            #player.on_space(false)
                         KEY_BACKSPACE, KEY_DELETE:
                             # We call this separately with our own custom throttle period, so we
                             # don't have to tolerate the initial delay before repeated key entries
                             # are fired.
-                            if last_backspace_trigger_time_sec == 0.0:
-                                _trigger_backspace()
-                            #player.on_backspace()
+                            if not G.manifest.using_custom_fast_space or last_backspace_trigger_time_sec == 0.0:
+                                _trigger_backspace(is_held_key_duplicate_press)
+                            #player.on_backspace(false)
                         KEY_ENTER:
                             # We call this separately with our own custom throttle period, so we
                             # don't have to tolerate the initial delay before repeated key entries
                             # are fired.
-                            if last_enter_trigger_time_sec == 0.0:
-                                _trigger_enter()
-                            #player.on_enter()
+                            if not G.manifest.using_custom_fast_space or last_enter_trigger_time_sec == 0.0:
+                                _trigger_enter(is_held_key_duplicate_press)
+                            #player.on_enter(false)
                         KEY_TAB:
-                            player.on_tab()
+                            player.on_tab(false)
                         _:
-                            # This key_code range corresponds to visual characters.
                             if event.unicode > 0:
-                                player.on_character_entered(String.chr(event.unicode))
+                                is_held_key_duplicate_press = previous_pressed_key_code == event.keycode
+                                previous_pressed_key_code = event.keycode
+                                player.on_character_entered(String.chr(event.unicode), is_held_key_duplicate_press)
+                            # This key_code range corresponds to visual characters.
                             #if key_code >= KEY_EXCLAM and key_code <= KEY_SECTION:
                                 #player.on_character_entered(OS.get_keycode_string(event.get_keycode_with_modifiers()))
                                 #player.on_character_entered(OS.get_keycode_string(event.key_label))
@@ -189,12 +200,13 @@ func _process(delta: float) -> void:
     progress_to_max_difficulty = clampf((current_time_sec - start_time_sec) / G.manifest.time_to_max_difficulty_sec, 0, 1)
 
     if state == State.PLAYING:
-        if is_space_pressed and current_time_sec >= last_space_trigger_time_sec + G.manifest.space_key_throttle_period_sec:
-            _trigger_space()
-        if is_backspace_pressed and current_time_sec >= last_backspace_trigger_time_sec + G.manifest.space_key_throttle_period_sec:
-            _trigger_backspace()
-        if is_enter_pressed and current_time_sec >= last_enter_trigger_time_sec + G.manifest.space_key_throttle_period_sec:
-            _trigger_enter()
+        if G.manifest.using_custom_fast_space:
+            if is_space_pressed and current_time_sec >= last_space_trigger_time_sec + G.manifest.space_key_throttle_period_sec:
+                _trigger_space(true)
+            if is_backspace_pressed and current_time_sec >= last_backspace_trigger_time_sec + G.manifest.space_key_throttle_period_sec:
+                _trigger_backspace(true)
+            if is_enter_pressed and current_time_sec >= last_enter_trigger_time_sec + G.manifest.space_key_throttle_period_sec:
+                _trigger_enter(true)
 
         if current_time_sec >= last_color_update_time_sec + G.manifest.color_update_period_sec:
             _update_colors()
@@ -205,19 +217,19 @@ func _process(delta: float) -> void:
         _add_scroll(vertical_movement)
 
 
-func _trigger_space() -> void:
+func _trigger_space(is_held_key_duplicate_press := false) -> void:
     last_space_trigger_time_sec = current_time_sec
-    player.on_space()
+    player.on_space(is_held_key_duplicate_press)
 
 
-func _trigger_backspace() -> void:
+func _trigger_backspace(is_held_key_duplicate_press := false) -> void:
     last_backspace_trigger_time_sec = current_time_sec
-    player.on_backspace()
+    player.on_backspace(is_held_key_duplicate_press)
 
 
-func _trigger_enter() -> void:
+func _trigger_enter(is_held_key_duplicate_press := false) -> void:
     last_enter_trigger_time_sec = current_time_sec
-    player.on_enter()
+    player.on_enter(is_held_key_duplicate_press)
 
 
 func new_line() -> void:
@@ -480,3 +492,11 @@ func remove_last_pending_character() -> bool:
     pending_characters.back().queue_free()
 
     return true
+
+
+func get_pending_text() -> String:
+    var pending_characters := %PendingText.get_children()
+    var text := ""
+    for character in pending_characters:
+        text += character.get_text()
+    return text

@@ -45,6 +45,10 @@ func set_text(text: String) -> void:
     %Label.position = - size / 2.0
 
 
+func get_text() -> String:
+    return %Label.text
+
+
 func get_size() -> Vector2:
     return %Label.size
 

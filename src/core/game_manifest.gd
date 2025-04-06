@@ -21,6 +21,7 @@ const PLAYER_PROJECTILE_COLLISION_LAYER := 1 << 4
 const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 
 @export var speed_up_level_state_transitions := false
+@export var using_custom_fast_space := false
 
 @export var starting_health := 3
 

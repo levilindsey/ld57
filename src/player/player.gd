@@ -140,7 +140,7 @@ func set_text_color(color: Color) -> void:
     %Cursor.modulate = color
 
 
-func on_enter() -> void:
+func on_enter(is_held_key_duplicate_press: bool) -> void:
     self.position.x = G.manifest.game_area_padding.x
 
     G.level.new_line()
@@ -151,11 +151,11 @@ func on_enter() -> void:
     pass
 
 
-func on_tab() -> void:
+func on_tab(is_held_key_duplicate_press: bool) -> void:
     pass
 
 
-func on_space() -> void:
+func on_space(is_held_key_duplicate_press: bool) -> void:
     var character := await Character.create(%ScratchText, "M", Character.Type.TYPED_TEXT)
 
     # TODO: Check if this delay is needed.
@@ -168,22 +168,20 @@ func on_space() -> void:
         # Space entered successfully.
         self.position.x = desired_position_x
 
+        %CancelPendingTextTimer.start()
+
         # SFX
         $AudioStreamPlayer_keyboard.play()
-        pass
     else:
         # Space failed.
 
         # SFX
         $AudioStreamPlayer_failure.play()
-        pass
 
     character.queue_free()
 
-    _cancel_pending_text()
 
-
-func on_backspace() -> void:
+func on_backspace(is_held_key_duplicate_press: bool) -> void:
     var character := await Character.create(%ScratchText, "M", Character.Type.TYPED_TEXT)
 
     # TODO: Check if this delay is needed.
@@ -208,7 +206,7 @@ func on_backspace() -> void:
 
     character.queue_free()
 
-    G.level.remove_last_pending_character()
+    var was_something_deleted := G.level.remove_last_pending_character()
 
 
 func _on_main_menu_character_entered(text: String) -> void:
@@ -237,7 +235,7 @@ func _on_main_menu_character_entered(text: String) -> void:
     pass
 
 
-func on_character_entered(text: String) -> void:
+func on_character_entered(text: String, is_held_key_duplicate_press: bool) -> void:
     var character := await Character.create(%ScratchText, text.to_upper(), Character.Type.TYPED_TEXT)
 
     # TODO: Check if this delay is needed.
@@ -298,12 +296,22 @@ func _on_cancel_pending_text_timeout() -> void:
 
 
 func _cancel_pending_text() -> void:
+    var pending_text := G.level.get_pending_text()
+
+    if pending_text.is_empty():
+        return
+
+    S.log.print("Pending text canceled: %s" % pending_text)
+
     %CancelPendingTextTimer.stop()
     # TODO: Implement this.
     pass
 
 
 func _consume_pending_text_for_ability() -> void:
+    S.log.print("Triggering ability from pending text: %s" %
+            G.level.get_pending_text())
+
     %CancelPendingTextTimer.stop()
     # TODO:
     # - Call this.
