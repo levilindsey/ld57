@@ -25,7 +25,7 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="0.50898197"
-     inkscape:cx="649.33538"
+     inkscape:cx="1277.059"
      inkscape:cy="552.08242"
      inkscape:window-width="1920"
      inkscape:window-height="1010"
@@ -109,4 +109,10 @@
            style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
            d="m 126.06529,217.60221 c -7.73424,0.37576 -20.48571,-6.29179 -21.05306,-20.0134"
            id="path3-5-5-5"
-           sodipodi:nodetypes="cc" /></g></g></g></svg>
+           sodipodi:nodetypes="cc" /></g></g><path
+       style="fill:none;stroke:#ffffff;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;paint-order:markers fill stroke"
+       d="M 401.3076,83.621092 V 222.04306"
+       id="path1"
+       inkscape:export-filename="cursor_simple.png"
+       inkscape:export-xdpi="10.807014"
+       inkscape:export-ydpi="10.807014" /></g></svg>

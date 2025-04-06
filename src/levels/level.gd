@@ -148,11 +148,7 @@ func _process(delta: float) -> void:
         # Scroll.
         var scroll_speed := lerpf(G.manifest.start_scroll_speed, G.manifest.end_scroll_speed, progress_to_max_difficulty)
         var vertical_movement := scroll_speed * delta
-        player.position.y += vertical_movement
-        %Camera2D.position.y += vertical_movement
-
-        var depth := floori(player.position.y / player.default_line_height)
-        G.hud.update_depth(depth)
+        _add_scroll(vertical_movement)
 
 
 func _trigger_space() -> void:
@@ -168,6 +164,18 @@ func _trigger_backspace() -> void:
 func _trigger_enter() -> void:
     last_enter_trigger_time_sec = current_time_sec
     player.on_enter()
+
+
+func new_line() -> void:
+    _add_scroll(player.default_line_height)
+
+
+func _add_scroll(increment: float) -> void:
+    player.position.y += increment
+    %Camera2D.position.y += increment
+
+    var depth := floori(player.position.y / player.default_line_height)
+    G.hud.update_depth(depth)
 
 
 func _update_colors() -> void:
@@ -275,19 +283,27 @@ func _start_game() -> void:
     # TODO:
     # - Start spawning enemies and other level fragments (or is that just from collision detection with scroll movement?)
     # - Start spawning bubbles
-    # - Show clippy.
-    # - Show clippy text (G.manifest.clippy_intro_text).
 
-    pass
+    await get_tree().create_timer(
+        G.manifest.main_menu_zoom_out_duration_sec + 0.4).timeout
+
+    G.hud.set_clippy_visible(true)
+
+    await get_tree().create_timer(
+        G.manifest.show_clippy_duration_sec + 0.2).timeout
+
+    G.hud.set_clippy_text(
+        G.manifest.clippy_intro_text,
+        G.manifest.clippy_intro_text_duration_sec)
 
 
 func game_game_over() -> void:
     _transition_out_of_state(State.PLAYING)
     player.play_death_animation()
 
-    # TODO:
-    # - Show game-over text (from clippy)
-    pass
+    G.hud.set_clippy_text(
+        G.manifest.clippy_game_over_text,
+        G.manifest.clippy_game_over_text_duration_sec)
 
     # TODO(Alden): SFX
     pass
@@ -312,6 +328,8 @@ func _game_reset() -> void:
     _update_colors()
     _set_zoom(true)
     player.play_reset_animation()
+
+    G.hud.set_clippy_visible(false)
 
     # Fade-out items.
     var tween := get_tree().create_tween()

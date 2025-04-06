@@ -26,6 +26,9 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 
 @export_group("Clippy text")
 @export var clippy_intro_text := "Hi, I'm Clippy,\nyour new best friend!"
+@export var clippy_intro_text_duration_sec := 6.0
+@export var clippy_game_over_text := "Aw gee, you died!"
+@export var clippy_game_over_text_duration_sec := 0.0
 @export_group("")
 
 @export_group("Colors")
@@ -72,6 +75,9 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var hud_fade_in_duration_sec := 0.2
 @export var hud_fade_out_duration_sec := 0.1
 
+@export var show_clippy_duration_sec := 0.3
+@export var hide_clippy_duration_sec := 0.2
+
 @export var cancel_pending_text_delay_sec := 0.8
 @export var cursor_blink_period_sec := 0.5
 @export var cursor_invincible_blink_period_sec := 0.06
@@ -96,8 +102,8 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var default_cursor_scale := 0.3
 
 @export var game_area_size := Vector2i(768, 768)
-@export var game_area_padding := Vector2i(0, 0)
-#@export var game_area_padding := Vector2i(12, 12)
+#@export var game_area_padding := Vector2i(0, 0)
+@export var game_area_padding := Vector2i(20, 20)
 
 @export var fragments: Array[PackedScene] = [
     preload("res://src/levels/level_fragment_1.tscn"),

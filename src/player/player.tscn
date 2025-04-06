@@ -1,10 +1,37 @@
 [gd_scene load_steps=8 format=3 uid="uid://bd0oy4phn6nu1"]
 
 [ext_resource type="Script" uid="uid://bg6jq3krvjgkr" path="res://src/player/player.gd" id="1_4anbu"]
-[ext_resource type="Texture2D" uid="uid://cijkmr57e0u6o" path="res://assets/images/cursor.png" id="2_rxibo"]
+[ext_resource type="Texture2D" uid="uid://bw58vgx70t0hr" path="res://assets/images/cursor_simple.png" id="2_rxibo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mf2ua"]
 size = Vector2(6, 18)
+
+[sub_resource type="Animation" id="Animation_5f2sf"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CursorWrapper:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CursorWrapper:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
 
 [sub_resource type="Animation" id="Animation_rxibo"]
 resource_name = "die"
@@ -60,33 +87,6 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [1.5708, 0.0]
-}
-
-[sub_resource type="Animation" id="Animation_5f2sf"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("CursorWrapper:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CursorWrapper:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_jiejy"]

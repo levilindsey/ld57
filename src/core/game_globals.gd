@@ -28,8 +28,8 @@ func _process(delta: float) -> void:
 
 
 func stagger_calls_for_each_character(
-        text: String, interval_sec: float, label_or_callback: Variant, plays_sfx: bool) -> StaggeredCharacterJob:
-    var job := StaggeredCharacterJob.new(text, interval_sec, label_or_callback, plays_sfx)
+        text: String, interval_sec: float, label_or_callback: Variant) -> StaggeredCharacterJob:
+    var job := StaggeredCharacterJob.new(text, interval_sec, label_or_callback)
     _staggered_character_jobs[job] = true
     job.start()
     return job

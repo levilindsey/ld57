@@ -23,6 +23,7 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 
 [node name="REMOVE_ME" parent="Fragments" instance=ExtResource("2_ub47v")]
+position = Vector2(0, 195)
 
 [node name="AbandonedText" type="Node2D" parent="."]
 unique_name_in_owner = true

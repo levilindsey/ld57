@@ -64,8 +64,7 @@ func play_main_menu_animation() -> void:
     main_menu_staggered_character_job = G.stagger_calls_for_each_character(
             G.manifest.main_menu_text,
             G.manifest.main_menu_character_interval_sec,
-            _on_main_menu_character_entered,
-            false)
+            _on_main_menu_character_entered)
 
     await main_menu_staggered_character_job.stopped
     main_menu_staggered_character_job = null
@@ -142,6 +141,13 @@ func set_text_color(color: Color) -> void:
 
 
 func on_enter() -> void:
+    self.position.x = G.manifest.game_area_padding.x
+
+    G.level.new_line()
+
+    _cancel_pending_text()
+
+    # TODO(Alden): SFX
     pass
 
 
@@ -161,6 +167,9 @@ func on_space() -> void:
     if desired_position_x <= max_position_x:
         # Space entered successfully.
         self.position.x = desired_position_x
+
+        # TODO(Alden): SFX
+        pass
     else:
         # Space failed.
 
@@ -184,6 +193,9 @@ func on_backspace() -> void:
     if desired_position_x >= min_position_x:
         # Backspace entered successfully.
         self.position.x = desired_position_x
+
+        # TODO(Alden): SFX
+        pass
     else:
         # Backspace failed.
 
@@ -213,6 +225,9 @@ func _on_main_menu_character_entered(text: String) -> void:
 
     # TODO: Check if this delay is needed.
     await get_tree().process_frame
+
+    # TODO(Alden): SFX
+    pass
 
     # TODO: Add the character to the pending string.
     pass

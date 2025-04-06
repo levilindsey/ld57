@@ -9,13 +9,12 @@ var text: String
 var interval_sec: float
 var label: Label
 var callback: Callable
-var plays_sfx: bool
 
 var last_call_time_sec := 0.0
 var index := 0
 
 
-func _init(text: String, interval_sec: float, label_or_callback: Variant, plays_sfx: bool) -> void:
+func _init(text: String, interval_sec: float, label_or_callback: Variant) -> void:
     self.text = text
     self.interval_sec = interval_sec
     if label_or_callback is Callable:
@@ -24,7 +23,6 @@ func _init(text: String, interval_sec: float, label_or_callback: Variant, plays_
         self.label = label_or_callback
     else:
         S.utils.ensure(false)
-    self.plays_sfx = plays_sfx
 
 
 func start() -> void:
@@ -51,10 +49,6 @@ func _trigger() -> void:
         callback.call(text[index])
 
     index += 1
-
-    if plays_sfx:
-        # TODO(Alden): Play typing sfx.
-        pass
 
 
 func is_complete() -> bool:

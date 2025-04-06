@@ -35,6 +35,9 @@ theme = ExtResource("1_ipegf")
 theme_override_styles/panel = SubResource("StyleBoxEmpty_bgesr")
 script = ExtResource("1_tgp1m")
 
+[node name="ClippyTextClearTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 mouse_filter = 2
