@@ -170,7 +170,7 @@ func _input(event: InputEvent) -> void:
 
 
         if previous_pressed_key_code == 0 and not is_held_key_duplicate_press:
-            #pitch_effect.pitch_scale = 1.0 
+            #pitch_effect.pitch_scale = 1.0
             AudioServer.set_bus_volume_db(keyboard_bus, 0.0)
             #print("pitch reset: ", pitch_effect.pitch_scale, " db:", AudioServer.get_bus_volume_db(keyboard_bus))
         else:
@@ -178,7 +178,7 @@ func _input(event: InputEvent) -> void:
             var new_db = clamp(current_db + .5, -80.0, 10.0)
             #pitch_effect.pitch_scale += 0.001
             AudioServer.set_bus_volume_db(keyboard_bus, new_db)
-            #print("pitch up: ", pitch_effect.pitch_scale, " db:", new_db)            
+            #print("pitch up: ", pitch_effect.pitch_scale, " db:", new_db)
 
 
         if event.pressed:
@@ -227,7 +227,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
-    current_time_sec = G.get_current_time_sec()
+    current_time_sec = Anim.get_current_time_sec()
 
     progress_to_max_difficulty = clampf((current_time_sec - start_time_sec) / G.manifest.time_to_max_difficulty_sec, 0, 1)
 
@@ -422,8 +422,8 @@ func _game_reset() -> void:
     _transition_out_of_state(State.GAME_OVER_FINISHED)
 
     progress_to_max_difficulty = 0.0
-    start_time_sec = G.get_current_time_sec()
-    current_time_sec = G.get_current_time_sec()
+    start_time_sec = Anim.get_current_time_sec()
+    current_time_sec = Anim.get_current_time_sec()
     last_space_trigger_time_sec = 0.0
     last_backspace_trigger_time_sec = 0.0
     last_enter_trigger_time_sec = 0.0

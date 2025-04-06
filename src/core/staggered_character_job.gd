@@ -29,7 +29,7 @@ func start() -> void:
     if is_instance_valid(label):
         label.text = ""
     _trigger()
-    last_call_time_sec = G.get_current_time_sec()
+    last_call_time_sec = Anim.get_current_time_sec()
 
 
 func update(current_time_sec: float) -> void:

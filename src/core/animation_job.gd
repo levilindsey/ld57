@@ -14,10 +14,12 @@ var start_time_sec := 0.0
 var duration_sec := 0.0
 var end_opacity := -1.0
 
+var anchor_position: Vector2
+
 var interval_min_sec := 0.0
 var interval_max_sec := 0.0
 
-var intervals: Array[DimensionInterval] = []
+var intervals: Dictionary[String, DimensionInterval] = {}
 
 const _job_keys := [
     "duration_sec",
@@ -50,9 +52,9 @@ const _interval_keys := [
 #     end_opacity?: [0.0, 0.0],
 #     interval_sec?: [0.3, 2.0], # If ommitted, duration_sec must be included.
 #     speed?: [50, 90],
-#     acceleration?: [0.5, 1.0],
+#     acceleration?: [-10, 0.0],
 #     rotation_speed?: [0.01, 0.5],
-#     perpendicular_offset?: [0, 10.0],
+#     perpendicular_oscillation_amplitude?: [0, 10.0],
 #     scale_x?: [0.9, 1.1],
 #     scale_y?: [0.9, 1.1],
 #     skew?: [0, PI / 8],
@@ -63,6 +65,8 @@ func _init(config: Dictionary) -> void:
 
     node = config.node
     is_one_shot = config.is_one_shot
+
+    anchor_position = node.position
 
     for key in _job_keys:
         if config.has(key):
@@ -83,7 +87,7 @@ func _init(config: Dictionary) -> void:
 
     if config.has("direction"):
         var interval := DimensionInterval.new()
-        intervals.push_back(interval)
+        intervals["direction"] = interval
 
         var target_direction_angle: float = config.direction.angle()
         var direction_deviaton_angle_max: float = (
@@ -99,7 +103,7 @@ func _init(config: Dictionary) -> void:
     for key in _interval_keys:
         if config.has(key):
             var interval := DimensionInterval.new()
-            intervals.push_back(interval)
+            intervals[key] = interval
 
             if config[key] is float or config[key] is int:
                 interval.set_value(key, config[key])
@@ -109,62 +113,106 @@ func _init(config: Dictionary) -> void:
 
 
 func start() -> void:
-    start_time_sec = G.get_current_time_sec()
-    for interval in intervals:
+    start_time_sec = Anim.get_current_time_sec()
+    for key in _interval_keys:
+        if not intervals.has(key):
+            continue
+        var interval := intervals[key]
+
+        interval.current_time_sec = start_time_sec
         interval.current_value = _get_initial_value(interval)
         _trigger(interval, start_time_sec)
 
 
 func update(current_time_sec: float) -> void:
-    for interval in intervals:
+    for key in _interval_keys:
+        if not intervals.has(key):
+            continue
+        var interval := intervals[key]
+
         while current_time_sec > interval.end_time_sec:
+            var elapsed_sec := interval.end_time_sec - interval.current_time_sec
+            interval.current_time_sec = interval.end_time_sec
             interval.current_value = interval.end_value
-            _apply_value_to_node(interval)
+            _apply_value_to_node(interval, elapsed_sec)
 
             _trigger(interval, interval.end_time_sec)
 
+        var elapsed_sec := current_time_sec - interval.current_time_sec
+        interval.current_time_sec = current_time_sec
         var progress := (
-            (current_time_sec - interval.start_time_sec) /
+            (interval.current_time_sec - interval.start_time_sec) /
             (interval.end_time_sec - interval.start_time_sec)
         )
         interval.current_value = lerpf(
             interval.start_value, interval.end_value, progress)
-        _apply_value_to_node(interval)
+        _apply_value_to_node(interval, elapsed_sec)
+
+    # FIXME: LEFT OFF HERE:
+    # - Use end_opacity.
 
 
 func _trigger(interval: DimensionInterval, current_time_sec: float) -> void:
     interval.start_value = interval.current_value
     interval.end_value = randf_range(interval.min, interval.max)
     interval.start_time_sec = current_time_sec
-    interval.end_time_sec = (
+    var interval_duration_sec := (
         randf_range(interval_min_sec, interval_max_sec)
         if interval_min_sec > 0.0
         else duration_sec
     )
+    interval.end_time_sec = interval.start_time_sec + interval_duration_sec
 
 
 func is_complete(current_time_sec: float) -> bool:
-    return current_time_sec >= start_time_sec + duration_sec
+    return duration_sec > 0 and current_time_sec >= start_time_sec + duration_sec
 
 
-func _apply_value_to_node(interval: DimensionInterval) -> void:
-    # FIXME: LEFT OFF HERE
+# FIXME: LEFT OFF HERE
+# - Add easing.
+# - A single job-level value.
+# - Applied to progress calculation in update.
+# - Applied to end_opacity calculation.
+
+
+func _apply_value_to_node(interval: DimensionInterval, elapsed_sec: float) -> void:
     match interval.key:
         "direction":
+            # Do nothing on the node directly.
+            # Other dimensions will use this.
             pass
-        "perpendicular_offset":
-            pass
+        "perpendicular_oscillation_amplitude":
+            var progress := (
+                (interval.current_time_sec - interval.start_time_sec) /
+                (interval.end_time_sec - interval.start_time_sec)
+            )
+            # Use interval.current_value as the current anchor_amplitude for the
+            # oscillation calculation.
+            var perpendicular_offset := interval.current_value * sin(progress * PI)
+            var direction := Vector2.from_angle(intervals.direction.current_value)
+            var displacement := direction.orthogonal() * perpendicular_offset
+            node.position = anchor_position + displacement
         "speed":
-            pass
+            var direction := Vector2.from_angle(intervals.direction.current_value)
+            var displacement := direction * interval.current_value
+            anchor_position += displacement
+            node.position += displacement
         "acceleration":
-            pass
+            var delta := interval.current_value * elapsed_sec
+            intervals.speed.end_value += delta
+            intervals.speed.min += delta
+            intervals.speed.max += delta
         "rotation_speed":
+            # FIXME: LEFT OFF HERE
             pass
         "scale_x":
+            # FIXME: LEFT OFF HERE
             pass
         "scale_y":
+            # FIXME: LEFT OFF HERE
             pass
         "skew":
+            # FIXME: LEFT OFF HERE
             pass
     S.utils.ensure(false)
 
@@ -178,7 +226,7 @@ func _get_initial_value(interval: DimensionInterval) -> float:
             return randf_range(interval.min, interval.max)
         "skew":
             return node.skew
-        "perpendicular_offset":
+        "perpendicular_oscillation_amplitude":
             return 0.0
         "scale_x":
             return node.scale.x
@@ -200,6 +248,8 @@ class DimensionInterval extends RefCounted:
 
     var start_value: float
     var end_value: float
+
+    var current_time_sec := 0.0
 
     var current_value: float
 

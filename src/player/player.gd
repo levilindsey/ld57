@@ -60,8 +60,8 @@ func play_main_menu_animation() -> void:
     %CursorWrapper.modulate.a = G.manifest.cursor_blink_in_alpha
     %CursorBlinkTimer.start()
 
-    G.stop_stagger_character_job(main_menu_staggered_character_job)
-    main_menu_staggered_character_job = G.stagger_calls_for_each_character(
+    Anim.stop_stagger_character_job(main_menu_staggered_character_job)
+    main_menu_staggered_character_job = Anim.stagger_calls_for_each_character(
             G.manifest.main_menu_text,
             G.manifest.main_menu_character_interval_sec,
             _on_main_menu_character_entered)
@@ -172,8 +172,8 @@ func on_space(is_held_key_duplicate_press: bool) -> void:
 
         # SFX
         $AudioStreamPlayer_keyboard.play()
-      
-        
+
+
     else:
         # Space failed.
         # SFX

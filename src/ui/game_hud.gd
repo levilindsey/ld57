@@ -42,8 +42,8 @@ func set_clippy_text(text: String, duration_sec: float) -> void:
 
     %ClippyTextWrapper.visible = true
 
-    G.stop_stagger_character_job(current_clippy_staggered_character_job)
-    current_clippy_staggered_character_job = G.stagger_calls_for_each_character(
+    Anim.stop_stagger_character_job(current_clippy_staggered_character_job)
+    current_clippy_staggered_character_job = Anim.stagger_calls_for_each_character(
             text,
             G.manifest.clippy_character_interval_sec,
             %ClippyText)

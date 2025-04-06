@@ -149,7 +149,6 @@ libraries = {
 [node name="AudioStreamPlayer_keyboard" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_244u8")
 volume_db = -7.5
-bus = &"Keyboard"
 
 [node name="AudioStreamPlayer_word" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_5f2sf")
