@@ -21,6 +21,7 @@ var active_damage_collisions: Dictionary[Area2D, bool]
 var main_menu_staggered_character_job: StaggeredCharacterJob
 
 
+
 func _ready() -> void:
     %Cursor.scale = G.manifest.default_cursor_scale * Vector2.ONE
 
@@ -172,12 +173,14 @@ func on_space(is_held_key_duplicate_press: bool) -> void:
 
         # SFX
         $AudioStreamPlayer_keyboard.play()
+      
+        
     else:
         # Space failed.
 
         # SFX
         $AudioStreamPlayer_failure.play()
-
+        print("OH NO LEVI")
     character.queue_free()
 
 
@@ -203,6 +206,7 @@ func on_backspace(is_held_key_duplicate_press: bool) -> void:
 
         # SFX
         $AudioStreamPlayer_failure.play()
+        print("OH NO LEVI")
 
     character.queue_free()
 
@@ -256,7 +260,7 @@ func on_character_entered(text: String, is_held_key_duplicate_press: bool) -> vo
 
         # SFX
         $AudioStreamPlayer_failure.play()
-
+        print("OH NO LEVI")
         pass
 
         return

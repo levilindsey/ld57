@@ -147,8 +147,8 @@ libraries = {
 
 [node name="AudioStreamPlayer_keyboard" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_244u8")
-volume_db = -5.571
-bus = &"SFX"
+volume_db = -7.5
+bus = &"Keyboard"
 
 [node name="AudioStreamPlayer_word" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_5f2sf")
@@ -157,7 +157,7 @@ bus = &"SFX"
 
 [node name="AudioStreamPlayer_failure" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_5f2sf")
-volume_db = -34.048
+volume_db = -35.0
 bus = &"SFX"
 
 [connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]

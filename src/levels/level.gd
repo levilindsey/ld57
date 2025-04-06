@@ -32,6 +32,8 @@ var last_backspace_trigger_time_sec := 0.0
 
 var player: Player
 
+var pitch_effect = AudioServer.get_bus_effect(3, 0) as AudioEffectPitchShift
+var keyboard_bus = AudioServer.get_bus_index("Keyboard")
 
 # TODO:
 #
@@ -148,6 +150,19 @@ func _input(event: InputEvent) -> void:
 
         if not event.pressed:
             previous_pressed_key_code = 0
+
+
+        if previous_pressed_key_code == 0 and not is_held_key_duplicate_press:
+            #pitch_effect.pitch_scale = 1.0 
+            AudioServer.set_bus_volume_db(keyboard_bus, 0.0)
+            #print("pitch reset: ", pitch_effect.pitch_scale, " db:", AudioServer.get_bus_volume_db(keyboard_bus))
+        else:
+            var current_db = AudioServer.get_bus_volume_db(keyboard_bus)
+            var new_db = clamp(current_db + .5, -80.0, 10.0)
+            #pitch_effect.pitch_scale += 0.001
+            AudioServer.set_bus_volume_db(keyboard_bus, new_db)
+            #print("pitch up: ", pitch_effect.pitch_scale, " db:", new_db)            
+
 
         if event.pressed:
             match state:
