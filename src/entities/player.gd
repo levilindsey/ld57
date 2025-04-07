@@ -9,12 +9,13 @@ signal reset_finished
 var default_character_size := Vector2.ZERO
 var default_line_height := 0.0
 
+var current_character_size := Vector2.ZERO
+var current_line_height := 0.0
+
 var is_invincible_from_power_up := false
 var is_invincible_from_damage := false
 
 var health := 0
-
-var last_text_entered := ""
 
 var active_damage_collisions: Dictionary[Area2D, bool]
 
@@ -36,7 +37,8 @@ func _ready() -> void:
 
     await _initialize_sizes()
 
-    position = get_start_position()
+    self.position = get_start_position()
+    G.level.pending_text.position = self.position
 
 
 func _process(delta: float) -> void:
@@ -51,8 +53,6 @@ func play_main_menu_animation() -> void:
     is_invincible_from_damage = false
 
     health = G.manifest.starting_health
-
-    last_text_entered = ""
 
     active_damage_collisions.clear()
 
@@ -117,8 +117,17 @@ func _on_cursor_blink_timeout() -> void:
 
 
 func _initialize_sizes() -> void:
-    var character := await Character.create(%ScratchText, "M", Character.Type.TYPED_TEXT)
-    var two_lines := await Character.create(%ScratchText, "M\nM", Character.Type.TYPED_TEXT)
+    var character := G.manifest.character_scene.instantiate()
+    character.modulate.a = 0.0
+    character.set_text("M")
+    character.set_type(Character.Type.TYPED_TEXT)
+    add_child(character)
+
+    var two_lines := G.manifest.character_scene.instantiate()
+    two_lines.modulate.a = 0.0
+    two_lines.set_text("M\nM")
+    two_lines.set_type(Character.Type.TYPED_TEXT)
+    add_child(two_lines)
 
     # TODO: Check if this delay is needed.
     await get_tree().process_frame
@@ -126,10 +135,14 @@ func _initialize_sizes() -> void:
     default_character_size = character.get_size()
     default_line_height = two_lines.get_size().y - default_character_size.y
 
-    %ScratchText.position.x = - default_character_size.x * 0.5
-    %ScratchText.position.y = default_character_size.y * 0.075
+    set_current_text_size()
 
     character.queue_free()
+    two_lines.queue_free()
+
+    # FIXME: LEFT OFF HERE: Revisit this.
+    %ScratchText.position.x = - default_character_size.x * 0.5
+    %ScratchText.position.y = default_character_size.y * 0.075
 
 
 func get_start_position() -> Vector2:
@@ -141,12 +154,23 @@ func set_text_color(color: Color) -> void:
     %Cursor.modulate = color
 
 
+func set_current_text_size() -> void:
+    # TODO: Update this if ever adding size-changing abilities.
+    current_character_size = default_character_size
+    current_line_height = default_line_height
+    const HACK_OFFSET_Y := 2
+    G.level.pending_text.set_scratch_characters_offset(
+            Vector2(0, -current_character_size.y / 2 + HACK_OFFSET_Y))
+
+
 func on_enter(is_held_key_duplicate_press: bool) -> void:
     self.position.x = G.manifest.game_area_padding.x
 
     G.level.new_line()
 
     _cancel_pending_text()
+
+    G.level.pending_text.position = self.position
 
     # TODO(Alden): SFX
     pass
@@ -157,12 +181,10 @@ func on_tab(is_held_key_duplicate_press: bool) -> void:
 
 
 func on_space(is_held_key_duplicate_press: bool) -> void:
-    var character := await Character.create(%ScratchText, "M", Character.Type.TYPED_TEXT)
+    await G.level.pending_text.add_space()
 
-    # TODO: Check if this delay is needed.
-    await get_tree().process_frame
-
-    var desired_position_x := self.position.x + character.get_size().x
+    var last_character_width := G.level.pending_text.get_last_character_size().x
+    var desired_position_x := self.position.x + last_character_width
     var max_position_x := G.manifest.game_area_size.x - G.manifest.game_area_padding.x
 
     if desired_position_x <= max_position_x:
@@ -173,23 +195,21 @@ func on_space(is_held_key_duplicate_press: bool) -> void:
 
         # SFX
         $AudioStreamPlayer_keyboard.play()
-
-
     else:
         # Space failed.
+        G.level.pending_text.delete_last_character()
+
         # SFX
         $AudioStreamPlayer_failure.play()
-        print("OH NO LEVI")
-    character.queue_free()
 
 
 func on_backspace(is_held_key_duplicate_press: bool) -> void:
-    var character := await Character.create(%ScratchText, "M", Character.Type.TYPED_TEXT)
+    var last_character_width := current_character_size.x
 
-    # TODO: Check if this delay is needed.
-    await get_tree().process_frame
+    if not G.level.pending_text.text.is_empty():
+        last_character_width = G.level.pending_text.get_last_character_size().x
 
-    var desired_position_x := self.position.x - character.get_size().x
+    var desired_position_x := self.position.x - last_character_width
     var min_position_x := G.manifest.game_area_padding.x
 
     if desired_position_x >= min_position_x:
@@ -204,75 +224,48 @@ func on_backspace(is_held_key_duplicate_press: bool) -> void:
         # Backspace failed.
         # SFX
         $AudioStreamPlayer_failure.play()
-        print("OH NO LEVI")
 
-    character.queue_free()
+    var was_something_deleted := \
+        await G.level.pending_text.delete_last_character()
 
-    var was_something_deleted := G.level.remove_last_pending_character()
+    if not was_something_deleted:
+        G.level.pending_text.position = self.position
 
 
 func _on_main_menu_character_entered(text: String) -> void:
-    var character := await Character.create(%ScratchText, text.to_upper(), Character.Type.TYPED_TEXT)
-
-    # TODO: Check if this delay is needed.
-    await get_tree().process_frame
-
-    self.position.x += character.get_size().x
-    last_text_entered = text.to_upper()
-
-    if text == " " or text == "\t":
-        # Remove the character.
-        character.queue_free()
+    if text == " ":
+        await G.level.pending_text.add_space()
     else:
-        # Reparent the character.
-        G.level.add_pending_character(character)
+        await G.level.pending_text.add_text(text)
 
-    # TODO: Check if this delay is needed.
-    await get_tree().process_frame
+    var last_character_width := G.level.pending_text.get_last_character_size().x
+
+    self.position.x += last_character_width
 
     # TODO(Alden): SFX
     pass
 
-    # TODO: Add the character to the pending string.
-    pass
-
 
 func on_character_entered(text: String, is_held_key_duplicate_press: bool) -> void:
-    var character := await Character.create(%ScratchText, text.to_upper(), Character.Type.TYPED_TEXT)
+    await G.level.pending_text.add_text(text)
 
-    # TODO: Check if this delay is needed.
-    await get_tree().process_frame
-
-    var desired_position_x := self.position.x + character.get_size().x
+    var last_character_width := G.level.pending_text.get_last_character_size().x
+    var desired_position_x := self.position.x + last_character_width
     var max_position_x := G.manifest.game_area_size.x - G.manifest.game_area_padding.x
 
     if desired_position_x <= max_position_x:
         # Character entered successfully.
         self.position.x = desired_position_x
-        last_text_entered = text.to_upper()
         $AudioStreamPlayer_keyboard.play()
         %CancelPendingTextTimer.start()
     else:
         # Character failed.
-        character.queue_free()
+        G.level.pending_text.delete_last_character()
 
         # SFX
         $AudioStreamPlayer_failure.play()
-        print("OH NO LEVI")
 
         return
-
-    if text == " " or text == "\t":
-        # Remove the character.
-        character.queue_free()
-    else:
-        # Reparent the character.
-        G.level.add_pending_character(character)
-
-    # TODO: Check if this delay is needed.
-    await get_tree().process_frame
-
-    # TODO: Add the character to the pending string.
 
     # TODO:
     var is_ability_word_completed := false
@@ -296,7 +289,7 @@ func _on_cancel_pending_text_timeout() -> void:
 
 
 func _cancel_pending_text() -> void:
-    var pending_text := G.level.get_pending_text()
+    var pending_text := G.level.pending_text.text
 
     if pending_text.is_empty():
         return
@@ -307,10 +300,12 @@ func _cancel_pending_text() -> void:
 
     G.level.cancel_pending_characters()
 
+    G.level.pending_text.position = self.position
+
 
 func _consume_pending_text_for_ability() -> void:
     S.log.print("Triggering ability from pending text: %s" %
-            G.level.get_pending_text())
+            G.level.pending_text.text)
 
     %CancelPendingTextTimer.stop()
 
@@ -318,6 +313,8 @@ func _consume_pending_text_for_ability() -> void:
     # - Call this.
     # - Implement this.
     pass
+
+    G.level.pending_text.position = self.position
 
 
 func _take_damage() -> void:

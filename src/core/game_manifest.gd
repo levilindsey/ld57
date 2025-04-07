@@ -78,7 +78,7 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var main_menu_animation_duration_sec := 2.0
 @export var player_death_animation_duration_sec := 0.75
 @export var level_reset_animation_duration_sec := 0.3
-@export var main_menu_zoom_out_duration_sec := 0.3
+@export var main_menu_zoom_out_duration_sec := 0.2
 @export var reset_zoom_in_duration_sec := 0.3
 
 @export var hud_fade_in_duration_sec := 0.2
@@ -131,8 +131,9 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 
 @export var hud_panel_style := preload("res://src/ui/styles/hud_panel.tres")
 
-@export var player_scene := preload("res://src/player/player.tscn")
-@export var character_scene := preload("res://src/player/character.tscn")
+@export var player_scene := preload("res://src/entities/player.tscn")
+@export var character_scene := preload("res://src/entities/character.tscn")
+@export var invisible_layout_character_scene := preload("res://src/entities/invisible_layout_character.tscn")
 @export var hud_row_scene := preload("res://src/ui/hud_row.tscn")
 
 

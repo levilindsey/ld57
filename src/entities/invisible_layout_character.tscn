@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://pw6phoivvxka"]
+
+[ext_resource type="Theme" uid="uid://jlt4ctadl0vs" path="res://src/ui/styles/main_theme.tres" id="1_ptgty"]
+[ext_resource type="Script" uid="uid://dfln471a508v8" path="res://src/entities/invisible_layout_character.gd" id="1_w66i2"]
+
+[node name="InvisibleLayoutCharacter" type="Label"]
+modulate = Color(1, 1, 1, 0)
+offset_right = 1.0
+offset_bottom = 28.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = ExtResource("1_ptgty")
+script = ExtResource("1_w66i2")

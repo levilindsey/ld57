@@ -35,9 +35,14 @@ var player: Player
 var pitch_effect = AudioServer.get_bus_effect(3, 0) as AudioEffectPitchShift
 var keyboard_bus = AudioServer.get_bus_index("Keyboard")
 
+@onready var pending_text: PendingText = %PendingText
+
 # TODO:
 #
-# - Finish AnimationJob, and use it for AbandonedText.
+# - Refactor pending characters and character alignment to use the new Word system.
+# - Add a central place for all animation configs?
+# - Add support for spaces in words.
+#   - Just need to track pending text String separately from Characters list.
 # - Implement pending text usage.
 #   - Have each character drift upward at a fixed slow rate, but have the overall
 #     container follow the player.
@@ -86,7 +91,11 @@ var keyboard_bus = AudioServer.get_bus_index("Keyboard")
 # - Highlight ability text in the hud when the pending letters are a matching prefix.
 # - If the current pending letters fully match a word, but also have a junk prefix,
 #   chop them in two, discard the junk, use the word match.
+# - Fix adjacent character horizontal overlap on Alden's machine.
 #
+# Stretch:
+# - Replace subviewport+camera with re-positioning of the level contents, for
+#   sharper text.
 #
 # >>> Stuff Alden could do: <<<
 #
@@ -221,6 +230,7 @@ func _input(event: InputEvent) -> void:
                 State.MAIN_MENU_FINISHED:
                     if key_code == KEY_ENTER:
                         _start_game()
+                        _trigger_enter(false)
                 State.GAME_OVER_FINISHED:
                     if key_code == KEY_ENTER:
                         _game_reset()
@@ -274,6 +284,7 @@ func new_line() -> void:
 
 func _add_scroll(increment: float) -> void:
     player.position.y += increment
+    %PendingText.position.y += increment
     %Camera2D.position.y += increment
 
     var depth := floori(player.position.y / player.default_line_height)
@@ -444,12 +455,16 @@ func _game_reset() -> void:
     tween.tween_method(
         _interpolate_fade_opacity, 1.0, 0.0, G.manifest.hud_fade_out_duration_sec
     )
+
     # Transition colors.
     tween.tween_method(
         _interpolate_colors, progress_to_max_difficulty, 0.0, G.manifest.hud_fade_out_duration_sec)
+
     # Reposition the player.
+    var player_translate_duration := G.manifest.reset_zoom_in_duration_sec / 6.0
     tween.tween_property(
-        player, "position:x", player.get_start_position().x, G.manifest.reset_zoom_in_duration_sec / 6.0)
+        player, "position:x", player.get_start_position().x, player_translate_duration)
+    pending_text.position.x = player.get_start_position().x
 
 
 func _on_reset_finished() -> void:
@@ -516,10 +531,8 @@ func _set_zoom(zoomed_in: bool) -> void:
 
 
 func cancel_pending_characters() -> void:
-    for character in %PendingText.get_children():
+    for character in %PendingText.get_characters():
         character.reparent(%AbandonedText, true)
-
-        # FIXME: LEFT OFF HERE: TEST THIS!!
 
         # Upward and very slightly leftward.
         var direction_angle := -(PI / 2 + PI / 16)
@@ -548,25 +561,7 @@ func cancel_pending_characters() -> void:
 
         Anim.start_animation(config)
 
+    # TODO: Check if this delay is needed.
+    await get_tree().process_frame
 
-func add_pending_character(character: Character) -> void:
-    character.reparent(%PendingText, true)
-
-
-func remove_last_pending_character() -> bool:
-    var pending_characters := %PendingText.get_children()
-
-    if pending_characters.is_empty():
-        return false
-
-    pending_characters.back().queue_free()
-
-    return true
-
-
-func get_pending_text() -> String:
-    var pending_characters := %PendingText.get_children()
-    var text := ""
-    for character in pending_characters:
-        text += character.get_text()
-    return text
+    %PendingText.clear()

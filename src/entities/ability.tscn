@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://13mixtcjbcyo"]
+
+[ext_resource type="Script" uid="uid://dc3ailiwuawh5" path="res://src/entities/ability.gd" id="1_0r3iq"]
+[ext_resource type="PackedScene" uid="uid://bpto3r3etl0b" path="res://src/entities/characters_container.tscn" id="2_xgvbk"]
+
+[node name="Ability" type="Node2D"]
+script = ExtResource("1_0r3iq")
+
+[node name="ScratchCharacters" parent="." instance=ExtResource("2_xgvbk")]
+unique_name_in_owner = true
+
+[node name="VisibleCharacters" type="Node2D" parent="."]
+unique_name_in_owner = true
