@@ -3,14 +3,21 @@ extends ScaffolderLevel
 
 # TODO: MASTER LIST
 #
-# - Hook-up placeholder vfx nodes for the following.
-# - MAKE A PRIORITY LIST FOR ALDEN:
-#   - Background track.
-#   - VFXs:
-#     - Torpedo explosion
-#     - Enter key (like a typewriter carriage return?)
-#     - Game over
-#     - FIXME: LOOK AT ALL TODOs AND MAKE THIS LIST!
+# >>> PRIORITY LIST FOR ALDEN: <<<
+# - Background track.
+# - VFXs:
+#   - Torpedo explosion
+#   - Torpedo launch
+#   - Shield activation
+#   - Shield deactivation
+#   - Slow time
+#   - Speed-up time
+#   - Shrink
+#   - Expand
+#   - Big explosion / screen wipe
+#   - Item picked up
+#   - Enter key (like a typewriter carriage return?)
+#   - Game over
 #
 #
 #
@@ -44,6 +51,23 @@ extends ScaffolderLevel
 # - Add any missing sfx.
 # - Add more enemies.
 # - Add more abilities.
+#   - Rename torpedo to anchor.
+#     - Stone, dead weight, boulder, rock, ...
+#   - Create a new torpedo
+#     - This one homes in, and ignores terrain
+#   - bomb
+#     - clears the page
+#     - explosive, boom, big bang, detonate, ...
+#   - shrink
+#     -
+#   - grow
+#     -
+#   - slow
+#     -
+#   - speed up
+#     -
+#   - pause
+#     -
 # - Add more word values for abilities.
 # - Add more level fragments.
 # - GAME NAME!!

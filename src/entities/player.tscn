@@ -203,5 +203,30 @@ unique_name_in_owner = true
 stream = ExtResource("3_244u8")
 volume_db = -7.5
 
+[node name="SlowDownSound" type="AudioStreamPlayer" parent="Sounds"]
+unique_name_in_owner = true
+stream = ExtResource("3_244u8")
+volume_db = -7.5
+
+[node name="SpeedUpSound" type="AudioStreamPlayer" parent="Sounds"]
+unique_name_in_owner = true
+stream = ExtResource("3_244u8")
+volume_db = -7.5
+
+[node name="ShrinkSound" type="AudioStreamPlayer" parent="Sounds"]
+unique_name_in_owner = true
+stream = ExtResource("3_244u8")
+volume_db = -7.5
+
+[node name="ExpandSound" type="AudioStreamPlayer" parent="Sounds"]
+unique_name_in_owner = true
+stream = ExtResource("3_244u8")
+volume_db = -7.5
+
+[node name="BigExplosionSound" type="AudioStreamPlayer" parent="Sounds"]
+unique_name_in_owner = true
+stream = ExtResource("3_244u8")
+volume_db = -7.5
+
 [connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
 [connection signal="area_exited" from="Area2D" to="." method="_on_area_2d_area_exited"]
