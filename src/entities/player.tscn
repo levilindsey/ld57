@@ -155,23 +155,24 @@ libraries = {
 [node name="Theme" type="AudioStreamPlayer" parent="Sounds"]
 unique_name_in_owner = true
 stream = ExtResource("3_u2j08")
-volume_db = -18.0
+volume_db = -14.886
 autoplay = true
 bus = &"Music"
 
 [node name="KeyboardSound" type="AudioStreamPlayer" parent="Sounds"]
 unique_name_in_owner = true
 stream = ExtResource("3_244u8")
-volume_db = -7.5
+volume_db = -1.5
 
 [node name="EnterSound" type="AudioStreamPlayer" parent="Sounds"]
 unique_name_in_owner = true
 stream = ExtResource("5_u2j08")
-volume_db = -26.778
+volume_db = -22.0
 
 [node name="WordSound" type="AudioStreamPlayer" parent="Sounds"]
 unique_name_in_owner = true
 stream = ExtResource("4_5f2sf")
+volume_db = -8.0
 max_polyphony = 10
 bus = &"SFX"
 
@@ -199,6 +200,7 @@ volume_db = -7.5
 [node name="ShieldActivateSound" type="AudioStreamPlayer" parent="Sounds"]
 unique_name_in_owner = true
 stream = ExtResource("4_5f2sf")
+volume_db = -8.0
 max_polyphony = 10
 bus = &"SFX"
 
@@ -210,6 +212,7 @@ volume_db = -7.5
 [node name="TorpedoLaunchSound" type="AudioStreamPlayer" parent="Sounds"]
 unique_name_in_owner = true
 stream = ExtResource("4_5f2sf")
+volume_db = -8.0
 max_polyphony = 10
 bus = &"SFX"
 
