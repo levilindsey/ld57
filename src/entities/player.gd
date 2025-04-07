@@ -21,11 +21,16 @@ var active_damage_collisions: Dictionary[Area2D, bool]
 
 var main_menu_staggered_character_job: StaggeredCharacterJob
 
+var is_active := true
+
 
 func _ready() -> void:
+    G.player = self
+
     %Cursor.scale = G.manifest.default_cursor_scale * Vector2.ONE
 
     health = G.manifest.starting_health
+    is_active = true
 
     %InvicibleFromDamageTimer.wait_time = G.manifest.invincible_from_damage_cooldown_sec
     %CancelPendingTextTimer.wait_time = G.manifest.cancel_pending_text_delay_sec
@@ -53,6 +58,7 @@ func play_main_menu_animation() -> void:
     is_invincible_from_damage = false
 
     health = G.manifest.starting_health
+    is_active = true
 
     active_damage_collisions.clear()
 
@@ -75,7 +81,7 @@ func play_main_menu_animation() -> void:
 
 func on_game_started() -> void:
     # Fade-away the main-menu text.
-    _cancel_pending_text()
+    cancel_pending_text()
 
 
 func play_death_animation() -> void:
@@ -94,6 +100,7 @@ func play_death_animation() -> void:
 
 func play_reset_animation() -> void:
     health = G.manifest.starting_health
+    is_active = true
 
     %AnimationPlayer.play("resurrect")
 
@@ -129,7 +136,6 @@ func _initialize_sizes() -> void:
     two_lines.set_type(Character.Type.TYPED_TEXT)
     add_child(two_lines)
 
-    # TODO: Check if this delay is needed.
     await get_tree().process_frame
 
     default_character_size = character.get_size()
@@ -164,12 +170,11 @@ func on_enter(is_held_key_duplicate_press: bool) -> void:
 
     G.level.new_line()
 
-    _cancel_pending_text()
+    cancel_pending_text()
 
     G.level.pending_text.position = self.position
 
-    # TODO(Alden): SFX
-    pass
+    $AudioStreamPlayer_enter.play()
 
 
 func on_tab(is_held_key_duplicate_press: bool) -> void:
@@ -197,6 +202,8 @@ func on_space(is_held_key_duplicate_press: bool) -> void:
 
         # SFX
         $AudioStreamPlayer_failure.play()
+
+    G.level.check_ability_text_match()
 
 
 func on_backspace(is_held_key_duplicate_press: bool) -> void:
@@ -238,8 +245,7 @@ func _on_main_menu_character_entered(text: String) -> void:
 
     self.position.x += last_character_width
 
-    # TODO(Alden): SFX
-    pass
+    $AudioStreamPlayer_keyboard.play()
 
 
 func on_character_entered(text: String, is_held_key_duplicate_press: bool) -> void:
@@ -263,54 +269,32 @@ func on_character_entered(text: String, is_held_key_duplicate_press: bool) -> vo
 
         return
 
-    # TODO:
-    var is_ability_word_completed := false
-
-    if is_ability_word_completed:
-        # TODO:
-        pass
-
-        # SFX
-        $AudioStreamPlayer_word.play()
-    else:
-        # TODO:
-        pass
-
-        # TODO(Alden): SFX
-        pass
+    G.level.check_ability_text_match()
 
 
 func _on_cancel_pending_text_timeout() -> void:
-    _cancel_pending_text()
+    cancel_pending_text()
 
 
-func _cancel_pending_text() -> void:
+func cancel_pending_text() -> void:
     var pending_text := G.level.pending_text.text
+
+    %CancelPendingTextTimer.stop()
+
+    G.level.pending_text.position = self.position
 
     if pending_text.is_empty():
         return
 
     S.log.print("Pending text canceled: %s" % pending_text)
 
-    %CancelPendingTextTimer.stop()
-
     G.level.cancel_pending_characters()
 
-    G.level.pending_text.position = self.position
 
-
-func _consume_pending_text_for_ability() -> void:
-    S.log.print("Triggering ability from pending text: %s" %
-            G.level.pending_text.text)
-
-    %CancelPendingTextTimer.stop()
-
-    # TODO:
-    # - Call this.
-    # - Implement this.
-    pass
-
-    G.level.pending_text.position = self.position
+func on_ability_triggered() -> void:
+    cancel_pending_text()
+    # SFX
+    $AudioStreamPlayer_word.play()
 
 
 func _take_damage() -> void:
@@ -330,10 +314,11 @@ func _take_damage() -> void:
 
     if health <= 0:
         S.log.print("Player died")
+        is_active = false
         G.level.game_game_over()
+        $AudioStreamPlayer_player_died.play()
     else:
-        # TODO(Alden): SFX
-        pass
+        $AudioStreamPlayer_player_damaged.play()
 
 
 func _update_cursor_blink_period() -> void:
@@ -349,19 +334,34 @@ func _update_cursor_blink_period() -> void:
 
 
 func _on_area_2d_area_entered(area: Area2D) -> void:
-    if (area.collision_layer & GameManifest.TERRAIN_COLLISION_LAYER or
-            area.collision_layer & GameManifest.ENEMY_COLLISION_LAYER or
-            area.collision_layer & GameManifest.ENEMY_PROJECTILE_COLLISION_LAYER):
+    if not is_active:
+        return
+    if area.collision_layer & GameManifest.TERRAIN_COLLISION_LAYER:
+        _take_damage()
+        active_damage_collisions[area] = true
+    elif area.collision_layer & GameManifest.ENEMY_COLLISION_LAYER:
+        if not area.get_parent().is_active:
+            return
         _take_damage()
         active_damage_collisions[area] = true
     elif area.collision_layer & GameManifest.PICKUP_COLLISION_LAYER:
-        _on_collided_with_pickup(area)
+        _on_collided_with_pickup(area.get_parent())
 
 
 func _on_area_2d_area_exited(area: Area2D) -> void:
     active_damage_collisions.erase(area)
 
 
-func _on_collided_with_pickup(area: Area2D) -> void:
-    # TODO:
-    pass
+func on_collided_with_enemy_projectile(projectile: Ability) -> void:
+    if not is_active or not projectile.is_active:
+        return
+    _take_damage()
+
+
+func _on_collided_with_pickup(pickup: Pickup) -> void:
+    if not is_active or not pickup.is_active:
+        return
+    G.level.add_ability(pickup.ability_name, pickup.ability_value)
+    pickup.explode_pickup()
+
+    $AudioStreamPlayer_pickup.play()

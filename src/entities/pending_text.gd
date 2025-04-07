@@ -15,11 +15,6 @@ func add_text(text: String, is_main_menu_text := false) -> void:
 
     var character: Character = get_characters().back()
 
-    # Upward and very slightly leftward.
-    var direction_angle := -(PI / 2 + PI / 32)
-
-    var current_speed := character.get_current_speed()
-
     # Very slowly float the character upward.
     var config := {
         node = character,
@@ -27,9 +22,10 @@ func add_text(text: String, is_main_menu_text := false) -> void:
         is_one_shot = false,
         ease_name = "linear",
 
-        start_speed = current_speed,
+        start_speed = character.get_current_speed(),
 
-        direction_angle = direction_angle,
+        # Upward and very slightly leftward.
+        direction_angle = -(PI / 2 + PI / 32),
         direction_deviaton_angle_max = PI / 32,
 
         # These can all be either a single number, or an array of two numbers.

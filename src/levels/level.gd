@@ -3,9 +3,16 @@ extends ScaffolderLevel
 
 # TODO:
 #
+# - Hook-up placeholder vfx nodes for the following.
+# - MAKE A PRIORITY LIST FOR ALDEN:
+#   - Background track.
+#   - VFXs:
+#     - Torpedo explosion
+#     - Enter key (like a typewriter carriage return?)
+#     - Game over
+#     - FIXME: LOOK AT ALL TODOs AND MAKE THIS LIST!
+#
 # - Implement pending text usage.
-#   - Have each character drift upward at a fixed slow rate, but have the overall
-#     container follow the player.
 #   - When triggering a word, animate each letter downward.
 #     - Consider giving a different duration to each letter tween, so closer
 #       letters take less time.
@@ -23,12 +30,15 @@ extends ScaffolderLevel
 #     - This then animates the overall word.
 #     - This then implements collision detection (in the parent class).
 #     - This then implements custom logic for whatever.
-#   - Highlight ability text in the hud when the pending letters are a matching
+#   - Show abilities in the HUD.
+#   - Highlight ability text in the HUD when the pending letters are a matching
 #     prefix.
 #     - Clear highlights on game over.
 #   - Slow-down timeout for discarding text when there is a potential match.
 # - Add fragment spawning.
 # - Add pickups.
+# - Make pickups spawn longer words as you go.
+# - Make pending-text last longer as long as it's a valid prefix for a current ability.
 # - Add enemy spawning.
 # - Add bubble spawning.
 # - Add camera-boundary exit detection, and cleanup items:
@@ -46,11 +56,6 @@ extends ScaffolderLevel
 #   - A destroyed animation.
 #     - Have each character move away from center, in a slightly random direction,
 #       with rotation, and a fade-out, then queue_free.
-# - Make pickups spawn longer words as you go.
-# - Make pending-text last longer as long as it's a valid prefix for a current ability.
-# - Highlight ability text in the hud when the pending letters are a matching prefix.
-# - If the current pending letters fully match a word, but also have a junk prefix,
-#   chop them in two, discard the junk, use the word match.
 # - Fix adjacent character horizontal overlap on Alden's machine.
 #
 # Stretch:
@@ -108,7 +113,18 @@ var player: Player
 var pitch_effect = AudioServer.get_bus_effect(3, 0) as AudioEffectPitchShift
 var keyboard_bus = AudioServer.get_bus_index("Keyboard")
 
+@onready var bubbles: Node2D = %Bubbles
+@onready var fragments: Node2D = %Fragments
+@onready var abandoned_text: Node2D = %AbandonedText
 @onready var pending_text: PendingText = %PendingText
+@onready var pickups: Node2D = %Pickups
+@onready var players: Node2D = %Players
+@onready var enemies: Node2D = %Enemies
+@onready var enemy_projectiles: Node2D = %EnemyProjectiles
+@onready var player_projectiles: Node2D = %PlayerProjectiles
+
+# {value: {count: int, name: String, is_prefix_match: bool}}
+var abilities: Dictionary[String, Dictionary] = {}
 
 
 func _ready() -> void:
@@ -399,6 +415,9 @@ func _start_game() -> void:
     # - Start spawning enemies and other level fragments (or is that just from collision detection with scroll movement?)
     # - Start spawning bubbles
 
+    for entry in G.manifest.debug_initial_abilities:
+        add_ability(entry.name, entry.value)
+
     await get_tree().create_timer(
         G.manifest.main_menu_zoom_out_duration_sec + 0.4).timeout
 
@@ -532,11 +551,6 @@ func cancel_pending_characters() -> void:
     for character in %PendingText.get_characters():
         character.reparent(%AbandonedText, true)
 
-        # Upward and very slightly leftward.
-        var direction_angle := -(PI / 2 + PI / 16)
-
-        var current_speed: float = character.get_current_speed()
-
         # Wobble the character upward.
         var config := {
             node = character,
@@ -544,9 +558,10 @@ func cancel_pending_characters() -> void:
             is_one_shot = true,
             ease_name = "ease_in_out",
 
-            start_speed = current_speed,
+            start_speed = character.get_current_speed(),
 
-            direction_angle = direction_angle,
+            # Upward and very slightly leftward.
+            direction_angle = -(PI / 2 + PI / 16),
             direction_deviaton_angle_max = PI / 32,
 
             # These can all be either a single number, or an array of two numbers.
@@ -565,3 +580,73 @@ func cancel_pending_characters() -> void:
         Anim.start_animation(config)
 
     %PendingText.clear()
+
+
+func _find_ability_config(ability_name: String) -> Dictionary:
+    for ability in G.manifest.abilities:
+        if ability.name == ability_name:
+            return ability
+    return {}
+
+
+func add_ability(ability_name: String, ability_value: String) -> void:
+    S.log.print("Adding ability: name=%s, value=%s" %
+            [ability_name, ability_value])
+
+    # {value: {count: int, name: String, is_prefix_match: bool}}
+    if not abilities.has(ability_value):
+        abilities[ability_value] = {
+            count = 1,
+            name = ability_name,
+            is_prefix_match = false,
+        }
+    else:
+        abilities[ability_value].count += 1
+
+
+func trigger_ability(ability_name: String, ability_value: String) -> void:
+    var config := _find_ability_config(ability_name)
+    if not S.utils.ensure(not config.is_empty()):
+        return
+
+    if not S.utils.ensure(abilities.has(ability_value)):
+        return
+
+    S.log.print("Triggering ability: name=%s, value=%s" %
+            [ability_name, ability_value])
+
+    # {value: {count: int, name: String, is_prefix_match: bool}}
+    var entry := abilities[ability_value]
+    entry.count -= 1
+    if entry.count <= 0:
+        abilities.erase(ability_value)
+
+    var controller: AbilityController = config.controller.new()
+    controller.start(config, ability_value)
+
+    player.on_ability_triggered()
+
+
+func check_ability_text_match() -> void:
+    var matching_ability_name := ""
+    var matching_ability_value := ""
+
+    # {value: {count: int, name: String, is_prefix_match: false}}
+    for ability_value in abilities:
+        var ability_entry := abilities[ability_value]
+
+        # Check for a full match.
+        if pending_text.text.ends_with(ability_value):
+            matching_ability_value = ability_value
+            matching_ability_name = ability_entry.name
+            break
+
+        # Check for a prefix match.
+        ability_entry.is_prefix_match = false
+        for i in range(ability_value.length()):
+            if pending_text.text.ends_with(ability_value.substr(0, i + 1)):
+                ability_entry.is_prefix_match = true
+                break
+
+    if not matching_ability_name.is_empty():
+        trigger_ability(matching_ability_name, matching_ability_value)

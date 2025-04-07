@@ -9,9 +9,14 @@ var _type := Character.Type.TYPED_TEXT
 var text := ""
 var size := Vector2.ZERO
 
+var is_active := true
+
 
 func set_up_from_text(
-        parent: Node, text: String, type: Character.Type, position: Vector2) -> void:
+        parent: Node,
+        text: String,
+        type: Character.Type,
+        position: Vector2) -> void:
     if text.is_empty():
         clear()
         return
@@ -52,7 +57,8 @@ func set_up_from_text(
 
 
 func set_up_from_characters(
-        characters: Array[Character], type: Character.Type) -> void:
+        characters: Array[Character],
+        type: Character.Type) -> void:
     _type = type
     text = ""
 
@@ -201,6 +207,10 @@ func get_last_character_size() -> Vector2:
     return %ScratchCharacters.get_children().back().size
 
 
+func get_center() -> Vector2:
+    return %ScratchCharacters.global_position + %ScratchCharacters.size / 2
+
+
 func set_type(type: Character.Type) -> void:
     for character in %ScratchCharacters.get_children():
         character.set_type(type)
@@ -215,6 +225,13 @@ func set_scratch_characters_offset(offset: Vector2) -> void:
 func get_current_speed() -> float:
     if is_instance_valid(_animation):
         return _animation.get_current_speed()
+    else:
+        return 0.0
+
+
+func get_current_direction_angle() -> float:
+    if is_instance_valid(_animation):
+        return _animation.get_current_direction_angle()
     else:
         return 0.0
 
@@ -240,3 +257,58 @@ func start_characters_animation(config: Dictionary) -> void:
 func stop_characters_animation() -> void:
     for character in %VisibleCharacters.get_children():
         character.stop_animation()
+
+
+func explode_from_point(
+        impact_point: Vector2,
+        spread_angle: float,
+        strength: float) -> void:
+    is_active = false
+
+    # - Sort characters by distance to impact point.
+    # - Closer characters more directly away from the impact, while more distant
+    #   characters move more orthogonally.
+    var characters := get_characters().duplicate()
+    characters.sort_custom(func(a: Character, b: Character):
+        return (a.global_position.distance_squared_to(impact_point) <
+                b.global_position.distance_squared_to(impact_point)))
+
+    var direction_angle_offset := 0
+    var direction_angle_delta := spread_angle / characters.size()
+
+    for character in characters:
+        var base_direction_angle: float = \
+                (character.global_position - impact_point).angle()
+        var offset := direction_angle_delta * (1 if randf() < 0.5 else -1)
+        var direction_angle := base_direction_angle + offset
+
+        direction_angle_offset += direction_angle_delta
+
+        # Push outward.
+        var config := {
+            node = character,
+            destroys_node_when_done = true,
+            is_one_shot = true,
+            ease_name = "linear",
+
+            start_speed = 100.0 * strength,
+
+            direction_angle = direction_angle,
+            direction_deviaton_angle_max = PI / 128,
+
+            # These can all be either a single number, or an array of two numbers.
+            duration_sec = 2.0, # If omitted, the animation won't stop.
+            #end_opacity = 0.0,
+            #interval_sec = 100.0, # If ommitted, duration_sec must be included.
+            # FIXME: TEST THIS.
+            speed = 0.0 * strength,
+            #acceleration = -2,
+            # FIXME: TEST THIS (turn off skew to test it)
+            rotation_speed = [0.01, 0.5],
+            #perpendicular_oscillation_amplitude = [0, 100.0],
+            #scale_x = [0.5, 4.0],
+            #scale_y = [0.5, 4.0],
+            skew = [-PI, PI],
+        }
+
+        character.start_animation(config)

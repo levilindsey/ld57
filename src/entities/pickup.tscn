@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://bt10de26m6lcq"]
+[gd_scene load_steps=4 format=3 uid="uid://bt10de26m6lcq"]
 
 [ext_resource type="Script" uid="uid://h201xe4j852e" path="res://src/entities/pickup.gd" id="1_m2kq0"]
 [ext_resource type="PackedScene" uid="uid://bpto3r3etl0b" path="res://src/entities/characters_container.tscn" id="2_x6lcg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x6lcg"]
 
 [node name="Pickup" type="Node2D"]
 script = ExtResource("1_m2kq0")
@@ -11,3 +13,12 @@ unique_name_in_owner = true
 
 [node name="VisibleCharacters" type="Node2D" parent="."]
 unique_name_in_owner = true
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+unique_name_in_owner = true
+shape = SubResource("RectangleShape2D_x6lcg")

@@ -64,6 +64,13 @@ func get_current_speed() -> float:
         return 0.0
 
 
+func get_current_direction_angle() -> float:
+    if is_instance_valid(_animation):
+        return _animation.get_current_direction_angle()
+    else:
+        return 0.0
+
+
 func start_animation(config: Dictionary) -> AnimationJob:
     stop_animation()
     config.node = self

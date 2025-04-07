@@ -135,6 +135,57 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var character_scene := preload("res://src/entities/character.tscn")
 @export var invisible_layout_character_scene := preload("res://src/entities/invisible_layout_character.tscn")
 @export var hud_row_scene := preload("res://src/ui/hud_row.tscn")
+@export var ability_scene := preload("res://src/entities/ability.tscn")
+@export var bubble_scene := preload("res://src/entities/bubble.tscn")
+@export var enemy_scene := preload("res://src/entities/enemy.tscn")
+@export var pickup_scene := preload("res://src/entities/pickup.tscn")
+
+# TODO: Add more values!
+var abilities := [
+    {
+        name = "shield",
+        controller = ShieldAbility,
+        values = [
+            "shield",
+            "defend",
+            "barrier",
+            "guard",
+            "insurmountable",
+            "invulnerable",
+            "impenetrable",
+            "impervious",
+            "indefatigable",
+            "thick skin",
+            "ironsides",
+            "ironsides",
+        ],
+    },
+    {
+        name = "torpedo",
+        controller = TorpedoAbility,
+        values = [
+            "torpedo",
+            "shoot",
+            "fire",
+            "launch",
+        ],
+    },
+]
+
+var debug_initial_abilities := [
+    {
+        name = "torpedo",
+        value = "shoot",
+    },
+    {
+        name = "torpedo",
+        value = "fire",
+    },
+    {
+        name = "torpedo",
+        value = "shoot",
+    },
+]
 
 
 func get_start_color(type: ColorType) -> Color:

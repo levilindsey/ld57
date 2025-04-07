@@ -232,6 +232,13 @@ func get_current_speed() -> float:
         return 0.0
 
 
+func get_current_direction_angle() -> float:
+    if intervals.has("direction_angle"):
+        return intervals.direction_angle.current_value
+    else:
+        return 0.0
+
+
 func _apply_value_to_node(interval: DimensionInterval, elapsed_sec: float) -> void:
     match interval.key:
         "direction_angle":
