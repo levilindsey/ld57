@@ -6,6 +6,10 @@ signal main_menu_finished
 signal death_finished
 signal reset_finished
 
+var _initial_font_size: float
+var _initial_collision_shape_size: Vector2
+var _initial_sprite_scale: Vector2
+
 var default_character_size := Vector2.ZERO
 var default_line_height := 0.0
 
@@ -25,10 +29,14 @@ var is_active := true
 
 var shield_controller
 
+@onready var shape_cast: ShapeCast2D = %ShapeCast2D
+
 
 func _ready() -> void:
     G.player = self
     GHack.player = self
+
+    shape_cast.reparent(G.level)
 
     %Cursor.scale = G.manifest.default_cursor_scale * Vector2.ONE
 
@@ -176,6 +184,11 @@ func _initialize_sizes() -> void:
     default_character_size = character.get_size()
     default_line_height = two_lines.get_size().y - default_character_size.y
 
+    _initial_font_size = G.manifest.main_theme.default_font_size
+    _initial_sprite_scale = %Cursor.scale
+    _initial_collision_shape_size = %CollisionShape2D.shape.size
+    shape_cast.shape.size = _initial_collision_shape_size
+
     set_current_text_size()
 
     character.queue_free()
@@ -192,24 +205,79 @@ func set_text_color(color: Color) -> void:
 
 
 func set_current_text_size() -> void:
-    # TODO: Support size-changing.
-    # - Update this if ever adding size-changing abilities.
-    # - Make sure we cancel_pending_text() when size-changing.
+    # TODO: Update this if ever adding size-changing abilities.
+
+    var current_size_ratio := 1.0
+
     current_character_size = default_character_size
     current_line_height = default_line_height
-    const HACK_OFFSET_Y := 2
+
+    var font_size := _initial_font_size * current_size_ratio
+    var sprint_scale := _initial_sprite_scale * current_size_ratio
+    var collision_shape_size := _initial_collision_shape_size * current_size_ratio
+
+    %Cursor.scale = sprint_scale
+    %CollisionShape2D.shape.size = collision_shape_size
+    shape_cast.shape.size = collision_shape_size
+
+    const _INITIAL_HACK_OFFSET_Y := 2.0
+    var hack_offset_y := _INITIAL_HACK_OFFSET_Y * current_size_ratio
     G.level.pending_text.set_scratch_characters_offset(
-            Vector2(0, -current_character_size.y / 2.0 + HACK_OFFSET_Y))
-
-
-func on_enter(is_held_key_duplicate_press: bool) -> void:
-    self.position.x = G.manifest.game_area_padding.x
-
-    G.level.new_line()
+            Vector2(0, -current_character_size.y / 2.0 + hack_offset_y))
 
     cancel_pending_text()
 
-    G.level.pending_text.position = self.position
+
+func _get_min_position_x() -> float:
+    return G.manifest.game_area_padding.x
+
+
+func _get_max_position_x() -> float:
+    return G.manifest.game_area_size.x - G.manifest.game_area_padding.x
+
+
+func _get_left_most_safe_position() -> Vector2:
+    shape_cast.enabled = true
+
+    shape_cast.target_position = Vector2.ZERO
+
+    var max_position_x := _get_max_position_x()
+
+    var target_position := Vector2(
+            _get_min_position_x() - current_character_size.x,
+            self.global_position.y)
+
+    var was_collision_detected := false
+
+    var is_safe := false
+    while not is_safe and target_position.x < max_position_x:
+        target_position.x += current_character_size.x
+        shape_cast.global_position = target_position
+        shape_cast.force_shapecast_update()
+        is_safe = not shape_cast.is_colliding()
+        was_collision_detected = was_collision_detected or not is_safe
+
+    if not S.utils.ensure(is_safe):
+        target_position.x = _get_min_position_x()
+    elif was_collision_detected:
+        var safe_position_margin := current_character_size.x * 2
+        target_position.x = minf(
+            target_position.x + safe_position_margin,
+            _get_max_position_x())
+
+    shape_cast.enabled = false
+
+    return target_position
+
+
+func on_enter(is_held_key_duplicate_press: bool) -> void:
+    G.level.new_line()
+
+    self.global_position.x = _get_left_most_safe_position().x
+
+    cancel_pending_text()
+
+    G.level.pending_text.global_position = self.global_position
 
     %EnterSound.play()
 
@@ -223,9 +291,8 @@ func on_space(is_held_key_duplicate_press: bool) -> void:
 
     var last_character_width := G.level.pending_text.get_last_character_size().x
     var desired_position_x := self.position.x + last_character_width
-    var max_position_x := G.manifest.game_area_size.x - G.manifest.game_area_padding.x
 
-    if desired_position_x > max_position_x:
+    if desired_position_x > _get_max_position_x():
         # Space failed.
         G.level.pending_text.delete_last_character()
         %FailureSound.play()
@@ -245,9 +312,8 @@ func on_backspace(is_held_key_duplicate_press: bool) -> void:
         last_character_width = G.level.pending_text.get_last_character_size().x
 
     var desired_position_x := self.position.x - last_character_width
-    var min_position_x := G.manifest.game_area_padding.x
 
-    if desired_position_x >= min_position_x:
+    if desired_position_x >= _get_min_position_x():
         # Backspace entered successfully.
         self.position.x = desired_position_x
 
@@ -285,9 +351,8 @@ func on_character_entered(text: String, is_held_key_duplicate_press: bool) -> vo
 
     var last_character_width := G.level.pending_text.get_last_character_size().x
     var desired_position_x := self.position.x + last_character_width
-    var max_position_x := G.manifest.game_area_size.x - G.manifest.game_area_padding.x
 
-    if desired_position_x > max_position_x:
+    if desired_position_x > _get_max_position_x():
         # Character failed.
         G.level.pending_text.delete_last_character()
         %FailureSound.play()

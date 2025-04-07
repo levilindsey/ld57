@@ -7,4 +7,4 @@
 script = ExtResource("1_gt826")
 
 [node name="FragmentBottom" parent="." instance=ExtResource("3_ia0lu")]
-position = Vector2(1, 784)
+position = Vector2(0, 442)

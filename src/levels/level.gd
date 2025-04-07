@@ -73,6 +73,9 @@ extends ScaffolderLevel
 # - GAME NAME!!
 #   - Add support for auto-typing this on a line above the "HIT ENTER"?
 #
+# - Music (FamiStudio)
+# - SFX (bfxr)
+#
 #
 # Stretch:
 # - Fix adjacent character horizontal overlap on Alden's machine.
