@@ -1,0 +1,2 @@
+class_name FragmentBottom
+extends Node2D

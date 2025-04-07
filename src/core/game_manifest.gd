@@ -116,8 +116,11 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 #@export var game_area_padding := Vector2i(0, 0)
 @export var game_area_padding := Vector2i(20, 20)
 
-@export var fragments: Array[PackedScene] = [
-    preload("res://src/levels/level_fragment_1.tscn"),
+var initial_fragment := load("res://src/levels/fragments/level_fragment_initial.tscn")
+
+var fragments: Array[PackedScene] = [
+    load("res://src/levels/fragments/level_fragment_1.tscn"),
+    load("res://src/levels/fragments/level_fragment_2.tscn"),
 ]
 
 @export_group("LabelSettings")

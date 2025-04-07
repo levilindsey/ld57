@@ -4,7 +4,7 @@
 [ext_resource type="LabelSettings" uid="uid://cdso1r85pk7hc" path="res://src/ui/styles/ability_label_settings.tres" id="1_hkaoq"]
 [ext_resource type="LabelSettings" uid="uid://bxxo0wsx1h0sw" path="res://src/ui/styles/bubble_label_settings.tres" id="1_jmnv0"]
 [ext_resource type="PackedScene" uid="uid://c27n63xtklrk0" path="res://src/ui/game_hud.tscn" id="2_443y3"]
-[ext_resource type="PackedScene" uid="uid://bsvjkmgny0imc" path="res://src/levels/level_fragment_1.tscn" id="2_e8rv8"]
+[ext_resource type="PackedScene" uid="uid://bsvjkmgny0imc" path="res://src/levels/fragments/level_fragment_1.tscn" id="2_e8rv8"]
 [ext_resource type="PackedScene" uid="uid://bd0oy4phn6nu1" path="res://src/entities/player.tscn" id="2_jrmap"]
 [ext_resource type="PackedScene" uid="uid://n6lw7r40aajb" path="res://src/entities/character.tscn" id="2_swhmb"]
 [ext_resource type="PackedScene" uid="uid://13mixtcjbcyo" path="res://src/entities/ability.tscn" id="2_u8u6k"]
@@ -97,7 +97,6 @@ default_font_size = 24
 default_cursor_scale = 0.3
 game_area_size = Vector2i(768, 768)
 game_area_padding = Vector2i(20, 20)
-fragments = Array[PackedScene]([ExtResource("2_e8rv8")])
 cursor_label_settings = ExtResource("12_bkucw")
 typed_text_label_settings = ExtResource("25_lx0xc")
 ability_label_settings = ExtResource("1_hkaoq")

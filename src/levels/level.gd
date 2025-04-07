@@ -142,11 +142,15 @@ var ability_controllers: Array[AbilityController] = []
 # {value: {count: int, name: String, is_prefix_match: bool}}
 var abilities: Dictionary[String, Dictionary] = {}
 
+var fragments: Array[LevelFragment] = []
+
 var pitch_effect = AudioServer.get_bus_effect(3, 0) as AudioEffectPitchShift
 var keyboard_bus = AudioServer.get_bus_index("Keyboard")
 
+@onready var camera: Camera2D = %Camera2D
+
 @onready var bubbles: Node2D = %Bubbles
-@onready var fragments: Node2D = %Fragments
+@onready var fragments_container: Node2D = %Fragments
 @onready var abandoned_text: Node2D = %AbandonedText
 @onready var pending_text: PendingText = %PendingText
 @onready var pickups: Node2D = %Pickups
@@ -175,9 +179,9 @@ func _ready() -> void:
     %BackgroundColor.color = G.manifest.get_start_color(GameManifest.ColorType.BACKGROUND)
 
     # Start zoomed in.
-    %Camera2D.zoom = G.manifest.main_menu_camera_zoom * Vector2.ONE
-    %Camera2D.offset.y = G.manifest.main_menu_camera_offset_y
-    %Camera2D.position = Vector2(G.manifest.game_area_size.x * 0.5, 0)
+    camera.zoom = G.manifest.main_menu_camera_zoom * Vector2.ONE
+    camera.offset.y = G.manifest.main_menu_camera_offset_y
+    camera.position = Vector2(G.manifest.game_area_size.x * 0.5, 0)
 
     G.hud.modulate.a = 0.0
 
@@ -335,10 +339,69 @@ func new_line() -> void:
 func _add_scroll(increment: float) -> void:
     player.position.y += increment
     pending_text.position.y += increment
-    %Camera2D.position.y += increment
+    camera.position.y += increment
 
     var depth := floori(player.position.y / player.default_line_height)
     G.hud.update_depth(depth)
+
+    _update_fragments()
+
+
+func _update_fragments() -> void:
+    var current_fragment: LevelFragment = fragments.front()
+    var last_fragment: LevelFragment = fragments.back()
+
+    var camera_bounds := get_camera_bounds()
+
+    var is_current_fragment_offscreen := \
+            camera_bounds.position.y > current_fragment.bounds.end.y
+    var is_last_fragment_onscreen := \
+            camera_bounds.end.y >= last_fragment.bounds.position.y
+
+    # Remove old fragments.
+    if is_current_fragment_offscreen:
+        fragments.pop_front()
+
+    # Spawn new fragments.
+    if is_last_fragment_onscreen:
+        spawn_fragment()
+
+
+func spawn_fragment() -> LevelFragment:
+    # FIXME:
+    # - Implement.
+    # - Move to a separate Spawner class.
+
+    var fragment_scene: PackedScene
+    if fragments.is_empty():
+        fragment_scene = G.manifest.initial_fragment
+    else:
+        # FIXME:
+        var index := randi_range(0, G.manifest.fragments.size() - 1)
+        fragment_scene = G.manifest.fragments[index]
+
+    var fragment := fragment_scene.instantiate()
+    fragments_container.add_child(fragment)
+
+    if fragments.is_empty():
+        fragment.global_position = Vector2(
+                0.0, player.global_position.y)
+    else:
+        var last_fragment: LevelFragment = fragments.back()
+        fragment.global_position = Vector2(0, last_fragment.bounds.end.y)
+
+    fragments.push_back(fragment)
+
+    fragment.cache_bounds()
+
+    return fragment
+
+
+func get_camera_bounds() -> Rect2:
+    var center: Vector2 = camera.position + camera.offset
+    return Rect2(
+        center - G.manifest.game_area_size / 2.0,
+        G.manifest.game_area_size)
 
 
 func _update_colors() -> void:
@@ -443,6 +506,8 @@ func _start_game() -> void:
     _set_zoom(false)
     player.on_game_started()
 
+    spawn_fragment()
+
     # Fade-in items.
     var tween := get_tree().create_tween()
     tween.tween_method(
@@ -498,6 +563,7 @@ func _game_reset() -> void:
     scroll_speed = 0.0
     abilities.clear()
     ability_controllers.clear()
+    fragments.clear()
     is_pending_text_a_prefix_match = false
 
     _update_colors()
@@ -553,7 +619,7 @@ func _interpolate_fade_opacity(opacity: float) -> void:
 func _get_collections() -> Array[Node2D]:
     return [
         bubbles,
-        fragments,
+        fragments_container,
         abandoned_text,
         pickups,
         enemies,
@@ -582,8 +648,8 @@ func _set_zoom(zoomed_in: bool) -> void:
         duration *= 0.1
 
     var tween := get_tree().create_tween()
-    tween.tween_property(%Camera2D, "zoom", zoom, duration)
-    tween.tween_property(%Camera2D, "offset:y", offset_y, duration)
+    tween.tween_property(camera, "zoom", zoom, duration)
+    tween.tween_property(camera, "offset:y", offset_y, duration)
 
 
 func cancel_pending_characters() -> void:

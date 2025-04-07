@@ -197,7 +197,7 @@ func _initialize_sizes() -> void:
 
 func get_start_position() -> Vector2:
     var main_menu_offset_x := G.manifest.main_menu_text.length() * default_character_size.x / 2.0
-    return Vector2(G.manifest.game_area_size.x * 0.5 - main_menu_offset_x, 0)
+    return Vector2(G.manifest.game_area_size.x / 2.0 - main_menu_offset_x, 0)
 
 
 func set_text_color(color: Color) -> void:
@@ -236,7 +236,9 @@ func _get_max_position_x() -> float:
     return G.manifest.game_area_size.x - G.manifest.game_area_padding.x
 
 
-func _get_left_most_safe_position() -> Vector2:
+func _get_newline_position() -> Vector2:
+    var previous_position := self.global_position
+
     shape_cast.enabled = true
 
     shape_cast.target_position = Vector2.ZERO
@@ -267,13 +269,16 @@ func _get_left_most_safe_position() -> Vector2:
 
     shape_cast.enabled = false
 
+    # Don't push the cursor rightward from where it was before.
+    target_position.x = minf(previous_position.x, target_position.x)
+
     return target_position
 
 
 func on_enter(is_held_key_duplicate_press: bool) -> void:
     G.level.new_line()
 
-    self.global_position.x = _get_left_most_safe_position().x
+    self.global_position.x = _get_newline_position().x
 
     cancel_pending_text()
 
