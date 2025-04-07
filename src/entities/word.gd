@@ -323,11 +323,11 @@ func explode_from_point(
             # Slow to a stop.
             speed = 0.0,
             #acceleration = -2,
-            rotation_speed = [0.01, 15.0],
+            rotation_speed = [0.01 * strength, 15.0 * strength],
             #perpendicular_oscillation_amplitude = [0, 100.0],
             #scale_x = [0.5, 4.0],
             #scale_y = [0.5, 4.0],
-            skew = [-PI, PI],
+            skew = [-PI * strength, PI * strength],
         }
 
         character.start_animation(config)
@@ -366,7 +366,7 @@ func explode_from_point(
         start_animation(config)
 
 
-func slide_characters_to_baseline() -> void:
+func slide_characters_to_baseline(duration_sec: float) -> void:
     for character in get_characters():
         var config := {
             node = character,
@@ -380,7 +380,7 @@ func slide_characters_to_baseline() -> void:
             #direction_deviaton_angle_max = PI / 128.0,
 
             # These can all be either a single number, or an array of two numbers.
-            duration_sec = 0.15, # If omitted, the animation won't stop.
+            duration_sec = duration_sec, # If omitted, the animation won't stop.
             #end_opacity = 0.0,
             #interval_sec = 100.0, # If ommitted, duration_sec must be included.
             # Slow to a stop.

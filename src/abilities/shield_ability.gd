@@ -1,5 +1,5 @@
 class_name ShieldAbility
-extends AbilityController
+extends SideEffectAbilityController
 
 
 var _is_complete := false

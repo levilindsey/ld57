@@ -1,11 +1,9 @@
 class_name TorpedoAbility
-extends WordBasedbilityController
+extends WordBasedAbilityController
 
 
 func start(config: Dictionary, value: String) -> void:
     super.start(config, value)
-
-    _create_ability_word_from_pending_characters(value)
 
     word.terrain_collided.connect(_on_terrain_collided)
     word.enemy_collided.connect(_on_enemy_collided)
