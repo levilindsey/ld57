@@ -15,8 +15,6 @@ extends ScaffolderLevel
 #
 #
 #
-# - Make pending-text last longer as long as it's a valid prefix for a current ability.
-#
 # - Add fragment spawning.
 #
 # - Add pickups.
@@ -93,6 +91,8 @@ var state := State.LEVEL_LOADING
 var is_enter_pressed := false
 var is_space_pressed := false
 var is_backspace_pressed := false
+
+var is_pending_text_a_prefix_match := false
 
 var previous_pressed_key_code := 0
 
@@ -471,6 +471,7 @@ func _game_reset() -> void:
     scroll_speed = 0.0
     abilities.clear()
     ability_controllers.clear()
+    is_pending_text_a_prefix_match = false
 
     _update_colors()
     _set_zoom(true)
@@ -646,6 +647,8 @@ func check_ability_text_match() -> void:
     var matching_ability_name := ""
     var matching_ability_value := ""
 
+    is_pending_text_a_prefix_match = false
+
     # {value: {count: int, name: String, is_prefix_match: false}}
     for ability_value in abilities:
         var ability_entry := abilities[ability_value]
@@ -661,7 +664,14 @@ func check_ability_text_match() -> void:
         for i in range(ability_value.length()):
             if pending_text.text.ends_with(ability_value.substr(0, i + 1)):
                 ability_entry.is_prefix_match = true
+                is_pending_text_a_prefix_match = true
                 break
 
     if not matching_ability_name.is_empty():
         trigger_ability(matching_ability_name, matching_ability_value)
+
+
+func clear_prefix_matches() -> void:
+    is_pending_text_a_prefix_match = false
+    for ability_value in abilities:
+        abilities[ability_value].is_prefix_match = false

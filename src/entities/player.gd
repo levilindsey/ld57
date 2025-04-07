@@ -225,20 +225,17 @@ func on_space(is_held_key_duplicate_press: bool) -> void:
     var desired_position_x := self.position.x + last_character_width
     var max_position_x := G.manifest.game_area_size.x - G.manifest.game_area_padding.x
 
-    if desired_position_x <= max_position_x:
-        # Space entered successfully.
-        self.position.x = desired_position_x
-
-        %CancelPendingTextTimer.start()
-
-        %KeyboardSound.play()
-    else:
+    if desired_position_x > max_position_x:
         # Space failed.
         G.level.pending_text.delete_last_character()
-
         %FailureSound.play()
+        return
 
+    # Space entered successfully.
+    self.position.x = desired_position_x
+    %KeyboardSound.play()
     G.level.check_ability_text_match()
+    _start_pending_text_timer()
 
 
 func on_backspace(is_held_key_duplicate_press: bool) -> void:
@@ -254,8 +251,6 @@ func on_backspace(is_held_key_duplicate_press: bool) -> void:
         # Backspace entered successfully.
         self.position.x = desired_position_x
 
-        %CancelPendingTextTimer.start()
-
         %KeyboardSound.play()
     else:
         # Backspace failed.
@@ -266,6 +261,10 @@ func on_backspace(is_held_key_duplicate_press: bool) -> void:
 
     if not was_something_deleted:
         G.level.pending_text.position = self.position
+
+    G.level.check_ability_text_match()
+
+    _start_pending_text_timer()
 
 
 func _on_main_menu_character_entered(text: String) -> void:
@@ -288,19 +287,26 @@ func on_character_entered(text: String, is_held_key_duplicate_press: bool) -> vo
     var desired_position_x := self.position.x + last_character_width
     var max_position_x := G.manifest.game_area_size.x - G.manifest.game_area_padding.x
 
-    if desired_position_x <= max_position_x:
-        # Character entered successfully.
-        self.position.x = desired_position_x
-        %KeyboardSound.play()
-        %CancelPendingTextTimer.start()
-    else:
+    if desired_position_x > max_position_x:
         # Character failed.
         G.level.pending_text.delete_last_character()
         %FailureSound.play()
-
         return
 
+    # Character entered successfully.
+    self.position.x = desired_position_x
+    %KeyboardSound.play()
     G.level.check_ability_text_match()
+    _start_pending_text_timer()
+
+
+func _start_pending_text_timer() -> void:
+    %CancelPendingTextTimer.wait_time = (
+        G.manifest.cancel_pending_text_with_prefix_match_delay_sec if
+        G.level.is_pending_text_a_prefix_match else
+        G.manifest.cancel_pending_text_delay_sec
+    )
+    %CancelPendingTextTimer.start()
 
 
 func _on_cancel_pending_text_timeout() -> void:
@@ -311,6 +317,8 @@ func cancel_pending_text() -> void:
     var pending_text := G.level.pending_text.text
 
     %CancelPendingTextTimer.stop()
+
+    G.level.clear_prefix_matches()
 
     if pending_text.is_empty():
         return

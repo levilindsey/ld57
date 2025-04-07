@@ -88,6 +88,7 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var hide_clippy_duration_sec := 0.2
 
 @export var cancel_pending_text_delay_sec := 0.5
+@export var cancel_pending_text_with_prefix_match_delay_sec := 0.8
 @export var cursor_blink_period_sec := 0.5
 @export var cursor_invincible_blink_period_sec := 0.06
 
