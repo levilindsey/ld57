@@ -147,6 +147,8 @@ var fragments: Array[LevelFragment] = []
 var pitch_effect = AudioServer.get_bus_effect(3, 0) as AudioEffectPitchShift
 var keyboard_bus = AudioServer.get_bus_index("Keyboard")
 
+var spawner: Spawner
+
 @onready var camera: Camera2D = %Camera2D
 
 @onready var bubbles: Node2D = %Bubbles
@@ -172,6 +174,8 @@ func _ready() -> void:
 
     player = G.manifest.player_scene.instantiate()
     add_child(player)
+
+    spawner = Spawner.new()
 
     # Have the background color extend beyond the viewport a smidge.
     %BackgroundColor.size = G.manifest.game_area_size * 2 + Vector2i.ONE * 2
@@ -285,6 +289,7 @@ func _input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
     current_time_sec = Anim.get_current_time_sec()
+    var elapsed_time_sec := current_time_sec - start_time_sec
 
     progress_to_max_difficulty = clampf(
         (current_time_sec - start_time_sec) / G.manifest.time_to_max_difficulty_sec,
@@ -308,6 +313,8 @@ func _process(delta: float) -> void:
         scroll_speed = lerpf(G.manifest.start_scroll_speed, G.manifest.end_scroll_speed, progress_to_max_difficulty)
         var vertical_movement := scroll_speed * delta
         _add_scroll(vertical_movement)
+
+        spawner.update(elapsed_time_sec)
 
     # Remove references to AbilityControllers after they're done.
     for index in range(ability_controllers.size()):
@@ -343,58 +350,6 @@ func _add_scroll(increment: float) -> void:
 
     var depth := floori(player.position.y / player.default_line_height)
     G.hud.update_depth(depth)
-
-    _update_fragments()
-
-
-func _update_fragments() -> void:
-    var current_fragment: LevelFragment = fragments.front()
-    var last_fragment: LevelFragment = fragments.back()
-
-    var camera_bounds := get_camera_bounds()
-
-    var is_current_fragment_offscreen := \
-            camera_bounds.position.y > current_fragment.bounds.end.y
-    var is_last_fragment_onscreen := \
-            camera_bounds.end.y >= last_fragment.bounds.position.y
-
-    # Remove old fragments.
-    if is_current_fragment_offscreen:
-        fragments.pop_front()
-
-    # Spawn new fragments.
-    if is_last_fragment_onscreen:
-        spawn_fragment()
-
-
-func spawn_fragment() -> LevelFragment:
-    # FIXME:
-    # - Implement.
-    # - Move to a separate Spawner class.
-
-    var fragment_scene: PackedScene
-    if fragments.is_empty():
-        fragment_scene = G.manifest.initial_fragment
-    else:
-        # FIXME:
-        var index := randi_range(0, G.manifest.fragments.size() - 1)
-        fragment_scene = G.manifest.fragments[index]
-
-    var fragment := fragment_scene.instantiate()
-    fragments_container.add_child(fragment)
-
-    if fragments.is_empty():
-        fragment.global_position = Vector2(
-                0.0, player.global_position.y)
-    else:
-        var last_fragment: LevelFragment = fragments.back()
-        fragment.global_position = Vector2(0, last_fragment.bounds.end.y)
-
-    fragments.push_back(fragment)
-
-    fragment.cache_bounds()
-
-    return fragment
 
 
 func get_camera_bounds() -> Rect2:
@@ -503,10 +458,13 @@ func _on_main_menu_animation_finished() -> void:
 func _start_game() -> void:
     _transition_out_of_state(State.MAIN_MENU_FINISHED)
 
+    start_time_sec = Anim.get_current_time_sec()
+    current_time_sec = Anim.get_current_time_sec()
+
     _set_zoom(false)
     player.on_game_started()
 
-    spawn_fragment()
+    spawner.on_game_started()
 
     # Fade-in items.
     var tween := get_tree().create_tween()
@@ -554,7 +512,7 @@ func _game_reset() -> void:
     _transition_out_of_state(State.GAME_OVER_FINISHED)
 
     progress_to_max_difficulty = 0.0
-    start_time_sec = Anim.get_current_time_sec()
+    start_time_sec = 0.0
     current_time_sec = Anim.get_current_time_sec()
     last_space_trigger_time_sec = 0.0
     last_backspace_trigger_time_sec = 0.0
