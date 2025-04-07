@@ -18,6 +18,8 @@ var duration_sec := 0.0
 var start_opacity: float
 var end_opacity := -1.0
 
+var start_speed := 0.0
+
 var anchor_position: Vector2
 var is_clockwise := false
 
@@ -55,6 +57,8 @@ const _interval_keys := [
 #
 #     direction_angle?: -PI / 4,
 #     direction_deviaton_angle_max?: PI / 8,
+#
+#     start_speed?: 0.0, # If included, this will be used as the initial speed value. Otherwise, a random initial value will be calculated from speed.
 #
 #     # These can all be either a single number, or an array of two numbers.
 #     duration_sec?: [3.0, 4.0], # If omitted, the animation won't stop.
@@ -96,8 +100,15 @@ func _init(config: Dictionary) -> void:
     if not is_one_shot:
         S.utils.ensure(config.has("interval_sec"))
 
-        interval_min_sec = config.interval_sec[0]
-        interval_max_sec = config.interval_sec[1]
+        if config.interval_sec is float or config.interval_sec is int:
+            interval_min_sec = config.interval_sec
+            interval_max_sec = config.interval_sec
+        else:
+            S.utils.ensure(
+                config.interval_sec is Array and
+                config.interval_sec.size() == 2)
+            interval_min_sec = config.interval_sec[0]
+            interval_max_sec = config.interval_sec[1]
 
     if interval_min_sec == 0.0:
         S.utils.ensure(config.has("duration_sec"))
@@ -124,8 +135,19 @@ func _init(config: Dictionary) -> void:
             if config[key] is float or config[key] is int:
                 interval.set_value(key, config[key])
             else:
-                S.utils.ensure(config[key] is Array and config[key].size() == 2)
+                S.utils.ensure(
+                    config[key] is Array and
+                    config[key].size() == 2)
                 interval.set_range(key, config[key][0], config[key][1])
+
+    if config.has("start_speed"):
+        S.utils.ensure(config.has("speed"))
+
+    if config.has("speed"):
+        if config.has("start_speed"):
+            start_speed = config.start_speed
+        else:
+            start_speed = intervals.speed.rand_value()
 
 
 func start() -> void:
@@ -185,7 +207,7 @@ func update(current_time_sec: float) -> void:
 
 func _trigger(interval: DimensionInterval, current_time_sec: float) -> void:
     interval.start_value = interval.current_value
-    interval.end_value = randf_range(interval.min, interval.max)
+    interval.end_value = interval.rand_value()
     interval.start_time_sec = current_time_sec
     var interval_duration_sec := (
         randf_range(interval_min_sec, interval_max_sec)
@@ -201,6 +223,13 @@ func is_complete(current_time_sec: float) -> bool:
         duration_sec > 0
         and current_time_sec >= start_time_sec + duration_sec
     )
+
+
+func get_current_speed() -> float:
+    if intervals.has("speed"):
+        return intervals.speed.current_value
+    else:
+        return 0.0
 
 
 func _apply_value_to_node(interval: DimensionInterval, elapsed_sec: float) -> void:
@@ -250,18 +279,19 @@ func _apply_value_to_node(interval: DimensionInterval, elapsed_sec: float) -> vo
 func _get_initial_value(interval: DimensionInterval) -> float:
     match interval.key:
         "direction_angle", \
-        "speed", \
         "acceleration", \
         "rotation_speed":
-            return randf_range(interval.min, interval.max)
-        "skew":
-            return node.skew
+            return interval.rand_value()
+        "speed":
+            return start_speed
         "perpendicular_oscillation_amplitude":
             return 0.0
         "scale_x":
             return node.scale.x
         "scale_y":
             return node.scale.y
+        "skew":
+            return node.skew
     S.utils.ensure(false)
     return 0.0
 
@@ -298,3 +328,7 @@ class DimensionInterval extends RefCounted:
 
     func is_range() -> bool:
         return min != max
+
+
+    func rand_value() -> float:
+        return randf_range(min, max)

@@ -57,6 +57,13 @@ func set_label_offset(offset: Vector2) -> void:
     %Label.position = offset
 
 
+func get_current_speed() -> float:
+    if is_instance_valid(_animation):
+        return _animation.get_current_speed()
+    else:
+        return 0.0
+
+
 func start_animation(config: Dictionary) -> AnimationJob:
     stop_animation()
     config.node = self

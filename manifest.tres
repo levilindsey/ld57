@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GameManifest" load_steps=26 format=3 uid="uid://diqdv1fn7q7ai"]
+[gd_resource type="Resource" script_class="GameManifest" load_steps=27 format=3 uid="uid://diqdv1fn7q7ai"]
 
 [ext_resource type="PackedScene" uid="uid://cowo6nbf33hgk" path="res://src/levels/level.tscn" id="1_a47xt"]
 [ext_resource type="LabelSettings" uid="uid://cdso1r85pk7hc" path="res://src/ui/styles/ability_label_settings.tres" id="1_hkaoq"]
@@ -21,6 +21,7 @@
 [ext_resource type="Theme" uid="uid://jlt4ctadl0vs" path="res://src/ui/styles/main_theme.tres" id="10_x2iix"]
 [ext_resource type="LabelSettings" uid="uid://nkfjwbnoi8d3" path="res://src/ui/styles/pickup_label_settings.tres" id="11_gb07o"]
 [ext_resource type="LabelSettings" uid="uid://bdl75aflxruyu" path="res://src/ui/styles/cursor_label_settings.tres" id="12_bkucw"]
+[ext_resource type="PackedScene" uid="uid://pw6phoivvxka" path="res://src/entities/invisible_layout_character.tscn" id="12_lx0xc"]
 [ext_resource type="PackedScene" uid="uid://cabuqalxveq14" path="res://addons/scaffolder2/src/core/scaffolder_shell.tscn" id="18_a47xt"]
 [ext_resource type="PackedScene" uid="uid://cttwbnovsef3h" path="res://addons/scaffolder2/src/ui/hud/super_hud.tscn" id="19_pwtdj"]
 [ext_resource type="LabelSettings" uid="uid://dmhlo1reiiqm8" path="res://src/ui/styles/terrain_label_settings.tres" id="23_u8u6k"]
@@ -73,7 +74,7 @@ hud_fade_in_duration_sec = 0.2
 hud_fade_out_duration_sec = 0.1
 show_clippy_duration_sec = 0.3
 hide_clippy_duration_sec = 0.2
-cancel_pending_text_delay_sec = 0.8
+cancel_pending_text_delay_sec = 0.5
 cursor_blink_period_sec = 0.5
 cursor_invincible_blink_period_sec = 0.06
 space_key_throttle_period_sec = 0.05
@@ -102,6 +103,7 @@ hud_label_settings = ExtResource("6_hkaoq")
 hud_panel_style = ExtResource("7_lx0xc")
 player_scene = ExtResource("2_jrmap")
 character_scene = ExtResource("2_swhmb")
+invisible_layout_character_scene = ExtResource("12_lx0xc")
 hud_row_scene = ExtResource("8_hkaoq")
 god_mode = false
 dev_mode = true

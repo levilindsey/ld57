@@ -1,48 +1,8 @@
 class_name Level
 extends ScaffolderLevel
 
-
-enum State {
-    LEVEL_LOADING,
-    MAIN_MENU_PLAYING,
-    MAIN_MENU_FINISHED,
-    PLAYING,
-    GAME_OVER_PLAYING,
-    GAME_OVER_FINISHED,
-    RESETTING_LEVEL,
-}
-
-var state := State.LEVEL_LOADING
-
-var is_enter_pressed := false
-var is_space_pressed := false
-var is_backspace_pressed := false
-
-var previous_pressed_key_code := 0
-
-var progress_to_max_difficulty = 0.0
-
-var start_time_sec := 0.0
-var last_color_update_time_sec := 0.0
-var current_time_sec := 0.0
-
-var last_enter_trigger_time_sec := 0.0
-var last_space_trigger_time_sec := 0.0
-var last_backspace_trigger_time_sec := 0.0
-
-var player: Player
-
-var pitch_effect = AudioServer.get_bus_effect(3, 0) as AudioEffectPitchShift
-var keyboard_bus = AudioServer.get_bus_index("Keyboard")
-
-@onready var pending_text: PendingText = %PendingText
-
 # TODO:
 #
-# - Refactor pending characters and character alignment to use the new Word system.
-# - Add a central place for all animation configs?
-# - Add support for spaces in words.
-#   - Just need to track pending text String separately from Characters list.
 # - Implement pending text usage.
 #   - Have each character drift upward at a fixed slow rate, but have the overall
 #     container follow the player.
@@ -113,6 +73,42 @@ var keyboard_bus = AudioServer.get_bus_index("Keyboard")
 #       delay between them, if we want.
 # - Make some level fragments.
 # -
+
+
+enum State {
+    LEVEL_LOADING,
+    MAIN_MENU_PLAYING,
+    MAIN_MENU_FINISHED,
+    PLAYING,
+    GAME_OVER_PLAYING,
+    GAME_OVER_FINISHED,
+    RESETTING_LEVEL,
+}
+
+var state := State.LEVEL_LOADING
+
+var is_enter_pressed := false
+var is_space_pressed := false
+var is_backspace_pressed := false
+
+var previous_pressed_key_code := 0
+
+var progress_to_max_difficulty = 0.0
+
+var start_time_sec := 0.0
+var last_color_update_time_sec := 0.0
+var current_time_sec := 0.0
+
+var last_enter_trigger_time_sec := 0.0
+var last_space_trigger_time_sec := 0.0
+var last_backspace_trigger_time_sec := 0.0
+
+var player: Player
+
+var pitch_effect = AudioServer.get_bus_effect(3, 0) as AudioEffectPitchShift
+var keyboard_bus = AudioServer.get_bus_index("Keyboard")
+
+@onready var pending_text: PendingText = %PendingText
 
 
 func _ready() -> void:
@@ -539,11 +535,16 @@ func cancel_pending_characters() -> void:
         # Upward and very slightly leftward.
         var direction_angle := -(PI / 2 + PI / 16)
 
+        var current_speed: float = character.get_current_speed()
+
+        # Wobble the character upward.
         var config := {
             node = character,
             destroys_node_when_done = true,
             is_one_shot = true,
             ease_name = "ease_in_out",
+
+            start_speed = current_speed,
 
             direction_angle = direction_angle,
             direction_deviaton_angle_max = PI / 32,

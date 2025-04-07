@@ -78,7 +78,7 @@ func set_up_from_characters(
     %ScratchCharacters.position = -self.size / 2
 
 
-func add_text(text: String) -> void:
+func add_text(text: String, is_main_menu_text := false) -> void:
     S.utils.ensure(text != " ")
 
     text = text.to_upper()
@@ -212,6 +212,13 @@ func set_scratch_characters_offset(offset: Vector2) -> void:
     %ScratchCharacters.position = offset
 
 
+func get_current_speed() -> float:
+    if is_instance_valid(_animation):
+        return _animation.get_current_speed()
+    else:
+        return 0.0
+
+
 func start_animation(config: Dictionary) -> AnimationJob:
     stop_animation()
     config.node = self
@@ -226,6 +233,7 @@ func stop_animation() -> void:
 
 func start_characters_animation(config: Dictionary) -> void:
     for character in %VisibleCharacters.get_children():
+        config.start_speed = character.get_current_speed()
         character.start_animation(config)
 
 

@@ -232,7 +232,7 @@ func _on_main_menu_character_entered(text: String) -> void:
     if text == " ":
         await G.level.pending_text.add_space()
     else:
-        await G.level.pending_text.add_text(text)
+        await G.level.pending_text.add_text(text, true)
 
     var last_character_width := G.level.pending_text.get_last_character_size().x
 
