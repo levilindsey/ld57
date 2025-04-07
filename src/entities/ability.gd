@@ -13,7 +13,12 @@ signal pickup_collided(pickup: Pickup)
 var is_player_ability := true
 
 
-func set_up(characters: Array[Character], is_player_ability := true) -> void:
+func set_up(
+        characters: Array[Character],
+        word_position: Vector2,
+        is_player_ability := true) -> void:
+    global_position = word_position
+
     self.is_player_ability = is_player_ability
 
     %Area2D.collision_layer = (

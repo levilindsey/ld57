@@ -12,29 +12,23 @@ extends ScaffolderLevel
 #     - Game over
 #     - FIXME: LOOK AT ALL TODOs AND MAKE THIS LIST!
 #
+#
+#
+#
 # - Implement pending text usage.
 #   - When triggering a word, animate each letter downward.
 #     - Consider giving a different duration to each letter tween, so closer
 #       letters take less time.
 #     - Tween the overall container down two, with a bounce-back at the end.
 #     - Ease-in tweens for all.
+#
 # - Add abilities system.
-#   - Detect word matches.
-#   - Discard junk prefixes.
-#   - Register a list of Abilities.
-#   - Register a list of words, mapped to abilities.
-#   - For each registered Ability:
-#     - Implement a parent class.
-#     - Implement a class subclass for each ability.
-#     - This takes the collection of Characters, and reparents them.
-#     - This then animates the overall word.
-#     - This then implements collision detection (in the parent class).
-#     - This then implements custom logic for whatever.
 #   - Show abilities in the HUD.
 #   - Highlight ability text in the HUD when the pending letters are a matching
 #     prefix.
 #     - Clear highlights on game over.
-#   - Slow-down timeout for discarding text when there is a potential match.
+#   - Slow-down the timeout for discarding text when there is a potential match.
+#
 # - Add fragment spawning.
 # - Add pickups.
 # - Make pickups spawn longer words as you go.
@@ -44,23 +38,32 @@ extends ScaffolderLevel
 # - Add camera-boundary exit detection, and cleanup items:
 #   - AbandonedText, Fragments, Bubbles, Pickups, Enemies, EnemyProjectiles, PlayerProjectiles.
 # - Health bar in HUD.
-# - Floating-away character animations:
-#   - Drifting with random sideways oscillations.
-#   - Random vertical acceleration.
-#   - Random spin.
-#   - Fade-out.
-#   - Then delete them!
+#
+#
 # - Add extra animations:
 #   - Word animations for enemies and triggered abilities.
 #   - Character-by-character animations for enemies and triggered abilities.
-#   - A destroyed animation.
-#     - Have each character move away from center, in a slightly random direction,
-#       with rotation, and a fade-out, then queue_free.
-# - Fix adjacent character horizontal overlap on Alden's machine.
+#
+#
+# - Add clippy.
+# - Add more clippy text.
+# - Add any missing sfx.
+# - Add more enemies.
+# - Add more abilities.
+# - Add more word values for abilities.
+# - Add more level fragments.
+# - GAME NAME!!
+#   - Add support for auto-typing this on a line above the "HIT ENTER"?
+#
 #
 # Stretch:
+# - Fix adjacent character horizontal overlap on Alden's machine.
 # - Replace subviewport+camera with re-positioning of the level contents, for
 #   sharper text.
+# - Add an ability pre-animation step; e.g., rotating and skewing the torpedo before launching.
+#   - This would complicate the collision shape though...
+#
+#
 #
 # >>> Stuff Alden could do: <<<
 #
@@ -114,6 +117,9 @@ var player: Player
 
 var ability_controllers: Array[AbilityController] = []
 
+# {value: {count: int, name: String, is_prefix_match: bool}}
+var abilities: Dictionary[String, Dictionary] = {}
+
 var pitch_effect = AudioServer.get_bus_effect(3, 0) as AudioEffectPitchShift
 var keyboard_bus = AudioServer.get_bus_index("Keyboard")
 
@@ -126,9 +132,6 @@ var keyboard_bus = AudioServer.get_bus_index("Keyboard")
 @onready var enemies: Node2D = %Enemies
 @onready var enemy_projectiles: Node2D = %EnemyProjectiles
 @onready var player_projectiles: Node2D = %PlayerProjectiles
-
-# {value: {count: int, name: String, is_prefix_match: bool}}
-var abilities: Dictionary[String, Dictionary] = {}
 
 
 func _ready() -> void:
@@ -476,6 +479,8 @@ func _game_reset() -> void:
     last_enter_trigger_time_sec = 0.0
     last_color_update_time_sec = 0.0
     scroll_speed = 0.0
+    abilities.clear()
+    ability_controllers.clear()
 
     _update_colors()
     _set_zoom(true)

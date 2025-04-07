@@ -9,6 +9,8 @@ func _create_ability_word_from_pending_characters(value: String) -> void:
     word = G.manifest.ability_scene.instantiate()
     G.level.player_projectiles.add_child(word)
 
+    var position := G.level.pending_text.get_center()
+
     var characters := G.level.pending_text.get_characters()
 
     var matched_characters := characters.slice(characters.size() - value.length())
@@ -17,7 +19,7 @@ func _create_ability_word_from_pending_characters(value: String) -> void:
     #       by cancel_pending_text().
     #var unmatched_characters := characters.slice(0, characters.size() - value.length())
 
-    word.set_up(matched_characters, true)
+    word.set_up(matched_characters, position, true)
 
     word.stop_characters_animation()
 

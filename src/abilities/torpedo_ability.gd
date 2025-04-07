@@ -11,9 +11,6 @@ func start(config: Dictionary, value: String) -> void:
     word.enemy_collided.connect(_on_enemy_collided)
     word.enemy_projectile_collided.connect(_on_enemy_projectile_collided)
 
-    # FIXME: NEXT, AFTER IMPLEMENTING SIMPLE SHOOT, AND ABILITY TRACKING:
-    # - Add a pre-animation, for rotating and skewing the torpedo before launching.
-
     # Shoot downward.
     var animation_config := {
         node = self,
