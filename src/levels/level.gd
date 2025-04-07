@@ -45,6 +45,8 @@ extends ScaffolderLevel
 #   - Word animations for enemies and triggered abilities.
 #   - Character-by-character animations for enemies and triggered abilities.
 #
+# - Make fragment spawning bias toward harder fragments as difficulty progresses.
+#
 #
 # - Add clippy.
 # - Add more clippy text.

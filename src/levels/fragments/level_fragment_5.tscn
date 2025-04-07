@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=3 uid="uid://bgbv31xfl3u25"]
+
+[ext_resource type="Script" uid="uid://1rf0lx7805j" path="res://src/levels/fragments/level_fragment.gd" id="1_iewxr"]
+[ext_resource type="PackedScene" uid="uid://b7bgcegi8bj2" path="res://src/levels/fragment_parts/small_boulder.tscn" id="5_gmctk"]
+
+[node name="LevelFragment2" type="Node2D"]
+script = ExtResource("1_iewxr")
+
+[node name="SmallBoulder" parent="." instance=ExtResource("5_gmctk")]
+position = Vector2(104, 208)
+
+[node name="SmallBoulder3" parent="." instance=ExtResource("5_gmctk")]
+position = Vector2(303, 1002)
+
+[node name="SmallBoulder4" parent="." instance=ExtResource("5_gmctk")]
+position = Vector2(161, 1165)
+
+[node name="SmallBoulder5" parent="." instance=ExtResource("5_gmctk")]
+position = Vector2(714, 1290)
+
+[node name="SmallBoulder6" parent="." instance=ExtResource("5_gmctk")]
+position = Vector2(-52, 1749)
+
+[node name="SmallBoulder7" parent="." instance=ExtResource("5_gmctk")]
+position = Vector2(150, 1805)
+
+[node name="SmallBoulder8" parent="." instance=ExtResource("5_gmctk")]
+position = Vector2(540, 2373)
+
+[node name="SmallBoulder9" parent="." instance=ExtResource("5_gmctk")]
+position = Vector2(-19, 2081)
+
+[node name="SmallBoulder2" parent="." instance=ExtResource("5_gmctk")]
+position = Vector2(642, 491)
+
+[node name="SmallBoulder2" parent="SmallBoulder2" instance=ExtResource("5_gmctk")]
+position = Vector2(74, -258)

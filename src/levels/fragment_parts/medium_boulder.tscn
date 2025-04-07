@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3 uid="uid://doraa48qaeh6"]
+
+[ext_resource type="Script" uid="uid://bclpyyrsnsf7s" path="res://src/levels/fragment_parts/fragment_part.gd" id="1_ftxds"]
+[ext_resource type="PackedScene" uid="uid://ef20k8ml1qrb" path="res://src/levels/terrain_text.tscn" id="2_0tcqd"]
+
+[node name="MediumBoulder" type="Node2D"]
+script = ExtResource("1_ftxds")
+
+[node name="TerrainText" parent="." instance=ExtResource("2_0tcqd")]
+offset_top = -22.0
+offset_right = 85.0
+offset_bottom = 254.0
+text = "        _____
+     .'       `.
+   .'           `.
+  /               \\
+ /                 \\
+'                   |
+|                   |
+|                   |
+ \\                 /
+  \\               /
+   '.           ,'
+     '.       ,'
+       '.___,'
+"
+metadata/_edit_lock_ = true
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+metadata/_edit_lock_ = true
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D"]
+unique_name_in_owner = true
+polygon = PackedVector2Array(286, 140, 288, 226, 245, 299, 181, 372, 118, 374, 51, 298, 8, 220, 7, 137, 51, 54, 110, 2, 190, 1, 249, 57)
+metadata/_edit_lock_ = true

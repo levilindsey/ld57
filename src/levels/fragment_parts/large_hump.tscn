@@ -4,34 +4,34 @@
 [ext_resource type="PackedScene" uid="uid://ef20k8ml1qrb" path="res://src/levels/terrain_text.tscn" id="1_se1vx"]
 
 [node name="LargeHump" type="Node2D"]
-scale = Vector2(-1, 1)
 script = ExtResource("1_jg32f")
 
 [node name="TerrainText" parent="." instance=ExtResource("1_se1vx")]
-offset_right = 57.0
-offset_bottom = 245.0
-text = "\\
- \\
-  \\
-   \\
-    \\
-     \\
-      \\
-       \\
-        \\
-         \\
+offset_top = -22.0
+offset_right = 225.0
+offset_bottom = 657.0
+text = "_
+  `._
+      `.
+        `.
           \\
+           `.
+             \\
+              \\
+               |
+               |
+               |
+               |
+               |
+              /
+            ,'
+           /
           /
-         /
-        /
-       /
-      /
+        ,'
+      ,'
      /
-    /
-   /
-  /
- /
-/"
+   ,'
+_,'"
 metadata/_edit_lock_ = true
 
 [node name="Area2D" type="Area2D" parent="."]
@@ -42,5 +42,5 @@ metadata/_edit_lock_ = true
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D"]
 unique_name_in_owner = true
-polygon = PackedVector2Array(153, 339, -1, 682, 0, -3)
+polygon = PackedVector2Array(218, 371, 63, 615, 0, 654, 0, -3, 71, 32, 135, 88, 217, 232)
 metadata/_edit_lock_ = true

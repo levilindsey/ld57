@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://dlk0y80mwdql3"]
+
+[ext_resource type="Script" uid="uid://1rf0lx7805j" path="res://src/levels/fragments/level_fragment.gd" id="1_7tfhf"]
+[ext_resource type="PackedScene" uid="uid://b7bgcegi8bj2" path="res://src/levels/fragment_parts/small_boulder.tscn" id="3_017in"]
+[ext_resource type="PackedScene" uid="uid://doraa48qaeh6" path="res://src/levels/fragment_parts/medium_boulder.tscn" id="4_jod4o"]
+[ext_resource type="PackedScene" uid="uid://cw3qfh5cwppwr" path="res://src/levels/fragment_parts/small_hump.tscn" id="5_rp1aq"]
+
+[node name="LevelFragment2" type="Node2D"]
+script = ExtResource("1_7tfhf")
+
+[node name="MediumBoulder" parent="." instance=ExtResource("4_jod4o")]
+position = Vector2(249, 397)
+
+[node name="MediumBoulder" parent="MediumBoulder" instance=ExtResource("4_jod4o")]
+position = Vector2(-148, 1429)
+
+[node name="SmallBoulder" parent="." instance=ExtResource("3_017in")]
+position = Vector2(96, 1110)
+
+[node name="SmallBoulder2" parent="." instance=ExtResource("3_017in")]
+position = Vector2(550, 1410)
+
+[node name="SmallHump" parent="." instance=ExtResource("5_rp1aq")]
+position = Vector2(-2, 78)
+
+[node name="SmallHump2" parent="." instance=ExtResource("5_rp1aq")]
+position = Vector2(768, 0)
+scale = Vector2(-1, 1)
+is_left = false
+
+[node name="SmallHump3" parent="." instance=ExtResource("5_rp1aq")]
+position = Vector2(768, 2220)
+scale = Vector2(-1, 1)
+is_left = false

@@ -9,20 +9,20 @@ script = ExtResource("1_pl6gf")
 [node name="TerrainText" parent="." instance=ExtResource("1_yl0as")]
 offset_right = 57.0
 offset_bottom = 245.0
-text = "\\
- \\
+text = "`.
   \\
-   \\
-    \\
+   `.
      \\
       \\
-      /
-     /
+       `.
+        |
+        |
+        |
+       /
+     ,'
     /
-   /
-  /
- /
-/"
+  ,'
+_,'"
 metadata/_edit_lock_ = true
 
 [node name="Area2D" type="Area2D" parent="."]
@@ -33,5 +33,5 @@ metadata/_edit_lock_ = true
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D"]
 unique_name_in_owner = true
-polygon = PackedVector2Array(97, 214, -1, 433, 0, -3)
+polygon = PackedVector2Array(119, 273, 34, 414, -1, 433, 0, -3, 121, 171)
 metadata/_edit_lock_ = true

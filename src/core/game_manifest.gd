@@ -121,6 +121,10 @@ var initial_fragment := load("res://src/levels/fragments/level_fragment_initial.
 var fragments: Array[PackedScene] = [
     load("res://src/levels/fragments/level_fragment_1.tscn"),
     load("res://src/levels/fragments/level_fragment_2.tscn"),
+    load("res://src/levels/fragments/level_fragment_3.tscn"),
+    load("res://src/levels/fragments/level_fragment_4.tscn"),
+    load("res://src/levels/fragments/level_fragment_5.tscn"),
+    load("res://src/levels/fragments/level_fragment_6.tscn"),
 ]
 
 @export_group("LabelSettings")

@@ -1,10 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://bsvjkmgny0imc"]
+[gd_scene load_steps=6 format=3 uid="uid://bsvjkmgny0imc"]
 
 [ext_resource type="Script" uid="uid://1rf0lx7805j" path="res://src/levels/fragments/level_fragment.gd" id="1_2un1w"]
 [ext_resource type="PackedScene" uid="uid://cw3qfh5cwppwr" path="res://src/levels/fragment_parts/small_hump.tscn" id="2_sqp80"]
 [ext_resource type="PackedScene" uid="uid://0jgrahsf1044" path="res://src/levels/fragment_parts/medium_hump.tscn" id="3_b637u"]
 [ext_resource type="PackedScene" uid="uid://dbc33e1jngm5n" path="res://src/levels/fragment_parts/medium_ledge.tscn" id="3_d7f8d"]
-[ext_resource type="PackedScene" uid="uid://ba2606v4wkoum" path="res://src/levels/fragment_bottom.tscn" id="3_g7iin"]
 [ext_resource type="PackedScene" uid="uid://b103noue1j8nj" path="res://src/levels/fragment_parts/large_hump.tscn" id="4_ql37n"]
 
 [node name="LevelFragment1" type="Node2D"]
@@ -12,18 +11,16 @@ script = ExtResource("1_2un1w")
 
 [node name="SmallHump" parent="." instance=ExtResource("2_sqp80")]
 position = Vector2(0, 608)
-scale = Vector2(1, 1)
 
 [node name="MediumHump" parent="." instance=ExtResource("3_b637u")]
 position = Vector2(0, 1001)
 
 [node name="LargeHump" parent="." instance=ExtResource("4_ql37n")]
 position = Vector2(768, 0)
+scale = Vector2(-1, 1)
+is_left = false
 
 [node name="MediumLedge" parent="." instance=ExtResource("3_d7f8d")]
 position = Vector2(768, 720)
 scale = Vector2(-1, 1)
 is_left = false
-
-[node name="FragmentBottom" parent="." instance=ExtResource("3_g7iin")]
-position = Vector2(1, 1470)

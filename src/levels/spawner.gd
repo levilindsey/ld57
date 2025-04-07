@@ -53,6 +53,10 @@ func _spawn_fragment() -> LevelFragment:
 
     G.level.fragments.push_back(fragment)
 
+    if randf() < 0.5:
+        fragment.scale.x = -1
+        fragment.position.x = G.manifest.game_area_size.x
+
     fragment.cache_bounds()
 
     return fragment
