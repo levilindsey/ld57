@@ -38,6 +38,8 @@ func start(config: Dictionary, value: String) -> void:
 
     word.start_animation(animation_config)
 
+    G.player.play_torpedo_launch_sound()
+
 
 func _on_terrain_collided(area: Area2D) -> void:
     if not word.is_active:
@@ -66,3 +68,4 @@ func _explode() -> void:
         1.0,
         1.0,
         word.get_current_direction_angle())
+    G.player.play_torpedo_explode_sound()

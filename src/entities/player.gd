@@ -23,6 +23,8 @@ var main_menu_staggered_character_job: StaggeredCharacterJob
 
 var is_active := true
 
+var shield_controller
+
 
 func _ready() -> void:
     G.player = self
@@ -111,8 +113,40 @@ func play_reset_animation() -> void:
     reset_finished.emit()
 
 
+func activate_shield(shield_controller: ShieldAbility) -> void:
+    # End any preexisting shield.
+    if self.shield_controller != null:
+        self.shield_controller._is_complete = true
+
+    self.shield_controller = shield_controller
+
+    is_invincible_from_power_up = true
+    _update_cursor_blink_period()
+
+    play_shield_activate_sound()
+
+    await get_tree().create_timer(
+        G.manifest.invincible_from_power_up_cooldown_sec).timeout
+
+    if self.shield_controller != shield_controller:
+        # A new shield was activated while this one was still active.
+        return
+
+    shield_controller._is_complete = true
+    self.shield_controller = null
+
+    play_shield_deactivate_sound()
+
+    _on_invincible_from_power_up_timeout()
+
+
 func _on_invincible_from_damage_timeout() -> void:
     is_invincible_from_damage = false
+    _update_cursor_blink_period()
+
+
+func _on_invincible_from_power_up_timeout() -> void:
+    is_invincible_from_power_up = false
     _update_cursor_blink_period()
 
 
@@ -175,7 +209,7 @@ func on_enter(is_held_key_duplicate_press: bool) -> void:
 
     G.level.pending_text.position = self.position
 
-    $AudioStreamPlayer_enter.play()
+    %EnterSound.play()
 
 
 func on_tab(is_held_key_duplicate_press: bool) -> void:
@@ -195,14 +229,12 @@ func on_space(is_held_key_duplicate_press: bool) -> void:
 
         %CancelPendingTextTimer.start()
 
-        # SFX
-        $AudioStreamPlayer_keyboard.play()
+        %KeyboardSound.play()
     else:
         # Space failed.
         G.level.pending_text.delete_last_character()
 
-        # SFX
-        $AudioStreamPlayer_failure.play()
+        %FailureSound.play()
 
     G.level.check_ability_text_match()
 
@@ -222,12 +254,10 @@ func on_backspace(is_held_key_duplicate_press: bool) -> void:
 
         %CancelPendingTextTimer.start()
 
-        # SFX
-        $AudioStreamPlayer_keyboard.play()
+        %KeyboardSound.play()
     else:
         # Backspace failed.
-        # SFX
-        $AudioStreamPlayer_failure.play()
+        %FailureSound.play()
 
     var was_something_deleted := \
         await G.level.pending_text.delete_last_character()
@@ -246,7 +276,7 @@ func _on_main_menu_character_entered(text: String) -> void:
 
     self.position.x += last_character_width
 
-    $AudioStreamPlayer_keyboard.play()
+    %KeyboardSound.play()
 
 
 func on_character_entered(text: String, is_held_key_duplicate_press: bool) -> void:
@@ -259,14 +289,12 @@ func on_character_entered(text: String, is_held_key_duplicate_press: bool) -> vo
     if desired_position_x <= max_position_x:
         # Character entered successfully.
         self.position.x = desired_position_x
-        $AudioStreamPlayer_keyboard.play()
+        %KeyboardSound.play()
         %CancelPendingTextTimer.start()
     else:
         # Character failed.
         G.level.pending_text.delete_last_character()
-
-        # SFX
-        $AudioStreamPlayer_failure.play()
+        %FailureSound.play()
 
         return
 
@@ -294,8 +322,6 @@ func cancel_pending_text() -> void:
 
 func on_ability_triggered() -> void:
     cancel_pending_text()
-    # SFX
-    $AudioStreamPlayer_word.play()
 
 
 func _take_damage() -> void:
@@ -317,15 +343,15 @@ func _take_damage() -> void:
         S.log.print("Player died")
         is_active = false
         G.level.game_game_over()
-        $AudioStreamPlayer_player_died.play()
+        %PlayerDiedSound.play()
     else:
-        $AudioStreamPlayer_player_damaged.play()
+        %PlayerDamagedSound.play()
 
 
 func _update_cursor_blink_period() -> void:
     var period := (
         G.manifest.cursor_invincible_blink_period_sec
-        if is_invincible_from_damage
+        if is_invincible_from_damage or is_invincible_from_power_up
         else G.manifest.cursor_blink_period_sec
     )
     %CursorBlinkTimer.stop()
@@ -365,4 +391,20 @@ func _on_collided_with_pickup(pickup: Pickup) -> void:
     G.level.add_ability(pickup.ability_name, pickup.ability_value)
     pickup.explode_pickup()
 
-    $AudioStreamPlayer_pickup.play()
+    %PickupSound.play()
+
+
+func play_torpedo_launch_sound() -> void:
+    %TorpedoLaunchSound.play()
+
+
+func play_torpedo_explode_sound() -> void:
+    %TorpedoExplodeSound.play()
+
+
+func play_shield_activate_sound() -> void:
+    %ShieldActivateSound.play()
+
+
+func play_shield_deactivate_sound() -> void:
+    %ShieldDeactivateSonud.play()

@@ -1,7 +1,7 @@
 class_name Level
 extends ScaffolderLevel
 
-# TODO:
+# TODO: MASTER LIST
 #
 # - Hook-up placeholder vfx nodes for the following.
 # - MAKE A PRIORITY LIST FOR ALDEN:
@@ -69,7 +69,6 @@ extends ScaffolderLevel
 #
 # - Game name!!
 # - Music
-# - SFX (look for `TODO(Alden)`)
 # - Add Clippy GIF.
 # - Add Clippy text.
 #   - Say something for each new word you pickup?
@@ -166,8 +165,6 @@ func _ready() -> void:
     player.reset_finished.connect(_on_reset_finished)
 
     S.log.print("Level ready")
-
-    # TODO(Alden): Start playing music!
 
     await get_tree().create_timer(0.1).timeout
 
@@ -429,7 +426,7 @@ func _start_game() -> void:
         _interpolate_fade_opacity, 0.0, 1.0, G.manifest.hud_fade_out_duration_sec
     ).set_delay(G.manifest.main_menu_zoom_out_duration_sec)
 
-    # TODO:
+    # TODO: SPAWNING
     # - Start spawning enemies and other level fragments (or is that just from collision detection with scroll movement?)
     # - Start spawning bubbles
 
@@ -458,9 +455,6 @@ func game_game_over() -> void:
     G.hud.set_clippy_text(
         G.manifest.clippy_game_over_text,
         G.manifest.clippy_game_over_text_duration_sec)
-
-    # TODO(Alden): SFX
-    pass
 
 
 func _on_game_over_animation_finished() -> void:

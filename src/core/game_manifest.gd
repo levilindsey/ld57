@@ -97,6 +97,7 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var clippy_character_interval_sec := 0.06
 
 @export var invincible_from_damage_cooldown_sec := 3.0
+@export var invincible_from_power_up_cooldown_sec := 4.5
 
 @export var start_scroll_speed := 100.0
 @export var end_scroll_speed := 400.0
@@ -140,7 +141,7 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var enemy_scene := preload("res://src/entities/enemy.tscn")
 @export var pickup_scene := preload("res://src/entities/pickup.tscn")
 
-# TODO: Add more values!
+# TODO: Add more ability text alternatives!
 var abilities := [
     {
         name = "shield",
@@ -173,18 +174,12 @@ var abilities := [
 ]
 
 var debug_initial_abilities := [
-    {
-        name = "torpedo",
-        value = "shoot",
-    },
-    {
-        name = "torpedo",
-        value = "fire",
-    },
-    {
-        name = "torpedo",
-        value = "shoot",
-    },
+    {name = "torpedo", value = "shoot"},
+    {name = "torpedo", value = "fire"},
+    {name = "torpedo", value = "shoot"},
+
+    {name = "shield", value = "shield"},
+    {name = "shield", value = "barrier"},
 ]
 
 
