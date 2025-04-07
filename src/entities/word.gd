@@ -12,11 +12,7 @@ var size := Vector2.ZERO
 var is_active := true
 
 
-func set_up_from_text(
-        parent: Node,
-        text: String,
-        type: Character.Type,
-        position: Vector2) -> void:
+func set_up_from_text(text: String, type: Character.Type) -> void:
     if text.is_empty():
         clear()
         return

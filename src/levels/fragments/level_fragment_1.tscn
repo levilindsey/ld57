@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://bsvjkmgny0imc"]
+[gd_scene load_steps=7 format=3 uid="uid://bsvjkmgny0imc"]
 
 [ext_resource type="Script" uid="uid://1rf0lx7805j" path="res://src/levels/fragments/level_fragment.gd" id="1_2un1w"]
 [ext_resource type="PackedScene" uid="uid://cw3qfh5cwppwr" path="res://src/levels/fragment_parts/small_hump.tscn" id="2_sqp80"]
 [ext_resource type="PackedScene" uid="uid://0jgrahsf1044" path="res://src/levels/fragment_parts/medium_hump.tscn" id="3_b637u"]
 [ext_resource type="PackedScene" uid="uid://dbc33e1jngm5n" path="res://src/levels/fragment_parts/medium_ledge.tscn" id="3_d7f8d"]
 [ext_resource type="PackedScene" uid="uid://b103noue1j8nj" path="res://src/levels/fragment_parts/large_hump.tscn" id="4_ql37n"]
+[ext_resource type="PackedScene" uid="uid://bk1dykytshwyd" path="res://src/levels/pickup_position.tscn" id="6_2un1w"]
 
 [node name="LevelFragment1" type="Node2D"]
 script = ExtResource("1_2un1w")
@@ -24,3 +25,6 @@ is_left = false
 position = Vector2(768, 720)
 scale = Vector2(-1, 1)
 is_left = false
+
+[node name="PickupPosition" parent="." instance=ExtResource("6_2un1w")]
+position = Vector2(628, 687)

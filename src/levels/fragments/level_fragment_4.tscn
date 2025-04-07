@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://ceg2cngwqdk7y"]
+[gd_scene load_steps=5 format=3 uid="uid://ceg2cngwqdk7y"]
 
 [ext_resource type="Script" uid="uid://1rf0lx7805j" path="res://src/levels/fragments/level_fragment.gd" id="1_xepn1"]
 [ext_resource type="PackedScene" uid="uid://b103noue1j8nj" path="res://src/levels/fragment_parts/large_hump.tscn" id="2_afp7e"]
 [ext_resource type="PackedScene" uid="uid://qt7ckecdj6ig" path="res://src/levels/fragment_parts/large_ledge.tscn" id="3_hkeau"]
+[ext_resource type="PackedScene" uid="uid://bk1dykytshwyd" path="res://src/levels/pickup_position.tscn" id="4_xepn1"]
 
 [node name="LevelFragment2" type="Node2D"]
 script = ExtResource("1_xepn1")
@@ -21,3 +22,6 @@ position = Vector2(2, 823)
 position = Vector2(768, 1495)
 scale = Vector2(-1, 1)
 is_left = false
+
+[node name="PickupPosition" parent="." instance=ExtResource("4_xepn1")]
+position = Vector2(100, 777)

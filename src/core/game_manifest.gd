@@ -150,6 +150,7 @@ var fragments: Array[PackedScene] = [
 @export var pickup_scene := preload("res://src/entities/pickup.tscn")
 
 # TODO: Add more ability text alternatives!
+# [{name: String, controller: Script, values: [String]}]
 var abilities := [
     {
         name = "shield",

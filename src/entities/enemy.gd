@@ -2,12 +2,8 @@ class_name Enemy
 extends Word
 
 
-func set_up(parent: Node, text: String, position: Vector2) -> void:
-    set_up_from_text(
-        parent,
-        text,
-        Character.Type.ENEMY,
-        position)
+func set_up(text: String) -> void:
+    set_up_from_text(text, Character.Type.ENEMY)
 
 
 func on_hit_with_torpedo(torpedo: TorpedoAbility) -> void:

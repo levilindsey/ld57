@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://ccim1pkxgk834"]
+[gd_scene load_steps=7 format=3 uid="uid://ccim1pkxgk834"]
 
 [ext_resource type="Script" uid="uid://1rf0lx7805j" path="res://src/levels/fragments/level_fragment.gd" id="1_owpb7"]
 [ext_resource type="PackedScene" uid="uid://b103noue1j8nj" path="res://src/levels/fragment_parts/large_hump.tscn" id="2_xscja"]
 [ext_resource type="PackedScene" uid="uid://0jgrahsf1044" path="res://src/levels/fragment_parts/medium_hump.tscn" id="3_7mqq5"]
 [ext_resource type="PackedScene" uid="uid://cw3qfh5cwppwr" path="res://src/levels/fragment_parts/small_hump.tscn" id="4_necg2"]
 [ext_resource type="PackedScene" uid="uid://b7bgcegi8bj2" path="res://src/levels/fragment_parts/small_boulder.tscn" id="5_332lx"]
+[ext_resource type="PackedScene" uid="uid://bk1dykytshwyd" path="res://src/levels/pickup_position.tscn" id="6_xscja"]
 
 [node name="LevelFragment2" type="Node2D"]
 script = ExtResource("1_owpb7")
@@ -26,3 +27,6 @@ is_left = false
 
 [node name="SmallBoulder" parent="." instance=ExtResource("5_332lx")]
 position = Vector2(321, 905)
+
+[node name="PickupPosition" parent="." instance=ExtResource("6_xscja")]
+position = Vector2(379, 1160)
