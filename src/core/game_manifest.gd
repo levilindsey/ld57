@@ -188,6 +188,15 @@ var debug_initial_abilities := [
 ]
 
 
+func sanitize() -> void:
+    for entry in abilities:
+        for i in range(entry.values.size()):
+            entry.values[i] = entry.values[i].to_upper()
+
+    for entry in debug_initial_abilities:
+        entry.value = entry.value.to_upper()
+
+
 func get_start_color(type: ColorType) -> Color:
     match type:
         ColorType.BACKGROUND:

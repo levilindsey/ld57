@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GameManifest" load_steps=27 format=3 uid="uid://diqdv1fn7q7ai"]
+[gd_resource type="Resource" script_class="GameManifest" load_steps=31 format=3 uid="uid://diqdv1fn7q7ai"]
 
 [ext_resource type="PackedScene" uid="uid://cowo6nbf33hgk" path="res://src/levels/level.tscn" id="1_a47xt"]
 [ext_resource type="LabelSettings" uid="uid://cdso1r85pk7hc" path="res://src/ui/styles/ability_label_settings.tres" id="1_hkaoq"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://bsvjkmgny0imc" path="res://src/levels/level_fragment_1.tscn" id="2_e8rv8"]
 [ext_resource type="PackedScene" uid="uid://bd0oy4phn6nu1" path="res://src/entities/player.tscn" id="2_jrmap"]
 [ext_resource type="PackedScene" uid="uid://n6lw7r40aajb" path="res://src/entities/character.tscn" id="2_swhmb"]
+[ext_resource type="PackedScene" uid="uid://13mixtcjbcyo" path="res://src/entities/ability.tscn" id="2_u8u6k"]
+[ext_resource type="PackedScene" uid="uid://blu82c4hj1hf0" path="res://src/entities/bubble.tscn" id="4_etdav"]
 [ext_resource type="LabelSettings" uid="uid://do32fel5lqa8q" path="res://src/ui/styles/enemy_label_settings.tres" id="4_ncyll"]
 [ext_resource type="PackedScene" uid="uid://cfb2gmm7xhvgn" path="res://addons/scaffolder2/src/ui/screens/credits/credits_screen.tscn" id="5_fxhmy"]
 [ext_resource type="PackedScene" uid="uid://574as3677v4o" path="res://src/ui/game_game_screen.tscn" id="6_443y3"]
@@ -16,12 +18,14 @@
 [ext_resource type="Script" uid="uid://c4to1w0fm01fy" path="res://src/core/game_manifest.gd" id="8_h5d7k"]
 [ext_resource type="PackedScene" uid="uid://bc1qluy2ieskk" path="res://src/ui/hud_row.tscn" id="8_hkaoq"]
 [ext_resource type="PackedScene" uid="uid://bxmph3ye6mk0i" path="res://addons/scaffolder2/src/ui/screens/main_menu/main_menu_screen.tscn" id="8_rn5de"]
+[ext_resource type="PackedScene" uid="uid://bhhnv14xtftvd" path="res://src/entities/enemy.tscn" id="9_khe4v"]
 [ext_resource type="PackedScene" uid="uid://bc5n0nmh6rv0c" path="res://addons/scaffolder2/src/ui/screens/pause/pause_screen.tscn" id="9_opie4"]
 [ext_resource type="PackedScene" uid="uid://cn5n2vl7vmqeg" path="res://addons/scaffolder2/src/ui/screens/settings/settings_screen.tscn" id="10_ay283"]
 [ext_resource type="Theme" uid="uid://jlt4ctadl0vs" path="res://src/ui/styles/main_theme.tres" id="10_x2iix"]
 [ext_resource type="LabelSettings" uid="uid://nkfjwbnoi8d3" path="res://src/ui/styles/pickup_label_settings.tres" id="11_gb07o"]
 [ext_resource type="LabelSettings" uid="uid://bdl75aflxruyu" path="res://src/ui/styles/cursor_label_settings.tres" id="12_bkucw"]
 [ext_resource type="PackedScene" uid="uid://pw6phoivvxka" path="res://src/entities/invisible_layout_character.tscn" id="12_lx0xc"]
+[ext_resource type="PackedScene" uid="uid://bt10de26m6lcq" path="res://src/entities/pickup.tscn" id="18_4bhqj"]
 [ext_resource type="PackedScene" uid="uid://cabuqalxveq14" path="res://addons/scaffolder2/src/core/scaffolder_shell.tscn" id="18_a47xt"]
 [ext_resource type="PackedScene" uid="uid://cttwbnovsef3h" path="res://addons/scaffolder2/src/ui/hud/super_hud.tscn" id="19_pwtdj"]
 [ext_resource type="LabelSettings" uid="uid://dmhlo1reiiqm8" path="res://src/ui/styles/terrain_label_settings.tres" id="23_u8u6k"]
@@ -105,10 +109,15 @@ player_scene = ExtResource("2_jrmap")
 character_scene = ExtResource("2_swhmb")
 invisible_layout_character_scene = ExtResource("12_lx0xc")
 hud_row_scene = ExtResource("8_hkaoq")
+ability_scene = ExtResource("2_u8u6k")
+bubble_scene = ExtResource("4_etdav")
+enemy_scene = ExtResource("9_khe4v")
+pickup_scene = ExtResource("18_4bhqj")
 god_mode = false
 dev_mode = true
 skip_main_menu_in_dev_mode = true
 pauses_on_focus_out = false
+is_screenshot_hotkey_enabled = false
 show_hud = true
 main_theme = ExtResource("10_x2iix")
 dev_mode_level = ExtResource("1_a47xt")

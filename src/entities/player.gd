@@ -26,6 +26,7 @@ var is_active := true
 
 func _ready() -> void:
     G.player = self
+    GHack.player = self
 
     %Cursor.scale = G.manifest.default_cursor_scale * Vector2.ONE
 
@@ -162,7 +163,7 @@ func set_current_text_size() -> void:
     current_line_height = default_line_height
     const HACK_OFFSET_Y := 2
     G.level.pending_text.set_scratch_characters_offset(
-            Vector2(0, -current_character_size.y / 2 + HACK_OFFSET_Y))
+            Vector2(0, -current_character_size.y / 2.0 + HACK_OFFSET_Y))
 
 
 func on_enter(is_held_key_duplicate_press: bool) -> void:
@@ -281,14 +282,14 @@ func cancel_pending_text() -> void:
 
     %CancelPendingTextTimer.stop()
 
-    G.level.pending_text.position = self.position
-
     if pending_text.is_empty():
         return
 
     S.log.print("Pending text canceled: %s" % pending_text)
 
     G.level.cancel_pending_characters()
+
+    G.level.pending_text.position = self.position
 
 
 func on_ability_triggered() -> void:

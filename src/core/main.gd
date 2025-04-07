@@ -7,6 +7,9 @@ extends Container
 
 
 func _ready() -> void:
+    randomize()
+
     G.main = self
+    GHack.main = self
 
     S.set_up(manifest)

@@ -14,7 +14,9 @@ func on_hit_with_torpedo(torpedo: TorpedoAbility) -> void:
     explode_from_point(
         torpedo.global_position,
         PI,
-        100)
+        1.0,
+        get_current_speed(),
+        get_current_direction_angle())
 
 
 # TODO: Implement.

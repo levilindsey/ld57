@@ -9,6 +9,10 @@ static func get_current_time_sec() -> float:
     return Time.get_ticks_msec() / 1000.0
 
 
+func _ready() -> void:
+    GHack.anim = self
+
+
 func _process(delta: float) -> void:
     var current_time := get_current_time_sec()
 

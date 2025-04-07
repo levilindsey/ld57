@@ -36,11 +36,11 @@ func set_up(characters: Array[Character], is_player_ability := true) -> void:
 func _on_area_2d_area_entered(area: Area2D) -> void:
     if area.collision_layer & GameManifest.TERRAIN_COLLISION_LAYER:
         terrain_collided.emit(area)
-    if area.collision_layer & GameManifest.ENEMY_COLLISION_LAYER:
+    elif area.collision_layer & GameManifest.ENEMY_COLLISION_LAYER:
         enemy_collided.emit(area.get_parent())
     elif area.collision_layer & GameManifest.ENEMY_PROJECTILE_COLLISION_LAYER:
         enemy_projectile_collided.emit(area.get_parent())
-    if area.collision_layer & GameManifest.PLAYER_COLLISION_LAYER:
+    elif area.collision_layer & GameManifest.PLAYER_COLLISION_LAYER:
         player_collided.emit(area.get_parent())
         if not is_player_ability and is_active and G.player.is_active:
             G.player.on_collided_with_enemy_projectile(self)
@@ -57,4 +57,6 @@ func on_hit_with_torpedo(torpedo) -> void:
         explode_from_point(
             torpedo.global_position,
             PI,
-            100)
+            1.0,
+            get_current_speed(),
+            get_current_direction_angle())

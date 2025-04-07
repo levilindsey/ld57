@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 S="*res://addons/scaffolder2/src/core/s.gd"
 G="*res://src/core/game_globals.gd"
 Anim="*res://src/core/animation_controller.gd"
+GHack="*res://src/core/hack_globals.gd"
 
 [display]
 

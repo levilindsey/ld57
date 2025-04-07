@@ -55,8 +55,8 @@ const _interval_keys := [
 #
 #     ease_name?: "ease_in_out",
 #
-#     direction_angle?: -PI / 4,
-#     direction_deviaton_angle_max?: PI / 8,
+#     direction_angle?: -PI / 4.0,
+#     direction_deviaton_angle_max?: PI / 8.0,
 #
 #     start_speed?: 0.0, # If included, this will be used as the initial speed value. Otherwise, a random initial value will be calculated from speed.
 #
@@ -70,7 +70,7 @@ const _interval_keys := [
 #     perpendicular_oscillation_amplitude?: [0, 10.0],
 #     scale_x?: [0.9, 1.1],
 #     scale_y?: [0.9, 1.1],
-#     skew?: [0, PI / 8],
+#     skew?: [0, PI / 8.0],
 # })
 func _init(config: Dictionary) -> void:
     S.utils.ensure(config.has("node"))

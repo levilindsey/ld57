@@ -108,7 +108,11 @@ var last_enter_trigger_time_sec := 0.0
 var last_space_trigger_time_sec := 0.0
 var last_backspace_trigger_time_sec := 0.0
 
+var scroll_speed := 0.0
+
 var player: Player
+
+var ability_controllers: Array[AbilityController] = []
 
 var pitch_effect = AudioServer.get_bus_effect(3, 0) as AudioEffectPitchShift
 var keyboard_bus = AudioServer.get_bus_index("Keyboard")
@@ -132,13 +136,17 @@ func _ready() -> void:
 
     G.level = self
     G.manifest = S.manifest
+    GHack.level = self
+    GHack.manifest = S.manifest
+
+    G.manifest.sanitize()
 
     player = G.manifest.player_scene.instantiate()
     add_child(player)
 
     # Have the background color extend beyond the viewport a smidge.
     %BackgroundColor.size = G.manifest.game_area_size * 2 + Vector2i.ONE * 2
-    %BackgroundColor.position = -(G.manifest.game_area_size / 2 + Vector2i.ONE)
+    %BackgroundColor.position = - (G.manifest.game_area_size / 2 + Vector2i.ONE)
     %BackgroundColor.color = G.manifest.get_start_color(GameManifest.ColorType.BACKGROUND)
 
     # Start zoomed in.
@@ -270,9 +278,16 @@ func _process(delta: float) -> void:
             _update_colors()
 
         # Scroll.
-        var scroll_speed := lerpf(G.manifest.start_scroll_speed, G.manifest.end_scroll_speed, progress_to_max_difficulty)
+        scroll_speed = lerpf(G.manifest.start_scroll_speed, G.manifest.end_scroll_speed, progress_to_max_difficulty)
         var vertical_movement := scroll_speed * delta
         _add_scroll(vertical_movement)
+
+    # Remove references to AbilityControllers after they're done.
+    for index in range(ability_controllers.size()):
+        var reverse_index := ability_controllers.size() - 1 - index
+        var controller := ability_controllers[reverse_index]
+        if controller.is_complete():
+            ability_controllers.remove_at(reverse_index)
 
 
 func _trigger_space(is_held_key_duplicate_press := false) -> void:
@@ -296,7 +311,7 @@ func new_line() -> void:
 
 func _add_scroll(increment: float) -> void:
     player.position.y += increment
-    %PendingText.position.y += increment
+    pending_text.position.y += increment
     %Camera2D.position.y += increment
 
     var depth := floori(player.position.y / player.default_line_height)
@@ -460,6 +475,7 @@ func _game_reset() -> void:
     last_backspace_trigger_time_sec = 0.0
     last_enter_trigger_time_sec = 0.0
     last_color_update_time_sec = 0.0
+    scroll_speed = 0.0
 
     _update_colors()
     _set_zoom(true)
@@ -513,13 +529,13 @@ func _interpolate_fade_opacity(opacity: float) -> void:
 
 func _get_collections() -> Array[Node2D]:
     return [
-        %Bubbles,
-        %Fragments,
-        %AbandonedText,
-        %Pickups,
-        %Enemies,
-        %EnemyProjectiles,
-        %PlayerProjectiles,
+        bubbles,
+        fragments,
+        abandoned_text,
+        pickups,
+        enemies,
+        enemy_projectiles,
+        player_projectiles,
     ]
 
 
@@ -548,8 +564,10 @@ func _set_zoom(zoomed_in: bool) -> void:
 
 
 func cancel_pending_characters() -> void:
-    for character in %PendingText.get_characters():
-        character.reparent(%AbandonedText, true)
+    const HACK_SCROLL_SPEED_MULTIPLIER := 1 / 60.0
+
+    for character in pending_text.get_characters():
+        character.reparent(abandoned_text, true)
 
         # Wobble the character upward.
         var config := {
@@ -558,11 +576,12 @@ func cancel_pending_characters() -> void:
             is_one_shot = true,
             ease_name = "ease_in_out",
 
-            start_speed = character.get_current_speed(),
+            start_speed = character.get_current_speed() - scroll_speed * HACK_SCROLL_SPEED_MULTIPLIER,
 
             # Upward and very slightly leftward.
-            direction_angle = -(PI / 2 + PI / 16),
-            direction_deviaton_angle_max = PI / 32,
+            #direction_angle = - (PI / 2.0 + PI / 16.0),
+            direction_angle = - PI / 2.0,
+            direction_deviaton_angle_max = PI / 32.0,
 
             # These can all be either a single number, or an array of two numbers.
             duration_sec = [1.0, 3.0], # If omitted, the animation won't stop.
@@ -579,7 +598,7 @@ func cancel_pending_characters() -> void:
 
         Anim.start_animation(config)
 
-    %PendingText.clear()
+    pending_text.clear()
 
 
 func _find_ability_config(ability_name: String) -> Dictionary:
@@ -623,6 +642,7 @@ func trigger_ability(ability_name: String, ability_value: String) -> void:
 
     var controller: AbilityController = config.controller.new()
     controller.start(config, ability_value)
+    ability_controllers.push_back(controller)
 
     player.on_ability_triggered()
 

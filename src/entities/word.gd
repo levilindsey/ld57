@@ -28,7 +28,7 @@ func set_up_from_text(
 
     for letter in text:
         var layout_character: InvisibleLayoutCharacter = \
-                G.manifest.invisible_layout_character_scene.instantiate()
+                GHack.manifest.invisible_layout_character_scene.instantiate()
         layout_character.text = letter
         layout_character.set_type(type)
         %ScratchCharacters.add_child(layout_character)
@@ -41,14 +41,14 @@ func set_up_from_text(
         return
 
     self.size = %ScratchCharacters.size
-    %ScratchCharacters.position = -self.size / 2
+    %ScratchCharacters.position = - self.size / 2.0
 
     for layout_character in %ScratchCharacters.get_children():
-        var character: Character = G.manifest.character_scene.instantiate()
+        var character: Character = GHack.manifest.character_scene.instantiate()
         character.set_text(layout_character.text)
         character.set_type(type)
         %VisibleCharacters.add_child(character)
-        var text_extents: Vector2 = layout_character.size / 2
+        var text_extents: Vector2 = layout_character.size / 2.0
         var character_position: Vector2 = \
                 layout_character.global_position + text_extents
         character.set_label_offset(-text_extents)
@@ -68,7 +68,7 @@ func set_up_from_characters(
         character.set_type(type)
 
         var layout_character: InvisibleLayoutCharacter = \
-                G.manifest.invisible_layout_character_scene.instantiate()
+                GHack.manifest.invisible_layout_character_scene.instantiate()
         layout_character.text = character.get_text()
         layout_character.set_type(type)
         %ScratchCharacters.add_child(layout_character)
@@ -81,7 +81,7 @@ func set_up_from_characters(
         return
 
     self.size = %ScratchCharacters.size
-    %ScratchCharacters.position = -self.size / 2
+    %ScratchCharacters.position = - self.size / 2.0
 
 
 func add_text(text: String, is_main_menu_text := false) -> void:
@@ -92,7 +92,7 @@ func add_text(text: String, is_main_menu_text := false) -> void:
     self.text += text
 
     var layout_character: InvisibleLayoutCharacter = \
-            G.manifest.invisible_layout_character_scene.instantiate()
+            GHack.manifest.invisible_layout_character_scene.instantiate()
     layout_character.text = text
     layout_character.set_type(_type)
     %ScratchCharacters.add_child(layout_character)
@@ -106,11 +106,11 @@ func add_text(text: String, is_main_menu_text := false) -> void:
 
     self.size = %ScratchCharacters.size
 
-    var character: Character = G.manifest.character_scene.instantiate()
+    var character: Character = GHack.manifest.character_scene.instantiate()
     character.set_text(text)
     character.set_type(_type)
     %VisibleCharacters.add_child(character)
-    var text_extents := layout_character.size / 2
+    var text_extents := layout_character.size / 2.0
     var character_position := \
             layout_character.global_position + text_extents
     character.set_label_offset(-text_extents)
@@ -124,7 +124,7 @@ func add_character(character: Character) -> void:
     character.reparent(%VisibleCharacters, true)
 
     var layout_character: InvisibleLayoutCharacter = \
-            G.manifest.invisible_layout_character_scene.instantiate()
+            GHack.manifest.invisible_layout_character_scene.instantiate()
     layout_character.text = character.get_text()
     layout_character.set_type(_type)
     %ScratchCharacters.add_child(layout_character)
@@ -178,15 +178,25 @@ func clear() -> void:
         character.queue_free()
 
 
-func get_characters() -> Array:
-    return %VisibleCharacters.get_children()
+func destroy() -> void:
+    stop_animation()
+    stop_characters_animation()
+    clear()
+    queue_free()
+
+
+func get_characters() -> Array[Character]:
+    var nodes := %VisibleCharacters.get_children()
+    var characters: Array[Character]
+    characters.assign(nodes)
+    return characters
 
 
 func add_space() -> void:
     text += " "
 
     var layout_character: InvisibleLayoutCharacter = \
-            G.manifest.invisible_layout_character_scene.instantiate()
+            GHack.manifest.invisible_layout_character_scene.instantiate()
     layout_character.text = " "
     layout_character.set_type(_type)
     %ScratchCharacters.add_child(layout_character)
@@ -208,7 +218,7 @@ func get_last_character_size() -> Vector2:
 
 
 func get_center() -> Vector2:
-    return %ScratchCharacters.global_position + %ScratchCharacters.size / 2
+    return %ScratchCharacters.global_position + %ScratchCharacters.size / 2.0
 
 
 func set_type(type: Character.Type) -> void:
@@ -262,7 +272,9 @@ func stop_characters_animation() -> void:
 func explode_from_point(
         impact_point: Vector2,
         spread_angle: float,
-        strength: float) -> void:
+        strength: float,
+        new_word_speed: float,
+        new_word_direction_angle: float) -> void:
     is_active = false
 
     # - Sort characters by distance to impact point.
@@ -274,12 +286,14 @@ func explode_from_point(
                 b.global_position.distance_squared_to(impact_point)))
 
     var direction_angle_offset := 0
-    var direction_angle_delta := spread_angle / characters.size()
+    var direction_angle_delta := spread_angle / maxf(characters.size() - 1, 1)
+
+    var duration_sec := 1.0
 
     for character in characters:
         var base_direction_angle: float = \
                 (character.global_position - impact_point).angle()
-        var offset := direction_angle_delta * (1 if randf() < 0.5 else -1)
+        var offset := direction_angle_offset * (1 if randf() < 0.5 else -1)
         var direction_angle := base_direction_angle + offset
 
         direction_angle_offset += direction_angle_delta
@@ -289,22 +303,21 @@ func explode_from_point(
             node = character,
             destroys_node_when_done = true,
             is_one_shot = true,
-            ease_name = "linear",
+            ease_name = "ease_out",
 
-            start_speed = 100.0 * strength,
+            start_speed = 6.0 * strength,
 
             direction_angle = direction_angle,
-            direction_deviaton_angle_max = PI / 128,
+            #direction_deviaton_angle_max = PI / 128.0,
 
             # These can all be either a single number, or an array of two numbers.
-            duration_sec = 2.0, # If omitted, the animation won't stop.
-            #end_opacity = 0.0,
+            duration_sec = duration_sec, # If omitted, the animation won't stop.
+            end_opacity = 0.0,
             #interval_sec = 100.0, # If ommitted, duration_sec must be included.
-            # FIXME: TEST THIS.
-            speed = 0.0 * strength,
+            # Slow to a stop.
+            speed = 0.0,
             #acceleration = -2,
-            # FIXME: TEST THIS (turn off skew to test it)
-            rotation_speed = [0.01, 0.5],
+            rotation_speed = [0.01, 15.0],
             #perpendicular_oscillation_amplitude = [0, 100.0],
             #scale_x = [0.5, 4.0],
             #scale_y = [0.5, 4.0],
@@ -312,3 +325,36 @@ func explode_from_point(
         }
 
         character.start_animation(config)
+
+    stop_animation()
+
+    if new_word_speed == 0.0:
+        await get_tree().create_timer(duration_sec).timeout
+        destroy()
+    else:
+        # Slide straight.
+        var config := {
+            node = self,
+            destroys_node_when_done = true,
+            is_one_shot = true,
+            ease_name = "ease_out",
+
+            start_speed = new_word_speed,
+
+            direction_angle = new_word_direction_angle,
+            #direction_deviaton_angle_max = PI / 128.0,
+
+            # These can all be either a single number, or an array of two numbers.
+            duration_sec = duration_sec, # If omitted, the animation won't stop.
+            #end_opacity = 0.0,
+            #interval_sec = 100.0, # If ommitted, duration_sec must be included.
+            # Slow to a stop.
+            speed = 0.0,
+            #acceleration = -2,
+            #rotation_speed = [0.01, 0.5],
+            #perpendicular_oscillation_amplitude = [0, 100.0],
+            #scale_x = [0.5, 4.0],
+            #scale_y = [0.5, 4.0],
+            #skew = [-PI, PI],
+        }
+        start_animation(config)

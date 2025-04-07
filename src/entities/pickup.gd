@@ -22,7 +22,9 @@ func explode_pickup() -> void:
     explode_from_point(
         global_position,
         PI,
-        10)
+        1.0,
+        get_current_speed(),
+        get_current_direction_angle())
 
 
 # TODO: Implement.

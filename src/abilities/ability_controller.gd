@@ -13,3 +13,7 @@ func start(config: Dictionary, value: String) -> void:
     self.value = value
 
     start_time_sec = Anim.get_current_time_sec()
+
+
+func is_complete() -> bool:
+    return false

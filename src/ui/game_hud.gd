@@ -10,6 +10,7 @@ var current_clippy_staggered_character_job: StaggeredCharacterJob
 
 func _ready() -> void:
     G.hud = self
+    GHack.hud = self
 
     self.visible = S.manifest.get("show_hud")
 
