@@ -1,8 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://bd0oy4phn6nu1"]
+[gd_scene load_steps=12 format=3 uid="uid://bd0oy4phn6nu1"]
 
 [ext_resource type="Script" uid="uid://bg6jq3krvjgkr" path="res://src/entities/player.gd" id="1_4anbu"]
 [ext_resource type="Texture2D" uid="uid://bw58vgx70t0hr" path="res://assets/images/cursor_simple.png" id="2_rxibo"]
-[ext_resource type="PackedScene" uid="uid://bpto3r3etl0b" path="res://src/entities/characters_container.tscn" id="2_u2j08"]
 [ext_resource type="AudioStream" uid="uid://dhk2vjqcgtiea" path="res://assets/Audio/keyboard_clicks.tres" id="3_244u8"]
 [ext_resource type="AudioStream" uid="uid://bi82igr2akq7n" path="res://assets/Audio/word approved.cm_01.wav" id="4_5f2sf"]
 [ext_resource type="AudioStream" uid="uid://b7do5ljsa8a7" path="res://assets/Audio/Failure.cm.wav" id="5_5f2sf"]
@@ -111,9 +110,6 @@ monitorable = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 unique_name_in_owner = true
 shape = SubResource("RectangleShape2D_mf2ua")
-
-[node name="ScratchText" parent="." instance=ExtResource("2_u2j08")]
-unique_name_in_owner = true
 
 [node name="CursorWrapper" type="Node2D" parent="."]
 unique_name_in_owner = true

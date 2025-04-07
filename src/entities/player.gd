@@ -140,10 +140,6 @@ func _initialize_sizes() -> void:
     character.queue_free()
     two_lines.queue_free()
 
-    # FIXME: LEFT OFF HERE: Revisit this.
-    %ScratchText.position.x = - default_character_size.x * 0.5
-    %ScratchText.position.y = default_character_size.y * 0.075
-
 
 func get_start_position() -> Vector2:
     var main_menu_offset_x := G.manifest.main_menu_text.length() * default_character_size.x / 2.0

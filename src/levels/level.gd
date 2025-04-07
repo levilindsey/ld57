@@ -420,6 +420,8 @@ func game_game_over() -> void:
     _transition_out_of_state(State.PLAYING)
     player.play_death_animation()
 
+    cancel_pending_characters()
+
     G.hud.set_clippy_text(
         G.manifest.clippy_game_over_text,
         G.manifest.clippy_game_over_text_duration_sec)
@@ -560,8 +562,5 @@ func cancel_pending_characters() -> void:
         }
 
         Anim.start_animation(config)
-
-    # TODO: Check if this delay is needed.
-    await get_tree().process_frame
 
     %PendingText.clear()

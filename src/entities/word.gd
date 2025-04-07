@@ -12,6 +12,10 @@ var size := Vector2.ZERO
 
 func set_up_from_text(
         parent: Node, text: String, type: Character.Type, position: Vector2) -> void:
+    if text.is_empty():
+        clear()
+        return
+
     text = text.to_upper()
 
     self.text = text
@@ -24,8 +28,12 @@ func set_up_from_text(
         layout_character.set_type(type)
         %ScratchCharacters.add_child(layout_character)
 
-    # TODO: Check if this delay is needed.
     await get_tree().process_frame
+
+    if %ScratchCharacters.get_children().is_empty():
+        S.log.warning(
+            "Word.set_up_from_text: layout_characters were freed before characters could be created.")
+        return
 
     self.size = %ScratchCharacters.size
     %ScratchCharacters.position = -self.size / 2
@@ -59,14 +67,20 @@ func set_up_from_characters(
         layout_character.set_type(type)
         %ScratchCharacters.add_child(layout_character)
 
-    # TODO: Check if this delay is needed.
     await get_tree().process_frame
+
+    if %ScratchCharacters.get_children().is_empty():
+        S.log.warning(
+            "Word.set_up_from_characters: layout_characters were freed before size could be established.")
+        return
 
     self.size = %ScratchCharacters.size
     %ScratchCharacters.position = -self.size / 2
 
 
 func add_text(text: String) -> void:
+    S.utils.ensure(text != " ")
+
     text = text.to_upper()
 
     self.text += text
@@ -77,8 +91,12 @@ func add_text(text: String) -> void:
     layout_character.set_type(_type)
     %ScratchCharacters.add_child(layout_character)
 
-    # TODO: Check if this delay is needed.
     await get_tree().process_frame
+
+    if not is_instance_valid(layout_character):
+        S.log.warning(
+            "Word.add_text: layout_character was freed before character could be created.")
+        return
 
     self.size = %ScratchCharacters.size
 
@@ -105,8 +123,12 @@ func add_character(character: Character) -> void:
     layout_character.set_type(_type)
     %ScratchCharacters.add_child(layout_character)
 
-    # TODO: Check if this delay is needed.
     await get_tree().process_frame
+
+    if not is_instance_valid(layout_character):
+        S.log.warning(
+            "Word.add_character: layout_character was freed before size could be established.")
+        return
 
     self.size = %ScratchCharacters.size
 
@@ -117,7 +139,7 @@ func delete_last_character() -> bool:
 
     var was_last_character_space := text[text.length() - 1] == " "
 
-    text.erase(text.length() - 1)
+    text = text.erase(text.length() - 1)
 
     var layout_characters := %ScratchCharacters.get_children()
     if (
@@ -134,7 +156,6 @@ func delete_last_character() -> bool:
         ):
             characters.back().queue_free()
 
-    # TODO: Check if this delay is needed.
     await get_tree().process_frame
 
     self.size = %ScratchCharacters.size
@@ -164,8 +185,12 @@ func add_space() -> void:
     layout_character.set_type(_type)
     %ScratchCharacters.add_child(layout_character)
 
-    # TODO: Check if this delay is needed.
     await get_tree().process_frame
+
+    if not is_instance_valid(layout_character):
+        S.log.warning(
+            "Word.add_space: layout_character was freed before size could be established.")
+        return
 
     self.size = %ScratchCharacters.size
 
