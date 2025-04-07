@@ -15,7 +15,8 @@ var _animation: AnimationJob
 
 var _type := Type.TYPED_TEXT
 
-var anchor_position := Vector2.ZERO
+var anchor_global_position := Vector2.ZERO
+var anchor_relative_position := Vector2.ZERO
 
 
 static func _get_label_settings(type: Type) -> LabelSettings:

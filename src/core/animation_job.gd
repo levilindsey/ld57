@@ -39,6 +39,8 @@ const _interval_keys := [
     "acceleration",
     "rotation_speed",
     "perpendicular_oscillation_amplitude",
+    "position_x",
+    "position_y",
     "scale_x",
     "scale_y",
     "skew",
@@ -68,6 +70,8 @@ const _interval_keys := [
 #     acceleration?: [-10, 0.0],
 #     rotation_speed?: [0.01, 0.5],
 #     perpendicular_oscillation_amplitude?: [0, 10.0],
+#     position_x?: 0.0,
+#     position_y?: 0.0,
 #     scale_x?: [0.9, 1.1],
 #     scale_y?: [0.9, 1.1],
 #     skew?: [0, PI / 8.0],
@@ -273,6 +277,10 @@ func _apply_value_to_node(interval: DimensionInterval, elapsed_sec: float) -> vo
             if is_clockwise:
                 delta *= -1
             node.rotation += delta
+        "position_x":
+            node.position.x = interval.current_value
+        "position_y":
+            node.position.y = interval.current_value
         "scale_x":
             node.scale.x = interval.current_value
         "scale_y":
@@ -293,6 +301,10 @@ func _get_initial_value(interval: DimensionInterval) -> float:
             return start_speed
         "perpendicular_oscillation_amplitude":
             return 0.0
+        "position_x":
+            return node.position.x
+        "position_y":
+            return node.position.y
         "scale_x":
             return node.scale.x
         "scale_y":

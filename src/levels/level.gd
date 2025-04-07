@@ -15,30 +15,26 @@ extends ScaffolderLevel
 #
 #
 #
-# - Implement pending text usage.
-#   - When triggering a word, animate each letter downward.
-#     - Consider giving a different duration to each letter tween, so closer
-#       letters take less time.
-#     - Tween the overall container down two, with a bounce-back at the end.
-#     - Ease-in tweens for all.
+# - Make pending-text last longer as long as it's a valid prefix for a current ability.
 #
-# - Add abilities system.
+# - Add fragment spawning.
+#
+# - Add pickups.
+# - Make pickups spawn longer words as you go.
+# - Add enemy spawning.
+# - Add bubble spawning.
+#
+# - Add camera-boundary exit detection, and cleanup items:
+#   - AbandonedText, Fragments, Bubbles, Pickups, Enemies, EnemyProjectiles, PlayerProjectiles.
+#
+# - HUD
 #   - Show abilities in the HUD.
 #   - Highlight ability text in the HUD when the pending letters are a matching
 #     prefix.
 #     - Clear highlights on game over.
-#   - Slow-down the timeout for discarding text when there is a potential match.
+#   - Health bar.
 #
-# - Add fragment spawning.
-# - Add pickups.
-# - Make pickups spawn longer words as you go.
-# - Make pending-text last longer as long as it's a valid prefix for a current ability.
-# - Add enemy spawning.
-# - Add bubble spawning.
-# - Add camera-boundary exit detection, and cleanup items:
-#   - AbandonedText, Fragments, Bubbles, Pickups, Enemies, EnemyProjectiles, PlayerProjectiles.
-# - Health bar in HUD.
-#
+# - Add clippy.
 #
 # - Add extra animations:
 #   - Word animations for enemies and triggered abilities.

@@ -25,20 +25,22 @@ func add_text(text: String, is_main_menu_text := false) -> void:
         start_speed = character.get_current_speed(),
 
         # Upward and very slightly leftward.
-        direction_angle = -(PI / 2.0 + PI / 32.0),
-        direction_deviaton_angle_max = PI / 32.0,
+        #direction_angle = -(PI / 2.0 + PI / 32.0),
+        #direction_deviaton_angle_max = PI / 32.0,
+
+        direction_angle = -PI / 2.0,
 
         # These can all be either a single number, or an array of two numbers.
         duration_sec = 0.0, # If omitted, the animation won't stop.
         #end_opacity = 0.0,
         interval_sec = 100.0, # If ommitted, duration_sec must be included.
-        speed = [0.1, 0.2],
-        acceleration = [2, 0.0],
-        rotation_speed = [0.001, 0.05],
+        speed = [40, 120],
+        acceleration = [0.0, 30],
+        #rotation_speed = [0, 10],
         #perpendicular_oscillation_amplitude = [0, 100.0],
         #scale_x = [0.5, 4.0],
         #scale_y = [0.5, 4.0],
-        skew = [-PI / 16.0, PI / 16.0],
+        #skew = [-PI / 16.0, PI / 16.0],
     }
 
     character.start_animation(config)

@@ -192,7 +192,9 @@ func set_text_color(color: Color) -> void:
 
 
 func set_current_text_size() -> void:
-    # TODO: Update this if ever adding size-changing abilities.
+    # TODO: Support size-changing.
+    # - Update this if ever adding size-changing abilities.
+    # - Make sure we cancel_pending_text() when size-changing.
     current_character_size = default_character_size
     current_line_height = default_line_height
     const HACK_OFFSET_Y := 2

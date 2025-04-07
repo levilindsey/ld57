@@ -53,7 +53,8 @@ func set_up_from_text(
                 layout_character.global_position + text_extents
         character.set_label_offset(-text_extents)
         character.global_position = character_position
-        character.anchor_position = character_position
+        character.anchor_global_position = character_position
+        character.anchor_relative_position = layout_character.position
 
 
 func set_up_from_characters(
@@ -115,7 +116,8 @@ func add_text(text: String, is_main_menu_text := false) -> void:
             layout_character.global_position + text_extents
     character.set_label_offset(-text_extents)
     character.global_position = character_position
-    character.anchor_position = character_position
+    character.anchor_global_position = character_position
+    character.anchor_relative_position = layout_character.position
 
 
 func add_character(character: Character) -> void:
@@ -219,6 +221,10 @@ func get_last_character_size() -> Vector2:
 
 func get_center() -> Vector2:
     return %ScratchCharacters.global_position + %ScratchCharacters.size / 2.0
+
+
+func get_top_left() -> Vector2:
+    return %ScratchCharacters.global_position
 
 
 func set_type(type: Character.Type) -> void:
@@ -358,3 +364,37 @@ func explode_from_point(
             #skew = [-PI, PI],
         }
         start_animation(config)
+
+
+func slide_characters_to_baseline() -> void:
+    for character in get_characters():
+        var config := {
+            node = character,
+            destroys_node_when_done = false,
+            is_one_shot = true,
+            ease_name = "ease_in",
+
+            #start_speed = 6.0 * strength,
+
+            #direction_angle = direction_angle,
+            #direction_deviaton_angle_max = PI / 128.0,
+
+            # These can all be either a single number, or an array of two numbers.
+            duration_sec = 0.15, # If omitted, the animation won't stop.
+            #end_opacity = 0.0,
+            #interval_sec = 100.0, # If ommitted, duration_sec must be included.
+            # Slow to a stop.
+            #speed = 0.0,
+            #acceleration = -2,
+            #rotation_speed = [0.01, 15.0],
+            #perpendicular_oscillation_amplitude = [0, 100.0],
+            scale_x = 1,
+            scale_y = 1,
+            skew = 0,
+            # HACK: Not sure why anchor_relative_position isn't working.
+            position_x = character.position.x,
+            #position_x = character.anchor_relative_position.x,
+            position_y = 0,
+        }
+
+        character.start_animation(config)
