@@ -12,3 +12,4 @@ var level: Level
 var player: Player
 var hud: GameHud
 var manifest: GameManifest
+var clippy: Clippy

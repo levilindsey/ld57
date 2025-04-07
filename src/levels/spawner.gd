@@ -2,14 +2,50 @@ class_name Spawner
 extends RefCounted
 
 
+var _visible_pickups: Dictionary[Pickup, bool] = {}
+
+
 func update(elapsed_time_sec: float) -> void:
     # FIXME: Add time-based spawning.
 
     _update_fragments()
+    _update_visible_pickups()
+    _remove_old_items()
 
 
 func on_game_started() -> void:
     _spawn_fragment()
+
+
+func _update_visible_pickups() -> void:
+    var camera_bounds := G.level.get_camera_bounds()
+
+    # Check for newly-visible pickups.
+    var next_visible_pickups: Dictionary[Pickup, bool] = {}
+    for pickup in G.level.pickups.get_children():
+        var pickup_bounds: Rect2 = pickup.get_bounds()
+        if camera_bounds.intersects(pickup_bounds):
+            next_visible_pickups[pickup as Pickup] = true
+            if not _visible_pickups.has(pickup):
+                G.clippy.on_pick_visible()
+
+    _visible_pickups = next_visible_pickups
+
+
+func _remove_old_items() -> void:
+    var camera_bounds := G.level.get_camera_bounds()
+    var camera_top_y := camera_bounds.position.y
+
+    var items_to_remove := []
+
+    for collection in G.level.get_collections():
+        for item in collection.get_children():
+            var bounds: Rect2 = item.get_bounds()
+            if bounds.end.y < camera_top_y:
+                items_to_remove.push_back(item)
+
+    for item in items_to_remove:
+        item.destroy()
 
 
 func _update_fragments() -> void:

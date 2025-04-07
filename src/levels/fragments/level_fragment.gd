@@ -6,6 +6,14 @@ extends Node2D
 var bounds: Rect2
 
 
+func destroy() -> void:
+    queue_free()
+
+
+func get_bounds() -> Rect2:
+    return bounds
+
+
 func cache_bounds() -> void:
     bounds = _calculate_bounds()
 

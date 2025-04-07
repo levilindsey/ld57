@@ -223,6 +223,10 @@ func get_top_left() -> Vector2:
     return %ScratchCharacters.global_position
 
 
+func get_bounds() -> Rect2:
+    return Rect2(get_top_left(), size)
+
+
 func set_type(type: Character.Type) -> void:
     for character in %ScratchCharacters.get_children():
         character.set_type(type)

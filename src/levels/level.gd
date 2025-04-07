@@ -34,7 +34,7 @@ extends ScaffolderLevel
 #   - Character-by-character animations for enemies and triggered abilities.
 #
 # - Make fragment spawning bias toward harder fragments as difficulty progresses.
-# - Make picku value spawning bias toward longer words as difficulty progresses.
+# - Make pickup value spawning bias toward longer words as difficulty progresses.
 #
 #
 # - Add clippy.
@@ -459,6 +459,8 @@ func _start_game() -> void:
 
     spawner.on_game_started()
 
+    G.clippy.on_start()
+
     # Fade-in items.
     var tween := get_tree().create_tween()
     tween.tween_method(
@@ -544,9 +546,9 @@ func _on_reset_finished() -> void:
     G.hud.reset()
 
     # Remove items.
-    for collection in _get_collections():
+    for collection in get_collections():
         for child in collection.get_children():
-            child.queue_free()
+            child.destroy()
 
     # TODO: Spawn starting level fragment.
     pass
@@ -563,11 +565,11 @@ func _interpolate_colors(progress: float) -> void:
 
 func _interpolate_fade_opacity(opacity: float) -> void:
     G.hud.modulate.a = opacity
-    for collection in _get_collections():
+    for collection in get_collections():
         collection.modulate.a = opacity
 
 
-func _get_collections() -> Array[Node2D]:
+func get_collections() -> Array[Node2D]:
     return [
         bubbles,
         fragments_container,

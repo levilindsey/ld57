@@ -186,12 +186,9 @@ var abilities := [
 ]
 
 var debug_initial_abilities := [
-    {name = "torpedo", value = "shoot"},
-    {name = "torpedo", value = "fire"},
-    {name = "torpedo", value = "shoot"},
+    {name = "torpedo", value = "launch"},
 
     {name = "shield", value = "shield"},
-    {name = "shield", value = "barrier"},
 ]
 
 

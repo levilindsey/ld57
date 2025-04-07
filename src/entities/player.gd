@@ -422,6 +422,7 @@ func _take_damage() -> void:
     %InvicibleFromDamageTimer.start()
     _update_cursor_blink_period()
     G.hud.update_health(health)
+    G.clippy.on_damage()
 
     if health <= 0:
         S.log.print("Player died")
@@ -474,6 +475,8 @@ func _on_collided_with_pickup(pickup: Pickup) -> void:
         return
     G.level.add_ability(pickup.ability_name, pickup.ability_value)
     pickup.explode_pickup()
+
+    G.clippy.on_pickup()
 
     %PickupSound.play()
 

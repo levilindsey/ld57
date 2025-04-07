@@ -36,6 +36,11 @@ static func _get_label_settings(type: Type) -> LabelSettings:
     return G.manifest.player_label_settings
 
 
+func destroy() -> void:
+    stop_animation()
+    queue_free()
+
+
 func set_type(type: Type) -> void:
     _type = type
     var label_settings := _get_label_settings(type)
@@ -52,6 +57,10 @@ func get_text() -> String:
 
 func get_size() -> Vector2:
     return %Label.size
+
+
+func get_bounds() -> Rect2:
+    return Rect2(global_position - %Label.size / 2.0, %Label.size)
 
 
 func set_label_offset(offset: Vector2) -> void:

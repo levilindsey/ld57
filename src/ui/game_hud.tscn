@@ -1,28 +1,13 @@
-[gd_scene load_steps=10 format=3 uid="uid://c27n63xtklrk0"]
+[gd_scene load_steps=8 format=3 uid="uid://c27n63xtklrk0"]
 
 [ext_resource type="Theme" uid="uid://jlt4ctadl0vs" path="res://src/ui/styles/main_theme.tres" id="1_ipegf"]
 [ext_resource type="Script" uid="uid://eufiq7k4j51k" path="res://src/ui/game_hud.gd" id="1_tgp1m"]
 [ext_resource type="LabelSettings" uid="uid://cvda6imkaip2f" path="res://src/ui/styles/hud_label_settings.tres" id="3_46cb0"]
-[ext_resource type="Texture2D" uid="uid://b67c62rhrrefc" path="res://icon.svg" id="3_tgp1m"]
 [ext_resource type="StyleBox" uid="uid://bi7habawrsdmn" path="res://src/ui/styles/hud_panel.tres" id="4_fa4ld"]
 [ext_resource type="PackedScene" uid="uid://bc1qluy2ieskk" path="res://src/ui/hud_row.tscn" id="5_40ywv"]
+[ext_resource type="PackedScene" uid="uid://d2nobx514jwc8" path="res://src/ui/clippy.tscn" id="7_kvn2e"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bgesr"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_46cb0"]
-atlas = ExtResource("3_tgp1m")
-region = Rect2(0, 0, 128, 128)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_fa4ld"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_46cb0")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
 
 [node name="Hud" type="PanelContainer"]
 anchors_preset = 15
@@ -122,10 +107,10 @@ size_flags_horizontal = 3
 label_settings = ExtResource("3_46cb0")
 
 [node name="Control" type="Control" parent="MarginContainer/HBoxContainer2/HBoxContainer"]
-custom_minimum_size = Vector2(128, 128)
+custom_minimum_size = Vector2(111, 91)
 layout_mode = 2
 
-[node name="Clippy" type="AnimatedSprite2D" parent="MarginContainer/HBoxContainer2/HBoxContainer/Control"]
+[node name="Clippy" parent="MarginContainer/HBoxContainer2/HBoxContainer/Control" instance=ExtResource("7_kvn2e")]
 unique_name_in_owner = true
-position = Vector2(64, 64)
-sprite_frames = SubResource("SpriteFrames_fa4ld")
+visible = false
+position = Vector2(55, 45)
