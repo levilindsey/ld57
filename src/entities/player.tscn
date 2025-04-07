@@ -1,11 +1,12 @@
-[gd_scene load_steps=13 format=3 uid="uid://bd0oy4phn6nu1"]
+[gd_scene load_steps=14 format=3 uid="uid://bd0oy4phn6nu1"]
 
 [ext_resource type="Script" uid="uid://bg6jq3krvjgkr" path="res://src/entities/player.gd" id="1_4anbu"]
 [ext_resource type="Texture2D" uid="uid://bw58vgx70t0hr" path="res://assets/images/cursor_simple.png" id="2_rxibo"]
 [ext_resource type="AudioStream" uid="uid://dhk2vjqcgtiea" path="res://assets/Audio/keyboard_clicks.tres" id="3_244u8"]
+[ext_resource type="AudioStream" uid="uid://6mdx87f52h06" path="res://assets/Audio/DepthsTheme_1_01.wav" id="3_u2j08"]
 [ext_resource type="AudioStream" uid="uid://bi82igr2akq7n" path="res://assets/Audio/word approved.cm_01.wav" id="4_5f2sf"]
-[ext_resource type="AudioStream" uid="uid://b7do5ljsa8a7" path="res://assets/Audio/Failure.cm.wav" id="5_5f2sf"]
-[ext_resource type="AudioStream" uid="uid://ci8hi2dhitryh" path="res://assets/Audio/main_theme.mp3" id="6_jiejy"]
+[ext_resource type="AudioStream" uid="uid://c4qwbbnyew1au" path="res://assets/Audio/318686__ramsamba__typewriter-carriage-return.wav" id="5_u2j08"]
+[ext_resource type="AudioStream" uid="uid://dblrgd7vb1jf5" path="res://assets/Audio/204466__nhumphrey__typewriter-ding-01.wav" id="7_u2j08"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mf2ua"]
 size = Vector2(6, 18)
@@ -153,9 +154,10 @@ libraries = {
 
 [node name="Theme" type="AudioStreamPlayer" parent="Sounds"]
 unique_name_in_owner = true
-stream = ExtResource("6_jiejy")
-volume_db = -6.0
+stream = ExtResource("3_u2j08")
+volume_db = -18.0
 autoplay = true
+bus = &"Music"
 
 [node name="KeyboardSound" type="AudioStreamPlayer" parent="Sounds"]
 unique_name_in_owner = true
@@ -164,8 +166,8 @@ volume_db = -7.5
 
 [node name="EnterSound" type="AudioStreamPlayer" parent="Sounds"]
 unique_name_in_owner = true
-stream = ExtResource("3_244u8")
-volume_db = -7.5
+stream = ExtResource("5_u2j08")
+volume_db = -26.778
 
 [node name="WordSound" type="AudioStreamPlayer" parent="Sounds"]
 unique_name_in_owner = true
@@ -175,8 +177,8 @@ bus = &"SFX"
 
 [node name="FailureSound" type="AudioStreamPlayer" parent="Sounds"]
 unique_name_in_owner = true
-stream = ExtResource("5_5f2sf")
-volume_db = -35.0
+stream = ExtResource("7_u2j08")
+volume_db = -2.0
 bus = &"SFX"
 
 [node name="PlayerDamagedSound" type="AudioStreamPlayer" parent="Sounds"]
