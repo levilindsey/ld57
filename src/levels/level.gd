@@ -21,31 +21,20 @@ extends ScaffolderLevel
 #
 #
 #
+# - Add clippy.
 #
-# - Add fragment spawning.
-#
-# - Add pickups.
-# - Make pickups spawn longer words as you go.
 # - Add enemy spawning.
 # - Add bubble spawning.
 #
 # - Add camera-boundary exit detection, and cleanup items:
 #   - AbandonedText, Fragments, Bubbles, Pickups, Enemies, EnemyProjectiles, PlayerProjectiles.
 #
-# - HUD
-#   - Show abilities in the HUD.
-#   - Highlight ability text in the HUD when the pending letters are a matching
-#     prefix.
-#     - Clear highlights on game over.
-#   - Health bar.
-#
-# - Add clippy.
-#
 # - Add extra animations:
 #   - Word animations for enemies and triggered abilities.
 #   - Character-by-character animations for enemies and triggered abilities.
 #
 # - Make fragment spawning bias toward harder fragments as difficulty progresses.
+# - Make picku value spawning bias toward longer words as difficulty progresses.
 #
 #
 # - Add clippy.
@@ -387,6 +376,8 @@ func _update_colors() -> void:
     G.manifest.terrain_label_settings.font_color = text_color
     G.manifest.hud_label_settings.font_color = text_color
 
+    G.manifest.highlighted_hud_label_settings.font_color = G.manifest.highlighted_hud_label_text_color
+
     G.manifest.cursor_label_settings.outline_color = cursor_outline_color
     G.manifest.typed_text_label_settings.outline_color = typed_text_outline_color
     G.manifest.ability_label_settings.outline_color = ability_outline_color
@@ -671,6 +662,8 @@ func add_ability(ability_name: String, ability_value: String) -> void:
     else:
         abilities[ability_value].count += 1
 
+    G.hud.update_abilities()
+
 
 func trigger_ability(ability_name: String, ability_value: String) -> void:
     var config := _find_ability_config(ability_name)
@@ -694,6 +687,8 @@ func trigger_ability(ability_name: String, ability_value: String) -> void:
     ability_controllers.push_back(controller)
 
     player.on_ability_triggered()
+
+    G.hud.update_abilities()
 
 
 func check_ability_text_match() -> void:
@@ -723,8 +718,11 @@ func check_ability_text_match() -> void:
     if not matching_ability_name.is_empty():
         trigger_ability(matching_ability_name, matching_ability_value)
 
+    G.hud.update_abilities()
+
 
 func clear_prefix_matches() -> void:
     is_pending_text_a_prefix_match = false
     for ability_value in abilities:
         abilities[ability_value].is_prefix_match = false
+    G.hud.update_abilities()

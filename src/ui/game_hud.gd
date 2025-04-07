@@ -3,7 +3,7 @@ class_name GameHud
 extends ScaffolderHud
 
 
-var ability_name_to_row: Dictionary[String, HudRow]
+var ability_name_to_row: Dictionary[String, HudRow] = {}
 
 var current_clippy_staggered_character_job: StaggeredCharacterJob
 
@@ -16,6 +16,8 @@ func _ready() -> void:
 
     %ClippyTextClearTimer.connect("timeout", _on_clippy_text_clear_timeout)
 
+    %AbilitiesListWrapper.visible = false
+
 
 func _on_pause_pressed() -> void:
     pass
@@ -24,7 +26,15 @@ func _on_pause_pressed() -> void:
 func reset() -> void:
     for child in %AbilitiesList.get_children():
         child.queue_free()
+
     update_depth(0)
+
+    %AbilitiesListWrapper.visible = false
+
+    for ability_value in ability_name_to_row:
+        if is_instance_valid(ability_name_to_row[ability_value]):
+            ability_name_to_row[ability_value].queue_free()
+    ability_name_to_row.clear()
 
 
 func set_clippy_visible(visible: bool) -> void:
@@ -55,18 +65,48 @@ func set_clippy_text(text: String, duration_sec: float) -> void:
 
 
 func update_depth(depth: int) -> void:
-    %DepthRow.value = str(depth)
+    %DepthRow.value = " %d" % depth
 
 
-# TODO: Call this.
-func update_abilities(abilities: Dictionary[String, int]) -> void:
-    for name in abilities:
-        if not ability_name_to_row.has(name):
+func update_health(health: int) -> void:
+    %HealthRow.value = " x%d" % health
+
+
+func update_abilities() -> void:
+    # {value: {count: int, name: String, is_prefix_match: false}}
+
+    # Add new values.
+    for ability_value in G.level.abilities:
+        # Add a new row if it doesn't exist yet.
+        if not ability_name_to_row.has(ability_value):
             var row: HudRow = G.manifest.hud_row_scene.instantiate()
-            row.label = name
+            row.is_label_on_left = false
+            row.label = ability_value
             %AbilitiesList.add_child(row)
-            ability_name_to_row[name] = row
-        ability_name_to_row[name].value = str(abilities[name])
+            ability_name_to_row[ability_value] = row
+
+        var ability_state: Dictionary = G.level.abilities[ability_value]
+        var row: HudRow = ability_name_to_row[ability_value]
+
+        # Set an optional count string.
+        row.value = (
+            ("(x%d) " % ability_state.count) if
+            ability_state.count > 1 else
+            ""
+        )
+
+        # Set highlight.
+        row.is_highlighted = ability_state.is_prefix_match
+
+    # Remove old values.
+    var values := ability_name_to_row.keys()
+    for ability_value in values:
+        if not G.level.abilities.has(ability_value):
+            if is_instance_valid(ability_name_to_row[ability_value]):
+                ability_name_to_row[ability_value].queue_free()
+            ability_name_to_row.erase(ability_value)
+
+    %AbilitiesListWrapper.visible = not ability_name_to_row.is_empty()
 
 
 func _on_clippy_text_clear_timeout() -> void:

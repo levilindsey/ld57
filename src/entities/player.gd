@@ -41,6 +41,7 @@ func _ready() -> void:
     %Cursor.scale = G.manifest.default_cursor_scale * Vector2.ONE
 
     health = G.manifest.starting_health
+    G.hud.update_health(health)
     is_active = true
 
     %InvicibleFromDamageTimer.wait_time = G.manifest.invincible_from_damage_cooldown_sec
@@ -69,6 +70,7 @@ func play_main_menu_animation() -> void:
     is_invincible_from_damage = false
 
     health = G.manifest.starting_health
+    G.hud.update_health(health)
     is_active = true
 
     active_damage_collisions.clear()
@@ -111,6 +113,7 @@ func play_death_animation() -> void:
 
 func play_reset_animation() -> void:
     health = G.manifest.starting_health
+    G.hud.update_health(health)
     is_active = true
 
     %AnimationPlayer.play("resurrect")
@@ -418,6 +421,7 @@ func _take_damage() -> void:
     is_invincible_from_damage = true
     %InvicibleFromDamageTimer.start()
     _update_cursor_blink_period()
+    G.hud.update_health(health)
 
     if health <= 0:
         S.log.print("Player died")

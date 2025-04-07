@@ -64,6 +64,8 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 
 @export var cursor_blink_in_alpha := 1.0
 @export var cursor_blink_out_alpha := 0.1
+
+@export var highlighted_hud_label_text_color := Color("#009957")
 @export_group("")
 
 @export var player_outline_size := 12.0
@@ -136,6 +138,7 @@ var fragments: Array[PackedScene] = [
 @export var pickup_label_settings := preload("res://src/ui/styles/pickup_label_settings.tres")
 @export var bubble_label_settings := preload("res://src/ui/styles/bubble_label_settings.tres")
 @export var hud_label_settings := preload("res://src/ui/styles/hud_label_settings.tres")
+@export var highlighted_hud_label_settings := preload("res://src/ui/styles/highlighted_hud_label_settings.tres")
 @export_group("")
 
 @export var hud_panel_style := preload("res://src/ui/styles/hud_panel.tres")

@@ -4,7 +4,6 @@
 [ext_resource type="LabelSettings" uid="uid://cdso1r85pk7hc" path="res://src/ui/styles/ability_label_settings.tres" id="1_hkaoq"]
 [ext_resource type="LabelSettings" uid="uid://bxxo0wsx1h0sw" path="res://src/ui/styles/bubble_label_settings.tres" id="1_jmnv0"]
 [ext_resource type="PackedScene" uid="uid://c27n63xtklrk0" path="res://src/ui/game_hud.tscn" id="2_443y3"]
-[ext_resource type="PackedScene" uid="uid://bsvjkmgny0imc" path="res://src/levels/fragments/level_fragment_1.tscn" id="2_e8rv8"]
 [ext_resource type="PackedScene" uid="uid://bd0oy4phn6nu1" path="res://src/entities/player.tscn" id="2_jrmap"]
 [ext_resource type="PackedScene" uid="uid://n6lw7r40aajb" path="res://src/entities/character.tscn" id="2_swhmb"]
 [ext_resource type="PackedScene" uid="uid://13mixtcjbcyo" path="res://src/entities/ability.tscn" id="2_u8u6k"]
@@ -21,6 +20,7 @@
 [ext_resource type="PackedScene" uid="uid://bhhnv14xtftvd" path="res://src/entities/enemy.tscn" id="9_khe4v"]
 [ext_resource type="PackedScene" uid="uid://bc5n0nmh6rv0c" path="res://addons/scaffolder2/src/ui/screens/pause/pause_screen.tscn" id="9_opie4"]
 [ext_resource type="PackedScene" uid="uid://cn5n2vl7vmqeg" path="res://addons/scaffolder2/src/ui/screens/settings/settings_screen.tscn" id="10_ay283"]
+[ext_resource type="LabelSettings" uid="uid://bcpj1waagaux1" path="res://src/ui/styles/highlighted_hud_label_settings.tres" id="10_u8u6k"]
 [ext_resource type="Theme" uid="uid://jlt4ctadl0vs" path="res://src/ui/styles/main_theme.tres" id="10_x2iix"]
 [ext_resource type="LabelSettings" uid="uid://nkfjwbnoi8d3" path="res://src/ui/styles/pickup_label_settings.tres" id="11_gb07o"]
 [ext_resource type="LabelSettings" uid="uid://bdl75aflxruyu" path="res://src/ui/styles/cursor_label_settings.tres" id="12_bkucw"]
@@ -35,7 +35,7 @@
 script = ExtResource("8_h5d7k")
 speed_up_level_state_transitions = false
 using_custom_fast_space = false
-starting_health = 1
+starting_health = 3
 main_menu_text = "Hit Enter"
 clippy_intro_text = "Hi, I'm Clippy,
 your new best friend!"
@@ -62,6 +62,7 @@ bubble_color_start = Color(0, 0, 0, 0.301961)
 bubble_color_end = Color(0, 0, 0, 0.301961)
 cursor_blink_in_alpha = 1.0
 cursor_blink_out_alpha = 0.1
+highlighted_hud_label_text_color = Color(0, 0.6, 0.341176, 1)
 player_outline_size = 12.0
 enemy_outline_size = 12.0
 terrain_outline_size = 12.0
@@ -105,6 +106,7 @@ terrain_label_settings = ExtResource("23_u8u6k")
 pickup_label_settings = ExtResource("11_gb07o")
 bubble_label_settings = ExtResource("1_jmnv0")
 hud_label_settings = ExtResource("6_hkaoq")
+highlighted_hud_label_settings = ExtResource("10_u8u6k")
 hud_panel_style = ExtResource("7_lx0xc")
 player_scene = ExtResource("2_jrmap")
 character_scene = ExtResource("2_swhmb")
