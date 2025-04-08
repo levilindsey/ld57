@@ -3,6 +3,18 @@ extends ScaffolderLevel
 
 # TODO: MASTER LIST
 #
+# ------------------------------------
+# Priorities:
+#
+# - Make ledges stick out less far.
+#   - And take a pass at making you have to move arround less in general.
+# - Add support for shooting pickups.
+# - Have shields be slightly more common (37%).
+# - Fix side and bottom bars around camera bounds in the web export.
+# - Add missing sounds...
+#
+# -------------------------------------
+#
 # >>> PRIORITY LIST FOR ALDEN: <<<
 # - Background track.
 # - VFXs:
