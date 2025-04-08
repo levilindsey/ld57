@@ -27,3 +27,12 @@ is_left = false
 
 [node name="PickupPosition" parent="." instance=ExtResource("6_ffypu")]
 position = Vector2(91, 826)
+
+[node name="PickupPosition2" parent="." instance=ExtResource("6_ffypu")]
+position = Vector2(181, 1425)
+
+[node name="PickupPosition3" parent="." instance=ExtResource("6_ffypu")]
+position = Vector2(324, 455)
+
+[node name="PickupPosition4" parent="." instance=ExtResource("6_ffypu")]
+position = Vector2(642, 1206)

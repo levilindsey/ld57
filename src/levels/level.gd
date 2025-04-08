@@ -31,7 +31,6 @@ extends ScaffolderLevel
 # - Add more clippy text.
 # - Add any missing sfx.
 #
-# - Add more enemies.
 # - Add more abilities.
 #   - Rename torpedo to anchor.
 #     - Stone, dead weight, boulder, rock, ...

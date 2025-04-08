@@ -159,7 +159,16 @@ func _choose_fragment_scene() -> PackedScene:
 # {name: String, value: String}
 func _choose_pickup_ability_config() -> Dictionary:
     # TODO: Bias according to weights.
-    var ability_index := randi_range(0, G.manifest.abilities.size() - 1)
+    #var ability_index := randi_range(0, G.manifest.abilities.size() - 1)
+
+    # HACK: Hardcoded index weighting.
+    var shield_index := 0
+    var torpedo_index := 1
+    var ability_index := (
+        shield_index if
+        randf() < 0.25 else
+        torpedo_index
+    )
 
     # {name: String, controller: Script, values: [String]}
     var ability_config: Dictionary = G.manifest.abilities[ability_index]

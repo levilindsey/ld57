@@ -47,11 +47,11 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var typed_text_outline_color_start := Color("#03fc9000")
 @export var typed_text_outline_color_end := Color("#03fc9000")
 
-@export var ability_outline_color_start := Color("#03fc9030")
-@export var ability_outline_color_end := Color("#03fc9030")
+@export var ability_outline_color_start := Color("#03fc9050")
+@export var ability_outline_color_end := Color("#03fc9050")
 
-@export var enemy_outline_color_start := Color("#fc980333")
-@export var enemy_outline_color_end := Color("#fc980333")
+@export var enemy_outline_color_start := Color("#fc980353")
+@export var enemy_outline_color_end := Color("#fc980353")
 
 @export var terrain_outline_color_start := Color("#fc900320")
 @export var terrain_outline_color_end := Color("#d703fc20")
