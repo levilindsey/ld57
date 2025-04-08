@@ -20,15 +20,6 @@ extends ScaffolderLevel
 #   - Game over
 #
 #
-#
-# - Add clippy.
-#
-# - Add enemy spawning.
-# - Add bubble spawning.
-#
-# - Add camera-boundary exit detection, and cleanup items:
-#   - AbandonedText, Fragments, Bubbles, Pickups, Enemies, EnemyProjectiles, PlayerProjectiles.
-#
 # - Add extra animations:
 #   - Word animations for enemies and triggered abilities.
 #   - Character-by-character animations for enemies and triggered abilities.
@@ -37,9 +28,9 @@ extends ScaffolderLevel
 # - Make pickup value spawning bias toward longer words as difficulty progresses.
 #
 #
-# - Add clippy.
 # - Add more clippy text.
 # - Add any missing sfx.
+#
 # - Add more enemies.
 # - Add more abilities.
 #   - Rename torpedo to anchor.
@@ -129,6 +120,7 @@ var scroll_speed := 0.0
 var player: Player
 
 var ability_controllers: Array[AbilityController] = []
+var enemy_controllers: Array[EnemyController] = []
 
 # {value: {count: int, name: String, is_prefix_match: bool}}
 var abilities: Dictionary[String, Dictionary] = {}
@@ -314,6 +306,13 @@ func _process(delta: float) -> void:
         if controller.is_complete():
             ability_controllers.remove_at(reverse_index)
 
+    # Remove references to EnemyControllers after they're done.
+    for index in range(enemy_controllers.size()):
+        var reverse_index := enemy_controllers.size() - 1 - index
+        var controller := enemy_controllers[reverse_index]
+        if controller.is_complete():
+            enemy_controllers.remove_at(reverse_index)
+
 
 func _trigger_space(is_held_key_duplicate_press := false) -> void:
     last_space_trigger_time_sec = current_time_sec
@@ -467,10 +466,6 @@ func _start_game() -> void:
         _interpolate_fade_opacity, 0.0, 1.0, G.manifest.hud_fade_out_duration_sec
     ).set_delay(G.manifest.main_menu_zoom_out_duration_sec)
 
-    # TODO: SPAWNING
-    # - Start spawning enemies and other level fragments (or is that just from collision detection with scroll movement?)
-    # - Start spawning bubbles
-
     for entry in G.manifest.debug_initial_abilities:
         add_ability(entry.name, entry.value)
 
@@ -516,6 +511,7 @@ func _game_reset() -> void:
     scroll_speed = 0.0
     abilities.clear()
     ability_controllers.clear()
+    enemy_controllers.clear()
     fragments.clear()
     is_pending_text_a_prefix_match = false
 
@@ -549,9 +545,6 @@ func _on_reset_finished() -> void:
     for collection in get_collections():
         for child in collection.get_children():
             child.destroy()
-
-    # TODO: Spawn starting level fragment.
-    pass
 
     await get_tree().create_timer(0.1).timeout
 
@@ -647,6 +640,13 @@ func _find_ability_config(ability_name: String) -> Dictionary:
     for ability in G.manifest.abilities:
         if ability.name == ability_name:
             return ability
+    return {}
+
+
+func _find_enemy_config(enemy_name: String) -> Dictionary:
+    for enemy in G.manifest.enemies:
+        if enemy.name == enemy_name:
+            return enemy
     return {}
 
 

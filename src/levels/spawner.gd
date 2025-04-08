@@ -4,13 +4,60 @@ extends RefCounted
 
 var _visible_pickups: Dictionary[Pickup, bool] = {}
 
+var _next_bubble_spawn_time_sec := 0.0
+var _next_enemy_spawn_time_sec := 0.0
+
 
 func update(elapsed_time_sec: float) -> void:
-    # FIXME: Add time-based spawning.
-
     _update_fragments()
     _update_visible_pickups()
     _remove_old_items()
+    _handle_bubble_spawns(elapsed_time_sec)
+    _handle_enemy_spawns(elapsed_time_sec)
+
+
+func _handle_bubble_spawns(elapsed_time_sec: float) -> void:
+    while elapsed_time_sec > _next_bubble_spawn_time_sec:
+        var bubble_spawn_interval_min_sec := lerpf(
+                G.manifest.start_bubble_spawn_interval_min_sec,
+                G.manifest.end_bubble_spawn_interval_min_sec,
+                G.level.progress_to_max_difficulty)
+        var bubble_spawn_interval_max_sec := lerpf(
+                G.manifest.start_bubble_spawn_interval_max_sec,
+                G.manifest.end_bubble_spawn_interval_max_sec,
+                G.level.progress_to_max_difficulty)
+        var next_bubble_spawn_interval_sec := randf_range(
+                bubble_spawn_interval_min_sec,
+                bubble_spawn_interval_max_sec)
+        _next_bubble_spawn_time_sec += next_bubble_spawn_interval_sec
+
+        var bubble: Bubble = GHack.manifest.bubble_scene.instantiate()
+        G.level.bubbles.add_child(bubble)
+        var position := _choose_bubble_spawn_position()
+        bubble.set_up(position)
+
+
+func _handle_enemy_spawns(elapsed_time_sec: float) -> void:
+    while elapsed_time_sec > _next_enemy_spawn_time_sec:
+        var enemy_spawn_interval_min_sec := lerpf(
+                G.manifest.start_enemy_spawn_interval_min_sec,
+                G.manifest.end_enemy_spawn_interval_min_sec,
+                G.level.progress_to_max_difficulty)
+        var enemy_spawn_interval_max_sec := lerpf(
+                G.manifest.start_enemy_spawn_interval_max_sec,
+                G.manifest.end_enemy_spawn_interval_max_sec,
+                G.level.progress_to_max_difficulty)
+        var next_enemy_spawn_interval_sec := randf_range(
+                enemy_spawn_interval_min_sec,
+                enemy_spawn_interval_max_sec)
+        _next_enemy_spawn_time_sec += next_enemy_spawn_interval_sec
+
+        var name_and_value := _choose_enemy_ability_config()
+        var config := G.level._find_enemy_config(name_and_value.name)
+        var controller: EnemyController = config.controller.new()
+        var position := _choose_enemy_spawn_position()
+        controller.start(config, name_and_value.value, position)
+        G.level.enemy_controllers.push_back(controller)
 
 
 func on_game_started() -> void:
@@ -104,23 +151,60 @@ func _choose_fragment_scene() -> PackedScene:
     if G.level.fragments.is_empty():
         return G.manifest.initial_fragment
     else:
-        # FIXME: Bias according to progress toward max-difficulty.
+        # TODO: Bias according to progress toward max-difficulty.
         var index := randi_range(0, G.manifest.fragments.size() - 1)
         return G.manifest.fragments[index]
 
 
 # {name: String, value: String}
 func _choose_pickup_ability_config() -> Dictionary:
-    # FIXME: Bias according to weights.
+    # TODO: Bias according to weights.
     var ability_index := randi_range(0, G.manifest.abilities.size() - 1)
 
     # {name: String, controller: Script, values: [String]}
     var ability_config: Dictionary = G.manifest.abilities[ability_index]
 
-    # FIXME: Bias according to progress toward max-difficulty.
+    # TODO: Bias according to progress toward max-difficulty.
     var value_index := randi_range(0, ability_config.values.size() - 1)
 
     return {
         name = ability_config.name,
         value = ability_config.values[value_index],
     }
+
+
+# {name: String, value: String}
+func _choose_enemy_ability_config() -> Dictionary:
+    # TODO: Bias according to weights.
+    var enemy_index := randi_range(0, G.manifest.enemies.size() - 1)
+
+    # {name: String, controller: Script, values: [String]}
+    var enemy_config: Dictionary = G.manifest.enemies[enemy_index]
+
+    # TODO: Bias according to progress toward max-difficulty.
+    var value_index := randi_range(0, enemy_config.values.size() - 1)
+
+    return {
+        name = enemy_config.name,
+        value = enemy_config.values[value_index],
+    }
+
+
+func _choose_bubble_spawn_position() -> Vector2:
+    var camera_bounds := G.level.get_camera_bounds()
+    var x := randf_range(
+            G.manifest.game_area_bubble_spawn_padding.x,
+            G.manifest.game_area_size.x -
+                G.manifest.game_area_bubble_spawn_padding.x)
+    var y := camera_bounds.end.y + 24.0
+    return Vector2(x, y)
+
+
+func _choose_enemy_spawn_position() -> Vector2:
+    var camera_bounds := G.level.get_camera_bounds()
+    var x := randf_range(
+            G.manifest.game_area_enemy_spawn_padding.x,
+            G.manifest.game_area_size.x -
+                G.manifest.game_area_enemy_spawn_padding.x)
+    var y := camera_bounds.end.y + 24.0
+    return Vector2(x, y)

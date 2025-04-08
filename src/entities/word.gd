@@ -11,6 +11,9 @@ var size := Vector2.ZERO
 
 var is_active := true
 
+@onready var scratch_characters: HBoxContainer = %ScratchCharacters
+@onready var visible_characters: Node2D = %VisibleCharacters
+
 
 func set_up_from_text(text: String, type: Character.Type) -> void:
     if text.is_empty():
@@ -36,7 +39,13 @@ func set_up_from_text(text: String, type: Character.Type) -> void:
             "Word.set_up_from_text: layout_characters were freed before characters could be created.")
         return
 
-    self.size = %ScratchCharacters.size
+    # HACK: For some reason, the HBoxContainer size was sometimes half what it should be.
+    #self.size = %ScratchCharacters.size
+    var character_size: Vector2i = %ScratchCharacters.get_children()[0].size
+    self.size = Vector2i(
+            character_size.x * text.length(),
+            character_size.y)
+
     %ScratchCharacters.position = - self.size / 2.0
 
     for layout_character in %ScratchCharacters.get_children():

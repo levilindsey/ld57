@@ -102,6 +102,18 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var invincible_from_damage_cooldown_sec := 3.0
 @export var invincible_from_power_up_cooldown_sec := 4.5
 
+@export var start_enemy_spawn_interval_min_sec := 6.0
+@export var start_enemy_spawn_interval_max_sec := 8.0
+
+@export var end_enemy_spawn_interval_min_sec := 3.0
+@export var end_enemy_spawn_interval_max_sec := 4.0
+
+@export var start_bubble_spawn_interval_min_sec := 0.3
+@export var start_bubble_spawn_interval_max_sec := 0.9
+
+@export var end_bubble_spawn_interval_min_sec := 0.9
+@export var end_bubble_spawn_interval_max_sec := 1.8
+
 @export var start_scroll_speed := 100.0
 @export var end_scroll_speed := 400.0
 
@@ -117,6 +129,9 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var game_area_size := Vector2i(768, 768)
 #@export var game_area_padding := Vector2i(0, 0)
 @export var game_area_padding := Vector2i(20, 20)
+
+@export var game_area_bubble_spawn_padding := Vector2i(4, 4)
+@export var game_area_enemy_spawn_padding := Vector2i(40, 40)
 
 var initial_fragment := load("res://src/levels/fragments/level_fragment_initial.tscn")
 
@@ -170,7 +185,6 @@ var abilities := [
             "indefatigable",
             "thick skin",
             "ironsides",
-            "ironsides",
         ],
     },
     {
@@ -178,15 +192,75 @@ var abilities := [
         controller = TorpedoAbility,
         values = [
             "torpedo",
+            "harpoon",
             "shoot",
             "fire",
             "launch",
+            "missile",
+            "projectile",
+            "attack",
+            "drop",
+            "bombard",
+            "bombs away",
+        ],
+    },
+]
+
+# TODO: Add more enemy text alternatives!
+# [{name: String, controller: Script, values: [String]}]
+var enemies := [
+    {
+        name = "small_fish",
+        controller = SmallFishEnemy,
+        values = [
+            "guppy",
+            "minnow",
+            "anchovy",
+            "sardine",
+            "herring",
+            "perch",
+        ],
+    },
+    {
+        name = "big_fish",
+        controller = BigFishEnemy,
+        values = [
+            "tuna",
+            "snapper",
+            "salmon",
+            "grouper",
+            "cod",
+            "bass",
+        ],
+    },
+    {
+        name = "shark",
+        controller = SharkEnemy,
+        values = [
+            "shark",
+            "hammerhead",
+            "great white shark",
+            "bull shark",
+            "reef shark",
+            "baracuda",
+            "tiger shark",
+        ],
+    },
+    {
+        name = "squid",
+        controller = SquidEnemy,
+        values = [
+            "squid",
+            "cuttlefish",
+            "giant squid",
+            "kraken",
+            "jellyfish",
         ],
     },
 ]
 
 var debug_initial_abilities := [
-    {name = "torpedo", value = "launch"},
+    {name = "torpedo", value = "shoot"},
 
     {name = "shield", value = "shield"},
 ]

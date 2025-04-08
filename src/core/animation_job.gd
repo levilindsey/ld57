@@ -258,7 +258,7 @@ func _apply_value_to_node(interval: DimensionInterval, elapsed_sec: float) -> vo
             )
             # Use interval.current_value as the current anchor_amplitude for the
             # oscillation calculation.
-            var perpendicular_offset := interval.current_value * sin(progress * PI)
+            var perpendicular_offset := interval.current_value * sin(progress * TAU)
             var direction := Vector2.from_angle(intervals.direction_angle.current_value)
             var displacement := direction.orthogonal() * perpendicular_offset
             node.position = anchor_position + displacement
