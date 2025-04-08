@@ -477,8 +477,15 @@ func _start_game() -> void:
         G.manifest.show_clippy_duration_sec + 0.2).timeout
 
     G.hud.set_clippy_text(
-        G.manifest.clippy_intro_text,
-        G.manifest.clippy_intro_text_duration_sec)
+        G.manifest.clippy_intro1_text,
+        G.manifest.clippy_intro1_text_duration_sec)
+
+    await get_tree().create_timer(
+        G.manifest.clippy_intro1_text_duration_sec).timeout
+
+    G.hud.set_clippy_text(
+        G.manifest.clippy_intro2_text,
+        G.manifest.clippy_intro2_text_duration_sec)
 
 
 func game_game_over() -> void:

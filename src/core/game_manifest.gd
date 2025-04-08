@@ -28,10 +28,32 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var main_menu_text := "Hit Enter"
 
 @export_group("Clippy text")
-@export var clippy_intro_text := "Hi, I'm Clippy,\nyour new best friend!"
-@export var clippy_intro_text_duration_sec := 6.0
-@export var clippy_game_over_text := "Aw gee, you died!"
+@export var clippy_intro1_text := [
+    "Hi, I'm Clippy,\nI'm here to help!",
+]
+@export var clippy_intro1_text_duration_sec := 3.0
+@export var clippy_intro2_text := [
+    "Use your keyboard to move\nyour cursor, and to\ntrigger abilities.",
+]
+@export var clippy_intro2_text_duration_sec := 5.0
+@export var clippy_damage_text := [
+    "Try to avoid hitting rocks,\nand marine animals.",
+]
+@export var clippy_damage_text_duration_sec := 5.0
+@export var clippy_game_over_text := [
+    "Oh no, you died!",
+    "That's game over!",
+    "Better luck next time!",
+    "Try again?",
+]
 @export var clippy_game_over_text_duration_sec := 0.0
+@export var clippy_shield_text := [
+    "Try typing %s\nto become temporarily\nimmune to damage.",
+]
+@export var clippy_torpedo_text := [
+    "Try typing %s\nto launch a missile\ndownward.",
+]
+@export var clippy_pickup_text_duration_sec := 5.0
 @export_group("")
 
 @export_group("Colors")
@@ -97,7 +119,7 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var space_key_throttle_period_sec := 0.05
 
 @export var main_menu_character_interval_sec := 0.09
-@export var clippy_character_interval_sec := 0.06
+@export var clippy_character_interval_sec := 0.022
 
 @export var invincible_from_damage_cooldown_sec := 3.0
 @export var invincible_from_power_up_cooldown_sec := 4.5

@@ -37,11 +37,25 @@ speed_up_level_state_transitions = false
 using_custom_fast_space = false
 starting_health = 3
 main_menu_text = "Hit Enter"
-clippy_intro_text = "Hi, I'm Clippy,
-your new best friend!"
-clippy_intro_text_duration_sec = 6.0
-clippy_game_over_text = "Aw gee, you died!"
+clippy_intro1_text = ["Hi, I'm Clippy,
+I'm here to help!"]
+clippy_intro1_text_duration_sec = 3.0
+clippy_intro2_text = ["Use your keyboard to move
+your cursor, and to
+trigger abilities."]
+clippy_intro2_text_duration_sec = 5.0
+clippy_damage_text = ["Try to avoid hitting rocks,
+and marine animals."]
+clippy_damage_text_duration_sec = 5.0
+clippy_game_over_text = ["Oh no, you died!", "That's game over!", "Better luck next time!", "Try again?"]
 clippy_game_over_text_duration_sec = 0.0
+clippy_shield_text = ["Try typing %s
+to become temporarily
+immune to damage."]
+clippy_torpedo_text = ["Try typing %s
+to launch a missile
+downward."]
+clippy_pickup_text_duration_sec = 5.0
 background_color_start = Color(0.960784, 0.988235, 0.988235, 1)
 background_color_end = Color(0, 0.00784314, 0.0392157, 1)
 text_color_start = Color(0, 0, 0, 1)
@@ -85,7 +99,7 @@ cursor_blink_period_sec = 0.5
 cursor_invincible_blink_period_sec = 0.06
 space_key_throttle_period_sec = 0.05
 main_menu_character_interval_sec = 0.09
-clippy_character_interval_sec = 0.06
+clippy_character_interval_sec = 0.022
 invincible_from_damage_cooldown_sec = 3.0
 invincible_from_power_up_cooldown_sec = 4.5
 start_enemy_spawn_interval_min_sec = 6.0

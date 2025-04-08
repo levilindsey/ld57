@@ -43,8 +43,15 @@ func set_clippy_visible(visible: bool) -> void:
     %ClippyTextWrapper.visible = visible
 
 
-func set_clippy_text(text: String, duration_sec: float) -> void:
+func set_clippy_text(text_or_text_options: Variant, duration_sec: float) -> void:
     %ClippyTextClearTimer.stop()
+
+    var text: String
+    if text_or_text_options is Array:
+        var index: int = randi_range(0, text_or_text_options.size() - 1)
+        text = text_or_text_options[index]
+    else:
+        text = text_or_text_options
 
     if text.is_empty():
         %ClippyText.text = ""

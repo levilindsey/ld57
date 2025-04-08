@@ -424,6 +424,10 @@ func _take_damage() -> void:
     G.hud.update_health(health)
     G.clippy.on_damage()
 
+    G.hud.set_clippy_text(
+        G.manifest.clippy_damage_text,
+        G.manifest.clippy_damage_text_duration_sec)
+
     if health <= 0:
         S.log.print("Player died")
         is_active = false
@@ -475,6 +479,16 @@ func _on_collided_with_pickup(pickup: Pickup) -> void:
         return
     G.level.add_ability(pickup.ability_name, pickup.ability_value)
     pickup.explode_pickup()
+
+    # HACK: Hardcoded pickup name check.
+    var clippy_text: String = (
+        G.manifest.clippy_shield_text[0] if
+        pickup.ability_name == "shield" else
+        G.manifest.clippy_torpedo_text[0]
+    ) % pickup.ability_value
+    G.hud.set_clippy_text(
+        clippy_text,
+        G.manifest.clippy_pickup_text_duration_sec)
 
     G.clippy.on_pickup()
 
