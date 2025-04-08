@@ -11,6 +11,11 @@ extends ScaffolderLevel
 # - Add support for shooting pickups.
 # - Have shields be slightly more common (37%).
 # - Fix side and bottom bars around camera bounds in the web export.
+# - Reset Depth tracking when resetting the level.
+# - Decrease max scroll speed.
+# - Slightly increase max enemy spawn rate.
+# - Give a 10% chance of pickup not spawning.
+# - Nudge pickups slightly further out from their obstacles.
 # - Add missing sounds...
 #
 # -------------------------------------
