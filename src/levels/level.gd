@@ -17,6 +17,7 @@ extends ScaffolderLevel
 # - Give a 10% chance of pickup not spawning.
 # - Nudge pickups slightly further out from their obstacles.
 # - Add missing sounds...
+# - Make a Mac export.
 #
 # -------------------------------------
 #
