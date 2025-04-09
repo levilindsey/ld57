@@ -1,5 +1,7 @@
 # Typing at Depth
 
+**[Play the game here!](https://levi.dev/typing-at-depth)**
+
 This game was made with Godot.
 
 > Type to trigger abilities and maneuver down into marine depths.
