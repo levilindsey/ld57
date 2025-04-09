@@ -10,6 +10,11 @@ func start(config: Dictionary, value: String) -> void:
 
     G.player.play_torpedo_launch_sound()
 
+    S.log.print("Started TorpedoAbility: %s, %s" % [
+        value,
+        word.global_position,
+    ])
+
 
 func _get_nearest_enemy() -> Enemy:
     var closest_enemy: Enemy = null

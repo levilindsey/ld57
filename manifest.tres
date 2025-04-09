@@ -55,6 +55,8 @@ immune to damage."]
 clippy_torpedo_text = ["Try typing %s
 to launch a missile
 downward."]
+clippy_drop_text = ["Type %s
+to drop a word."]
 clippy_pickup_text_duration_sec = 5.0
 background_color_start = Color(0.960784, 0.988235, 0.988235, 1)
 background_color_end = Color(0, 0.00784314, 0.0392157, 1)
@@ -144,6 +146,8 @@ pickup_scene = ExtResource("18_4bhqj")
 god_mode = false
 dev_mode = true
 skip_main_menu_in_dev_mode = true
+full_screen = true
+mute_music = true
 pauses_on_focus_out = false
 is_screenshot_hotkey_enabled = false
 show_hud = true

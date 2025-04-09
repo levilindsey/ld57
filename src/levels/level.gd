@@ -554,6 +554,8 @@ func _game_reset() -> void:
     fragments.clear()
     is_pending_text_a_prefix_match = false
 
+    spawner.reset()
+
     _update_colors()
     _set_zoom(true)
     player.play_reset_animation()

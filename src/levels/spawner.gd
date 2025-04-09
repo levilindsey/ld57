@@ -8,6 +8,12 @@ var _next_bubble_spawn_time_sec := 0.0
 var _next_enemy_spawn_time_sec := 0.0
 
 
+func reset() -> void:
+    _visible_pickups = {}
+    _next_bubble_spawn_time_sec = 0.0
+    _next_enemy_spawn_time_sec = 0.0
+
+
 func update(elapsed_time_sec: float) -> void:
     _update_fragments()
     _update_visible_pickups()
@@ -36,6 +42,8 @@ func _handle_bubble_spawns(elapsed_time_sec: float) -> void:
         var position := _choose_bubble_spawn_position()
         bubble.set_up(position)
 
+        S.log.print("Spawned bubble: %s" % position)
+
 
 func _handle_enemy_spawns(elapsed_time_sec: float) -> void:
     while elapsed_time_sec > _next_enemy_spawn_time_sec:
@@ -58,6 +66,12 @@ func _handle_enemy_spawns(elapsed_time_sec: float) -> void:
         var position := _choose_enemy_spawn_position()
         controller.start(config, name_and_value.value, position)
         G.level.enemy_controllers.push_back(controller)
+
+        S.log.print("Spawned enemy: name: %s, value: %s, %s" % [
+            name_and_value.name,
+            name_and_value.value,
+            position,
+        ])
 
 
 func on_game_started() -> void:
@@ -143,6 +157,11 @@ func _spawn_fragment() -> LevelFragment:
             G.level.pickups.add_child(pickup)
             pickup.global_position = child.global_position
             pickup.set_up(config.name, config.value)
+
+    S.log.print("Spawned fragment: %s, %s" % [
+        S.utils.get_display_name(fragment_scene),
+        fragment.global_position,
+    ])
 
     return fragment
 

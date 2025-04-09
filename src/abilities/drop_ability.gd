@@ -5,6 +5,11 @@ extends PlayerProjectileAbility
 func start(config: Dictionary, value: String) -> void:
     super.start(config, value)
 
+    await word.get_tree().process_frame
+
+    if not is_instance_valid(word):
+        return
+
     # Shoot downward.
     var animation_config := {
         node = self,
@@ -33,6 +38,11 @@ func start(config: Dictionary, value: String) -> void:
     word.start_animation(animation_config)
 
     G.player.play_drop_sound()
+
+    S.log.print("Started DropAbility: %s, %s" % [
+        value,
+        word.global_position,
+    ])
 
 
 func _on_terrain_collided(area: Area2D) -> void:
