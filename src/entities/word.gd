@@ -30,29 +30,29 @@ func set_up_from_text(text: String, type: Character.Type) -> void:
                 GHack.manifest.invisible_layout_character_scene.instantiate()
         layout_character.text = letter
         layout_character.set_type(type)
-        %ScratchCharacters.add_child(layout_character)
+        scratch_characters.add_child(layout_character)
 
     await get_tree().process_frame
 
-    if %ScratchCharacters.get_children().is_empty():
+    if scratch_characters.get_children().is_empty():
         S.log.warning(
             "Word.set_up_from_text: layout_characters were freed before characters could be created.")
         return
 
     # HACK: For some reason, the HBoxContainer size was sometimes half what it should be.
-    #self.size = %ScratchCharacters.size
-    var character_size: Vector2i = %ScratchCharacters.get_children()[0].size
+    #self.size = scratch_characters.size
+    var character_size: Vector2i = scratch_characters.get_children()[0].size
     self.size = Vector2i(
             character_size.x * text.length(),
             character_size.y)
 
-    %ScratchCharacters.position = - self.size / 2.0
+    scratch_characters.position = - self.size / 2.0
 
-    for layout_character in %ScratchCharacters.get_children():
+    for layout_character in scratch_characters.get_children():
         var character: Character = GHack.manifest.character_scene.instantiate()
         character.set_text(layout_character.text)
         character.set_type(type)
-        %VisibleCharacters.add_child(character)
+        visible_characters.add_child(character)
         var text_extents: Vector2 = layout_character.size / 2.0
         var character_position: Vector2 = \
                 layout_character.global_position + text_extents
@@ -70,24 +70,24 @@ func set_up_from_characters(
 
     for character in characters:
         text += character.get_text()
-        character.reparent(%VisibleCharacters, true)
+        character.reparent(visible_characters, true)
         character.set_type(type)
 
         var layout_character: InvisibleLayoutCharacter = \
                 GHack.manifest.invisible_layout_character_scene.instantiate()
         layout_character.text = character.get_text()
         layout_character.set_type(type)
-        %ScratchCharacters.add_child(layout_character)
+        scratch_characters.add_child(layout_character)
 
     await get_tree().process_frame
 
-    if %ScratchCharacters.get_children().is_empty():
+    if scratch_characters.get_children().is_empty():
         S.log.warning(
             "Word.set_up_from_characters: layout_characters were freed before size could be established.")
         return
 
-    self.size = %ScratchCharacters.size
-    %ScratchCharacters.position = - self.size / 2.0
+    self.size = scratch_characters.size
+    scratch_characters.position = - self.size / 2.0
 
 
 func add_text(text: String, is_main_menu_text := false) -> void:
@@ -101,7 +101,7 @@ func add_text(text: String, is_main_menu_text := false) -> void:
             GHack.manifest.invisible_layout_character_scene.instantiate()
     layout_character.text = text
     layout_character.set_type(_type)
-    %ScratchCharacters.add_child(layout_character)
+    scratch_characters.add_child(layout_character)
 
     await get_tree().process_frame
 
@@ -110,12 +110,12 @@ func add_text(text: String, is_main_menu_text := false) -> void:
             "Word.add_text: layout_character was freed before character could be created.")
         return
 
-    self.size = %ScratchCharacters.size
+    self.size = scratch_characters.size
 
     var character: Character = GHack.manifest.character_scene.instantiate()
     character.set_text(text)
     character.set_type(_type)
-    %VisibleCharacters.add_child(character)
+    visible_characters.add_child(character)
     var text_extents := layout_character.size / 2.0
     var character_position := \
             layout_character.global_position + text_extents
@@ -128,13 +128,13 @@ func add_text(text: String, is_main_menu_text := false) -> void:
 func add_character(character: Character) -> void:
     text += character.get_text()
     character.set_type(_type)
-    character.reparent(%VisibleCharacters, true)
+    character.reparent(visible_characters, true)
 
     var layout_character: InvisibleLayoutCharacter = \
             GHack.manifest.invisible_layout_character_scene.instantiate()
     layout_character.text = character.get_text()
     layout_character.set_type(_type)
-    %ScratchCharacters.add_child(layout_character)
+    scratch_characters.add_child(layout_character)
 
     await get_tree().process_frame
 
@@ -143,7 +143,7 @@ func add_character(character: Character) -> void:
             "Word.add_character: layout_character was freed before size could be established.")
         return
 
-    self.size = %ScratchCharacters.size
+    self.size = scratch_characters.size
 
 
 func delete_last_character() -> bool:
@@ -154,7 +154,7 @@ func delete_last_character() -> bool:
 
     text = text.erase(text.length() - 1)
 
-    var layout_characters := %ScratchCharacters.get_children()
+    var layout_characters := scratch_characters.get_children()
     if (
         not layout_characters.is_empty() and
         is_instance_valid(layout_characters.back())
@@ -162,7 +162,7 @@ func delete_last_character() -> bool:
         layout_characters.back().queue_free()
 
     if not was_last_character_space:
-        var characters := %VisibleCharacters.get_children()
+        var characters := visible_characters.get_children()
         if (
             not characters.is_empty() and
             is_instance_valid(characters.back())
@@ -171,7 +171,7 @@ func delete_last_character() -> bool:
 
     await get_tree().process_frame
 
-    self.size = %ScratchCharacters.size
+    self.size = scratch_characters.size
 
     return true
 
@@ -179,9 +179,9 @@ func delete_last_character() -> bool:
 func clear() -> void:
     text = ""
     size = Vector2.ZERO
-    for layout_character in %ScratchCharacters.get_children():
+    for layout_character in scratch_characters.get_children():
         layout_character.queue_free()
-    for character in %VisibleCharacters.get_children():
+    for character in visible_characters.get_children():
         character.queue_free()
 
 
@@ -193,7 +193,7 @@ func destroy() -> void:
 
 
 func get_characters() -> Array[Character]:
-    var nodes := %VisibleCharacters.get_children()
+    var nodes := visible_characters.get_children()
     var characters: Array[Character]
     characters.assign(nodes)
     return characters
@@ -206,7 +206,7 @@ func add_space() -> void:
             GHack.manifest.invisible_layout_character_scene.instantiate()
     layout_character.text = " "
     layout_character.set_type(_type)
-    %ScratchCharacters.add_child(layout_character)
+    scratch_characters.add_child(layout_character)
 
     await get_tree().process_frame
 
@@ -215,36 +215,48 @@ func add_space() -> void:
             "Word.add_space: layout_character was freed before size could be established.")
         return
 
-    self.size = %ScratchCharacters.size
+    self.size = scratch_characters.size
 
 
 func get_last_character_size() -> Vector2:
-    if %ScratchCharacters.get_children().is_empty():
+    if scratch_characters.get_children().is_empty():
         return Vector2.ZERO
-    return %ScratchCharacters.get_children().back().size
+    return scratch_characters.get_children().back().size
 
 
 func get_center() -> Vector2:
-    return %ScratchCharacters.global_position + %ScratchCharacters.size / 2.0
+    return scratch_characters.global_position + scratch_characters.size / 2.0
 
 
 func get_top_left() -> Vector2:
-    return %ScratchCharacters.global_position
+    return scratch_characters.global_position
 
 
 func get_bounds() -> Rect2:
     return Rect2(get_top_left(), size)
 
 
+func get_visible_character_bounds() -> Rect2:
+    var characters := visible_characters.get_children()
+    if characters.is_empty():
+        return Rect2()
+
+    var bounds: Rect2 = characters[0].get_bounds()
+    for index in range(1, characters.size()):
+        bounds = bounds.merge(characters[index].get_bounds())
+
+    return bounds
+
+
 func set_type(type: Character.Type) -> void:
-    for character in %ScratchCharacters.get_children():
+    for character in scratch_characters.get_children():
         character.set_type(type)
-    for layout_character in %VisibleCharacters.get_children():
+    for layout_character in visible_characters.get_children():
         layout_character.set_type(type)
 
 
 func set_scratch_characters_offset(offset: Vector2) -> void:
-    %ScratchCharacters.position = offset
+    scratch_characters.position = offset
 
 
 func get_current_speed() -> float:
@@ -274,13 +286,13 @@ func stop_animation() -> void:
 
 
 func start_characters_animation(config: Dictionary) -> void:
-    for character in %VisibleCharacters.get_children():
+    for character in visible_characters.get_children():
         config.start_speed = character.get_current_speed()
         character.start_animation(config)
 
 
 func stop_characters_animation() -> void:
-    for character in %VisibleCharacters.get_children():
+    for character in visible_characters.get_children():
         character.stop_animation()
 
 

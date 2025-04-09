@@ -32,7 +32,10 @@ position = Vector2(91, 826)
 position = Vector2(181, 1425)
 
 [node name="PickupPosition3" parent="." instance=ExtResource("6_ffypu")]
-position = Vector2(324, 455)
+position = Vector2(286, 533)
 
 [node name="PickupPosition4" parent="." instance=ExtResource("6_ffypu")]
 position = Vector2(642, 1206)
+
+[node name="PickupPosition5" parent="." instance=ExtResource("6_ffypu")]
+position = Vector2(466, 79)

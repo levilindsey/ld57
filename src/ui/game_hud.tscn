@@ -96,6 +96,7 @@ theme_override_constants/margin_right = 4
 
 [node name="ClippyTextWrapper" type="PanelContainer" parent="MarginContainer/HBoxContainer2/HBoxContainer/MarginContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/panel = ExtResource("4_fa4ld")
@@ -109,8 +110,8 @@ label_settings = ExtResource("3_46cb0")
 [node name="Control" type="Control" parent="MarginContainer/HBoxContainer2/HBoxContainer"]
 custom_minimum_size = Vector2(111, 91)
 layout_mode = 2
+size_flags_vertical = 8
 
 [node name="Clippy" parent="MarginContainer/HBoxContainer2/HBoxContainer/Control" instance=ExtResource("7_kvn2e")]
 unique_name_in_owner = true
-visible = false
 position = Vector2(55, 45)

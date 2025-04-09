@@ -164,10 +164,16 @@ func _choose_pickup_ability_config() -> Dictionary:
     # HACK: Hardcoded index weighting.
     var shield_index := 0
     var torpedo_index := 1
+    var drop_index := 2
+    var roll := randf()
     var ability_index := (
         shield_index if
-        randf() < 0.25 else
-        torpedo_index
+        roll < 0.15 else
+        (
+            torpedo_index if
+            roll < 0.45 else
+            drop_index
+        )
     )
 
     # {name: String, controller: Script, values: [String]}

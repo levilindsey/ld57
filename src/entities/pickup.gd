@@ -12,20 +12,15 @@ func set_up(name: String, value: String) -> void:
 
     await set_up_from_text(value, Character.Type.PICKUP)
 
-    # HACK: Make pickups easier to collect, AND there's a bug with their size calculation
-    #var pickup_size_multiplier_x := (
-        #2.0 if
-        #value.contains(" ") else
-        #1.0
-    #)
-    var pickup_size_multiplier_x := 1.0
-    var pickup_size_multiplier_y := 1.1
+    _set_size()
 
-    await get_tree().process_frame
 
-    %CollisionShape2D.shape.size = scratch_characters.size
-    %CollisionShape2D.shape.size.x *= pickup_size_multiplier_x
-    %CollisionShape2D.shape.size.y *= pickup_size_multiplier_y
+func _set_size() -> void:
+    var bounds := get_visible_character_bounds()
+    var padding := Vector2(5.0, 10.0)
+
+    %CollisionShape2D.shape = %CollisionShape2D.shape.duplicate()
+    %CollisionShape2D.shape.size = bounds.size + padding
 
 
 func explode_pickup() -> void:
@@ -38,3 +33,11 @@ func explode_pickup() -> void:
         1.0,
         get_current_speed(),
         get_current_direction_angle())
+
+
+func on_hit_with_torpedo(torpedo: TorpedoAbility) -> void:
+    G.player._on_collided_with_pickup(self)
+
+
+func on_hit_with_drop(drop: DropAbility) -> void:
+    G.player._on_collided_with_pickup(self)

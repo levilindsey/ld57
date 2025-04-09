@@ -48,3 +48,6 @@ position = Vector2(577, 1260)
 
 [node name="PickupPosition4" parent="." instance=ExtResource("3_iewxr")]
 position = Vector2(251, 2069)
+
+[node name="PickupPosition5" parent="." instance=ExtResource("3_iewxr")]
+position = Vector2(672, 137)

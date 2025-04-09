@@ -13,14 +13,14 @@ text = "\\
  \\
   \\
    \\
-    '.__._________.__
-                      |
-                     /
+    '.__.________.___
+                     |
                     /
-                  ,'
-                _/
-          ____,'
-  ______,'
+                   /
+                 ,'
+               _/
+         ____,'
+  _____,'
  /
 /"
 metadata/_edit_lock_ = true
@@ -33,5 +33,5 @@ metadata/_edit_lock_ = true
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D"]
 unique_name_in_owner = true
-polygon = PackedVector2Array(314, 146, 68, 147, 0, -1, 4, 426, 30, 364, 118, 363, 247, 298, 315, 181)
+polygon = PackedVector2Array(302, 147, 68, 147, 0, -1, 4, 426, 30, 364, 104, 363, 233, 299, 300, 182)
 metadata/_edit_lock_ = true

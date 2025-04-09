@@ -33,25 +33,28 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 ]
 @export var clippy_intro1_text_duration_sec := 3.0
 @export var clippy_intro2_text := [
-    "Use your keyboard to move\nyour cursor, and to\ntrigger abilities.",
+    "Type to move\nyour cursor, and to\ntrigger abilities.",
 ]
 @export var clippy_intro2_text_duration_sec := 5.0
 @export var clippy_damage_text := [
-    "Try to avoid hitting rocks,\nand marine animals.",
+    "Try to avoid hitting\nrocks, and animals!",
 ]
 @export var clippy_damage_text_duration_sec := 5.0
 @export var clippy_game_over_text := [
-    "Oh no, you died!",
-    "That's game over!",
-    "Better luck next time!",
-    "Try again?",
+    "Oh no, you died!\nHit Enter.",
+    "That's game over!\nHit Enter.",
+    "Better luck next time!\nHit Enter.",
+    "Try again?\nHit Enter.",
 ]
 @export var clippy_game_over_text_duration_sec := 0.0
 @export var clippy_shield_text := [
-    "Try typing %s\nto become temporarily\nimmune to damage.",
+    "Type %s\nto become invincible.",
 ]
 @export var clippy_torpedo_text := [
-    "Try typing %s\nto launch a missile\ndownward.",
+    "Type %s\nto launch homing\nmissile.",
+]
+@export var clippy_drop_text := [
+    "Type %s\nto drop a word.",
 ]
 @export var clippy_pickup_text_duration_sec := 5.0
 @export_group("")
@@ -82,7 +85,7 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var pickup_outline_color_end := Color("#c2fc034d")
 
 @export var bubble_color_start := Color("#0000004d")
-@export var bubble_color_end := Color("#0000004d")
+@export var bubble_color_end := Color("#e6e6e64d")
 
 @export var cursor_blink_in_alpha := 1.0
 @export var cursor_blink_out_alpha := 0.1
@@ -96,7 +99,8 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var pickup_outline_size := 12.0
 
 @export var color_update_period_sec := 1.0
-@export var time_to_max_difficulty_sec := 120.0
+@export var time_to_max_darkness_sec := 60.0
+@export var time_to_max_difficulty_sec := 240.0
 @export var progress_to_switch_to_light_text_color := 0.5
 
 @export var main_menu_animation_duration_sec := 2.0
@@ -122,7 +126,7 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var clippy_character_interval_sec := 0.022
 
 @export var invincible_from_damage_cooldown_sec := 3.0
-@export var invincible_from_power_up_cooldown_sec := 4.5
+@export var invincible_from_power_up_cooldown_sec := 9.0
 
 @export var start_enemy_spawn_interval_min_sec := 6.0
 @export var start_enemy_spawn_interval_max_sec := 8.0
@@ -136,8 +140,8 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var end_bubble_spawn_interval_min_sec := 0.9
 @export var end_bubble_spawn_interval_max_sec := 1.8
 
-@export var start_scroll_speed := 100.0
-@export var end_scroll_speed := 400.0
+@export var start_scroll_speed := 90.0
+@export var end_scroll_speed := 300.0
 
 @export var main_menu_camera_zoom := 3.0
 @export var gameplay_camera_zoom := 1.0
@@ -149,8 +153,7 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var default_cursor_scale := 0.3
 
 @export var game_area_size := Vector2i(768, 768)
-#@export var game_area_padding := Vector2i(0, 0)
-@export var game_area_padding := Vector2i(20, 20)
+@export var game_area_padding := Vector2i(2, 2)
 
 @export var game_area_bubble_spawn_padding := Vector2i(4, 4)
 @export var game_area_enemy_spawn_padding := Vector2i(40, 40)
@@ -221,9 +224,25 @@ var abilities := [
             "missile",
             "projectile",
             "attack",
-            "drop",
             "bombard",
             "bombs away",
+        ],
+    },
+    {
+        name = "drop",
+        controller = DropAbility,
+        values = [
+            "rock",
+            "anchor",
+            "dead weight",
+            "drop",
+            "sink",
+            "plummet",
+            "stone",
+            "brick",
+            "fall",
+            "nosedive",
+            "plunge",
         ],
     },
 ]
@@ -282,7 +301,9 @@ var enemies := [
 ]
 
 var debug_initial_abilities := [
-    {name = "torpedo", value = "shoot"},
+    {name = "drop", value = "rock"},
+
+    {name = "torpedo", value = "torpedo"},
 
     {name = "shield", value = "shield"},
 ]

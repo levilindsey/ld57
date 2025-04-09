@@ -94,7 +94,7 @@ func play_main_menu_animation() -> void:
 
 func on_game_started() -> void:
     # Fade-away the main-menu text.
-    cancel_pending_text()
+    cancel_pending_text(false)
 
 
 func play_death_animation() -> void:
@@ -228,7 +228,7 @@ func set_current_text_size() -> void:
     G.level.pending_text.set_scratch_characters_offset(
             Vector2(0, -current_character_size.y / 2.0 + hack_offset_y))
 
-    cancel_pending_text()
+    cancel_pending_text(false)
 
 
 func _get_min_position_x() -> float:
@@ -283,7 +283,7 @@ func on_enter(is_held_key_duplicate_press: bool) -> void:
 
     self.global_position.x = _get_newline_position().x
 
-    cancel_pending_text()
+    cancel_pending_text(false)
 
     G.level.pending_text.global_position = self.global_position
 
@@ -303,7 +303,7 @@ func on_space(is_held_key_duplicate_press: bool) -> void:
     if desired_position_x > _get_max_position_x():
         # Space failed.
         G.level.pending_text.delete_last_character()
-        %FailureSound.play()
+        play_key_failure_sound()
         return
 
     # Space entered successfully.
@@ -328,7 +328,7 @@ func on_backspace(is_held_key_duplicate_press: bool) -> void:
         %KeyboardSound.play()
     else:
         # Backspace failed.
-        %FailureSound.play()
+        play_key_failure_sound()
 
     var was_something_deleted := \
         await G.level.pending_text.delete_last_character()
@@ -363,7 +363,7 @@ func on_character_entered(text: String, is_held_key_duplicate_press: bool) -> vo
     if desired_position_x > _get_max_position_x():
         # Character failed.
         G.level.pending_text.delete_last_character()
-        %FailureSound.play()
+        play_key_failure_sound()
         return
 
     # Character entered successfully.
@@ -386,7 +386,7 @@ func _on_cancel_pending_text_timeout() -> void:
     cancel_pending_text()
 
 
-func cancel_pending_text() -> void:
+func cancel_pending_text(plays_sound := true) -> void:
     var pending_text := G.level.pending_text.text
 
     %CancelPendingTextTimer.stop()
@@ -398,13 +398,16 @@ func cancel_pending_text() -> void:
 
     S.log.print("Pending text canceled: %s" % pending_text)
 
+    if plays_sound:
+        play_pending_text_canceled_sound()
+
     G.level.cancel_pending_characters()
 
     G.level.pending_text.position = self.position
 
 
 func on_ability_triggered() -> void:
-    cancel_pending_text()
+    cancel_pending_text(false)
 
 
 func _take_damage() -> void:
@@ -426,7 +429,8 @@ func _take_damage() -> void:
 
     G.hud.set_clippy_text(
         G.manifest.clippy_damage_text,
-        G.manifest.clippy_damage_text_duration_sec)
+        G.manifest.clippy_damage_text_duration_sec,
+        false)
 
     if health <= 0:
         S.log.print("Player died")
@@ -480,15 +484,21 @@ func _on_collided_with_pickup(pickup: Pickup) -> void:
     G.level.add_ability(pickup.ability_name, pickup.ability_value)
     pickup.explode_pickup()
 
-    # HACK: Hardcoded pickup name check.
-    var clippy_text: String = (
-        G.manifest.clippy_shield_text[0] if
-        pickup.ability_name == "shield" else
-        G.manifest.clippy_torpedo_text[0]
-    ) % pickup.ability_value
+    var clippy_text: String
+    match pickup.ability_name:
+        "shield":
+            clippy_text = G.manifest.clippy_shield_text[0]
+        "torpedo":
+            clippy_text = G.manifest.clippy_torpedo_text[0]
+        "drop":
+            clippy_text = G.manifest.clippy_drop_text[0]
+        _:
+            S.utils.ensure(false)
+    clippy_text = clippy_text % pickup.ability_value
     G.hud.set_clippy_text(
         clippy_text,
-        G.manifest.clippy_pickup_text_duration_sec)
+        G.manifest.clippy_pickup_text_duration_sec,
+        false)
 
     G.clippy.on_pickup()
 
@@ -497,6 +507,14 @@ func _on_collided_with_pickup(pickup: Pickup) -> void:
 
 func play_torpedo_launch_sound() -> void:
     %TorpedoLaunchSound.play()
+
+
+func play_drop_sound() -> void:
+    %DropSound.play()
+
+
+func play_drop_landed_sound() -> void:
+    %DropLandedSound.play()
 
 
 func play_torpedo_explode_sound() -> void:
@@ -509,3 +527,14 @@ func play_shield_activate_sound() -> void:
 
 func play_shield_deactivate_sound() -> void:
     %ShieldDeactivateSonud.play()
+
+
+func play_key_failure_sound() -> void:
+    %FailureSound2.play()
+    %FailureSound.play()
+
+
+func play_pending_text_canceled_sound() -> void:
+    %PendingTextCanceledSound2.play()
+    await get_tree().create_timer(0.05).timeout
+    %PendingTextCanceledSound.play()

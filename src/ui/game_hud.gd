@@ -7,6 +7,9 @@ var ability_name_to_row: Dictionary[String, HudRow] = {}
 
 var current_clippy_staggered_character_job: StaggeredCharacterJob
 
+var _last_clippy_text_time_sec := 0.0
+var _min_clippy_text_delay_sec := 0.6
+
 
 func _ready() -> void:
     G.hud = self
@@ -38,12 +41,22 @@ func reset() -> void:
 
 
 func set_clippy_visible(visible: bool) -> void:
-    G.hud.set_clippy_text("", 0.0)
+    G.hud.set_clippy_text("", 0.0, true)
     %Clippy.visible = visible
     %ClippyTextWrapper.visible = visible
 
 
-func set_clippy_text(text_or_text_options: Variant, duration_sec: float) -> void:
+func set_clippy_text(
+        text_or_text_options: Variant,
+        duration_sec: float,
+        force: bool) -> bool:
+    var current_time := Anim.get_current_time_sec()
+    if (
+        not force and
+        current_time <
+            _last_clippy_text_time_sec + _min_clippy_text_delay_sec):
+        return false
+
     %ClippyTextClearTimer.stop()
 
     var text: String
@@ -56,7 +69,7 @@ func set_clippy_text(text_or_text_options: Variant, duration_sec: float) -> void
     if text.is_empty():
         %ClippyText.text = ""
         %ClippyTextWrapper.visible = false
-        return
+        return true
 
     %ClippyTextWrapper.visible = true
 
@@ -69,6 +82,8 @@ func set_clippy_text(text_or_text_options: Variant, duration_sec: float) -> void
     if duration_sec > 0.0:
         %ClippyTextClearTimer.wait_time = duration_sec
         %ClippyTextClearTimer.start()
+
+    return true
 
 
 func update_depth(depth: int) -> void:
@@ -117,4 +132,4 @@ func update_abilities() -> void:
 
 
 func _on_clippy_text_clear_timeout() -> void:
-    set_clippy_text("", 0.0)
+    set_clippy_text("", 0.0, true)

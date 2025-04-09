@@ -6,18 +6,13 @@ extends ScaffolderLevel
 # ------------------------------------
 # Priorities:
 #
-# - Make ledges stick out less far.
-#   - And take a pass at making you have to move arround less in general.
-# - Add support for shooting pickups.
-# - Have shields be slightly more common (37%).
-# - Fix side and bottom bars around camera bounds in the web export.
-# - Reset Depth tracking when resetting the level.
-# - Decrease max scroll speed.
-# - Slightly increase max enemy spawn rate.
-# - Give a 10% chance of pickup not spawning.
-# - Nudge pickups slightly further out from their obstacles.
-# - Add missing sounds...
 # - Make a Mac export.
+# - Create animated GIFs of gameplay.
+# - Create a gameplay video.
+# - Update ldjam to include gameplay video.
+# - Update itch and ldjam to include animated GIFs.
+# - Update portfolio post to include animated GIFs and gameplay video.
+# - Publish a devlog post.
 #
 # -------------------------------------
 #
@@ -123,16 +118,20 @@ var is_pending_text_a_prefix_match := false
 var previous_pressed_key_code := 0
 
 var progress_to_max_difficulty = 0.0
+var progress_to_max_darkness = 0.0
 
 var start_time_sec := 0.0
 var last_color_update_time_sec := 0.0
 var current_time_sec := 0.0
+
+var start_depth := 0.0
 
 var last_enter_trigger_time_sec := 0.0
 var last_space_trigger_time_sec := 0.0
 var last_backspace_trigger_time_sec := 0.0
 
 var scroll_speed := 0.0
+var speed_multiplier := 0.0
 
 var player: Player
 
@@ -296,6 +295,11 @@ func _process(delta: float) -> void:
         0,
         1
     )
+    progress_to_max_darkness = clampf(
+        (current_time_sec - start_time_sec) / G.manifest.time_to_max_darkness_sec,
+        0,
+        1
+    )
 
     if state == State.PLAYING:
         if G.manifest.using_custom_fast_space:
@@ -311,6 +315,7 @@ func _process(delta: float) -> void:
 
         # Scroll.
         scroll_speed = lerpf(G.manifest.start_scroll_speed, G.manifest.end_scroll_speed, progress_to_max_difficulty)
+        speed_multiplier = scroll_speed / G.manifest.start_scroll_speed
         var vertical_movement := scroll_speed * delta
         _add_scroll(vertical_movement)
 
@@ -355,8 +360,11 @@ func _add_scroll(increment: float) -> void:
     pending_text.position.y += increment
     camera.position.y += increment
 
-    var depth := floori(player.position.y / player.default_line_height)
-    G.hud.update_depth(depth)
+    G.hud.update_depth(_get_depth() - start_depth)
+
+
+func _get_depth() -> float:
+    return floori(player.position.y / player.default_line_height)
 
 
 func get_camera_bounds() -> Rect2:
@@ -407,7 +415,7 @@ func _update_colors() -> void:
 func get_color(type: GameManifest.ColorType) -> Color:
     if type == GameManifest.ColorType.TEXT:
         var using_light_text_color: bool = (
-            progress_to_max_difficulty >=
+            progress_to_max_darkness >=
                 G.manifest.progress_to_switch_to_light_text_color
         )
         if using_light_text_color:
@@ -417,7 +425,7 @@ func get_color(type: GameManifest.ColorType) -> Color:
 
     var start_color := G.manifest.get_start_color(type)
     var end_color := G.manifest.get_end_color(type)
-    return lerp(start_color, end_color, progress_to_max_difficulty)
+    return lerp(start_color, end_color, progress_to_max_darkness)
 
 
 func _transition_out_of_state(expected_old_state: Variant) -> void:
@@ -467,6 +475,8 @@ func _on_main_menu_animation_finished() -> void:
 func _start_game() -> void:
     _transition_out_of_state(State.MAIN_MENU_FINISHED)
 
+    start_depth = _get_depth()
+
     start_time_sec = Anim.get_current_time_sec()
     current_time_sec = Anim.get_current_time_sec()
 
@@ -496,14 +506,16 @@ func _start_game() -> void:
 
     G.hud.set_clippy_text(
         G.manifest.clippy_intro1_text,
-        G.manifest.clippy_intro1_text_duration_sec)
+        G.manifest.clippy_intro1_text_duration_sec,
+        true)
 
     await get_tree().create_timer(
         G.manifest.clippy_intro1_text_duration_sec).timeout
 
     G.hud.set_clippy_text(
         G.manifest.clippy_intro2_text,
-        G.manifest.clippy_intro2_text_duration_sec)
+        G.manifest.clippy_intro2_text_duration_sec,
+        true)
 
 
 func game_game_over() -> void:
@@ -514,7 +526,8 @@ func game_game_over() -> void:
 
     G.hud.set_clippy_text(
         G.manifest.clippy_game_over_text,
-        G.manifest.clippy_game_over_text_duration_sec)
+        G.manifest.clippy_game_over_text_duration_sec,
+        true)
 
 
 func _on_game_over_animation_finished() -> void:
@@ -526,6 +539,7 @@ func _game_reset() -> void:
     _transition_out_of_state(State.GAME_OVER_FINISHED)
 
     progress_to_max_difficulty = 0.0
+    progress_to_max_darkness = 0.0
     start_time_sec = 0.0
     current_time_sec = Anim.get_current_time_sec()
     last_space_trigger_time_sec = 0.0
@@ -533,6 +547,7 @@ func _game_reset() -> void:
     last_enter_trigger_time_sec = 0.0
     last_color_update_time_sec = 0.0
     scroll_speed = 0.0
+    speed_multiplier = 0.0
     abilities.clear()
     ability_controllers.clear()
     enemy_controllers.clear()
@@ -553,7 +568,7 @@ func _game_reset() -> void:
 
     # Transition colors.
     tween.tween_method(
-        _interpolate_colors, progress_to_max_difficulty, 0.0, G.manifest.hud_fade_out_duration_sec)
+        _interpolate_colors, progress_to_max_darkness, 0.0, G.manifest.hud_fade_out_duration_sec)
 
     # Reposition the player.
     var player_translate_duration := G.manifest.reset_zoom_in_duration_sec / 6.0
@@ -576,7 +591,7 @@ func _on_reset_finished() -> void:
 
 
 func _interpolate_colors(progress: float) -> void:
-    progress_to_max_difficulty = progress
+    progress_to_max_darkness = progress
     _update_colors()
 
 
@@ -635,7 +650,7 @@ func cancel_pending_characters() -> void:
             is_one_shot = true,
             ease_name = "ease_in_out",
 
-            start_speed = character.get_current_speed() - scroll_speed * HACK_SCROLL_SPEED_MULTIPLIER,
+            start_speed = character.get_current_speed() - scroll_speed * HACK_SCROLL_SPEED_MULTIPLIER + 3.0,
 
             # Upward and very slightly leftward.
             #direction_angle = - (PI / 2.0 + PI / 16.0),

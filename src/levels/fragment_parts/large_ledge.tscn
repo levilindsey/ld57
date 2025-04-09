@@ -13,21 +13,18 @@ text = "\\
  \\
   \\
    \\
-    '._____.____________.__.________._
-                                       |
-                                      /
-                                     /
-                                   ,'
-                                 _/
-                           ____,'
-                   ______,'
-           ______,'
-       __,'
-     /
-    /
-  ,'
- /
-/"
+    '._____.____________.__.____
+                                `,
+                                /
+                               /
+                             ,'
+                           _/
+                     ____,'
+             ______,'
+     ______,'
+ __,'
+/
+"
 metadata/_edit_lock_ = true
 
 [node name="Area2D" type="Area2D" parent="."]
@@ -38,5 +35,5 @@ metadata/_edit_lock_ = true
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D"]
 unique_name_in_owner = true
-polygon = PackedVector2Array(554, 146, 68, 147, 0, -1, 0, 589, 88, 430, 357, 363, 484, 298, 555, 181)
+polygon = PackedVector2Array(447, 148, 68, 147, 0, -1, 1, 460, 73, 399, 273, 364, 398, 301, 468, 174)
 metadata/_edit_lock_ = true

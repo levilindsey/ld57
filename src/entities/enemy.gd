@@ -20,7 +20,8 @@ func _process(delta_sec: float) -> void:
     # HACK: The AnimationJob system should work for this, but it's broken.
 
     if translation_speed != 0.0:
-        var translation_distance := translation_speed * delta_sec
+        var translation_distance := \
+                translation_speed * G.level.speed_multiplier * delta_sec
         var direction := (
             (G.player.global_position - global_position).normalized() if
             moves_toward_player else
@@ -47,6 +48,7 @@ func _process(delta_sec: float) -> void:
 func set_up(text: String) -> void:
     await set_up_from_text(text, Character.Type.ENEMY)
 
+    %CollisionShape2D.shape = %CollisionShape2D.shape.duplicate()
     %CollisionShape2D.shape.size = size
 
     start_time_sec = Anim.get_current_time_sec()
@@ -58,5 +60,14 @@ func on_hit_with_torpedo(torpedo: TorpedoAbility) -> void:
         torpedo.word.global_position,
         PI,
         1.0,
+        get_current_speed(),
+        get_current_direction_angle())
+
+
+func on_hit_with_drop(drop: DropAbility) -> void:
+    explode_from_point(
+        drop.word.global_position + Vector2.UP * 100.0,
+        PI / 8,
+        0.4,
         get_current_speed(),
         get_current_direction_angle())

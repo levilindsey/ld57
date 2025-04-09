@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bd0oy4phn6nu1"]
+[gd_scene load_steps=16 format=3 uid="uid://bd0oy4phn6nu1"]
 
 [ext_resource type="Script" uid="uid://bg6jq3krvjgkr" path="res://src/entities/player.gd" id="1_4anbu"]
 [ext_resource type="Texture2D" uid="uid://bw58vgx70t0hr" path="res://assets/images/cursor_simple.png" id="2_rxibo"]
@@ -8,6 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://c4qwbbnyew1au" path="res://assets/Audio/318686__ramsamba__typewriter-carriage-return.wav" id="5_u2j08"]
 [ext_resource type="AudioStream" uid="uid://dblrgd7vb1jf5" path="res://assets/Audio/204466__nhumphrey__typewriter-ding-01.wav" id="7_u2j08"]
 [ext_resource type="AudioStream" uid="uid://b7do5ljsa8a7" path="res://assets/Audio/Failure.cm.wav" id="8_gkg86"]
+[ext_resource type="AudioStream" uid="uid://cy0d7f8vgava3" path="res://assets/Audio/Keyboard Clicks/my keyboard.cm-40.wav" id="8_rqrib"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mf2ua"]
 size = Vector2(6, 18)
@@ -179,8 +180,25 @@ bus = &"SFX"
 
 [node name="FailureSound" type="AudioStreamPlayer" parent="Sounds"]
 unique_name_in_owner = true
+stream = ExtResource("8_gkg86")
+volume_db = -28.161
+bus = &"SFX"
+
+[node name="FailureSound2" type="AudioStreamPlayer" parent="Sounds"]
+unique_name_in_owner = true
+stream = ExtResource("8_rqrib")
+bus = &"SFX"
+
+[node name="PendingTextCanceledSound" type="AudioStreamPlayer" parent="Sounds"]
+unique_name_in_owner = true
+stream = ExtResource("8_gkg86")
+volume_db = -32.833
+bus = &"SFX"
+
+[node name="PendingTextCanceledSound2" type="AudioStreamPlayer" parent="Sounds"]
+unique_name_in_owner = true
 stream = ExtResource("7_u2j08")
-volume_db = -2.0
+volume_db = -17.14
 bus = &"SFX"
 
 [node name="PlayerDamagedSound" type="AudioStreamPlayer" parent="Sounds"]
@@ -242,6 +260,17 @@ stream = ExtResource("3_244u8")
 volume_db = -7.5
 
 [node name="BigExplosionSound" type="AudioStreamPlayer" parent="Sounds"]
+unique_name_in_owner = true
+stream = ExtResource("7_u2j08")
+
+[node name="DropSound" type="AudioStreamPlayer" parent="Sounds"]
+unique_name_in_owner = true
+stream = ExtResource("4_5f2sf")
+volume_db = -8.0
+max_polyphony = 10
+bus = &"SFX"
+
+[node name="DropLandedSound" type="AudioStreamPlayer" parent="Sounds"]
 unique_name_in_owner = true
 stream = ExtResource("7_u2j08")
 

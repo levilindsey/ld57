@@ -24,10 +24,13 @@ scale = Vector2(-1, 1)
 is_left = false
 
 [node name="PickupPosition" parent="." instance=ExtResource("4_xepn1")]
-position = Vector2(100, 777)
+position = Vector2(297, 844)
 
 [node name="PickupPosition2" parent="." instance=ExtResource("4_xepn1")]
-position = Vector2(469, 459)
+position = Vector2(678, 685)
+
+[node name="PickupPosition2" parent="PickupPosition2" instance=ExtResource("4_xepn1")]
+position = Vector2(-342, -579)
 
 [node name="PickupPosition3" parent="." instance=ExtResource("4_xepn1")]
 position = Vector2(423, 1944)
