@@ -6,13 +6,12 @@ extends ScaffolderLevel
 # ------------------------------------
 # Priorities:
 #
+# - More sounds!
+# - Add tab support.
+# - Fix the issue causing only the last letter to shoot sometimes.
+# - Add per-character animations for enemies.
+# - Add (subtle, undulating) per-character animations to pickups.
 # - Make a Mac export.
-# - Create animated GIFs of gameplay.
-# - Create a gameplay video.
-# - Update ldjam to include gameplay video.
-# - Update itch and ldjam to include animated GIFs.
-# - Update portfolio post to include animated GIFs and gameplay video.
-# - Publish a devlog post.
 #
 # -------------------------------------
 #

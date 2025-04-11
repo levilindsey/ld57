@@ -41,12 +41,20 @@ func _create_ability_word_from_pending_characters(value: String) -> void:
 
     var characters := G.level.pending_text.get_characters()
 
-    var matched_characters := characters.slice(characters.size() - value.length())
+    var spaces_count := value.count(" ")
+    var non_space_character_count := value.length() - spaces_count
+
+    var matched_characters := characters.slice(
+        characters.size() - non_space_character_count)
 
     # NOTE: Do nothing with the unmatched characters, since they'll be discarded
     #       by cancel_pending_text().
     #var unmatched_characters := characters.slice(0, characters.size() - value.length())
 
-    word.set_up(matched_characters, matched_substring_center, true)
+    # FIXME: ----------------------------
+    if matched_characters.size() == 1:
+        breakpoint
+
+    word.set_up(matched_characters, spaces_count, matched_substring_center, true)
 
     word.stop_characters_animation()

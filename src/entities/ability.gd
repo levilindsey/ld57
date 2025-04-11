@@ -21,6 +21,7 @@ var motion_target_translation_speed := 200.0
 
 func set_up(
         characters: Array[Character],
+        spaces_count: int,
         word_position: Vector2,
         is_player_ability := true) -> void:
     global_position = word_position
@@ -39,7 +40,7 @@ func set_up(
         Character.Type.ENEMY
     )
 
-    await set_up_from_characters(characters, type)
+    await set_up_from_characters(characters, spaces_count, type)
 
     %CollisionShape2D.shape = %CollisionShape2D.shape.duplicate()
     %CollisionShape2D.shape.size = size

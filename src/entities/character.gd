@@ -56,11 +56,12 @@ func get_text() -> String:
 
 
 func get_size() -> Vector2:
-    return %Label.size
+    #return %Label.size
+    return Player.HACK_HARDCODED_CHARACTER_SIZE
 
 
 func get_bounds() -> Rect2:
-    return Rect2(global_position - %Label.size / 2.0, %Label.size)
+    return Rect2(global_position - get_size() / 2.0, get_size())
 
 
 func set_label_offset(offset: Vector2) -> void:

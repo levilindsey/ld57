@@ -10,6 +10,11 @@ var _initial_font_size: float
 var _initial_collision_shape_size: Vector2
 var _initial_sprite_scale: Vector2
 
+# These values were obtained from the default values on a well-behaved windows
+# machine.
+const HACK_HARDCODED_CHARACTER_SIZE := Vector2(14, 28)
+const HACK_HARDCODED_LINE_HEIGHT := 31
+
 var default_character_size := Vector2.ZERO
 var default_line_height := 0.0
 
@@ -184,8 +189,10 @@ func _initialize_sizes() -> void:
 
     await get_tree().process_frame
 
-    default_character_size = character.get_size()
-    default_line_height = two_lines.get_size().y - default_character_size.y
+    #default_character_size = character.get_size()
+    #default_line_height = two_lines.get_size().y - default_character_size.y
+    default_character_size = HACK_HARDCODED_CHARACTER_SIZE
+    default_line_height = HACK_HARDCODED_LINE_HEIGHT
 
     _initial_font_size = G.manifest.main_theme.default_font_size
     _initial_sprite_scale = %Cursor.scale
@@ -212,8 +219,10 @@ func set_current_text_size() -> void:
 
     var current_size_ratio := 1.0
 
-    current_character_size = default_character_size
-    current_line_height = default_line_height
+    #current_character_size = default_character_size
+    #current_line_height = default_line_height
+    current_character_size = HACK_HARDCODED_CHARACTER_SIZE
+    current_line_height = HACK_HARDCODED_LINE_HEIGHT
 
     var font_size := _initial_font_size * current_size_ratio
     var sprint_scale := _initial_sprite_scale * current_size_ratio

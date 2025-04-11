@@ -41,7 +41,7 @@ func set_up_from_text(text: String, type: Character.Type) -> void:
 
     # HACK: For some reason, the HBoxContainer size was sometimes half what it should be.
     #self.size = scratch_characters.size
-    var character_size: Vector2i = scratch_characters.get_children()[0].size
+    var character_size := Player.HACK_HARDCODED_CHARACTER_SIZE
     self.size = Vector2i(
             character_size.x * text.length(),
             character_size.y)
@@ -64,6 +64,7 @@ func set_up_from_text(text: String, type: Character.Type) -> void:
 
 func set_up_from_characters(
         characters: Array[Character],
+        spaces_count: int,
         type: Character.Type) -> void:
     _type = type
     text = ""
@@ -86,7 +87,11 @@ func set_up_from_characters(
             "Word.set_up_from_characters: layout_characters were freed before size could be established.")
         return
 
-    self.size = scratch_characters.size
+    #self.size = scratch_characters.size
+    self.size = Vector2(
+        Player.HACK_HARDCODED_CHARACTER_SIZE.x *
+            (scratch_characters.get_children().size() + spaces_count),
+        Player.HACK_HARDCODED_CHARACTER_SIZE.y)
     scratch_characters.position = - self.size / 2.0
 
 
@@ -110,7 +115,10 @@ func add_text(text: String, is_main_menu_text := false) -> void:
             "Word.add_text: layout_character was freed before character could be created.")
         return
 
-    self.size = scratch_characters.size
+    #self.size = scratch_characters.size
+    self.size = Vector2(
+        Player.HACK_HARDCODED_CHARACTER_SIZE.x * scratch_characters.get_children().size(),
+        Player.HACK_HARDCODED_CHARACTER_SIZE.y)
 
     var character: Character = GHack.manifest.character_scene.instantiate()
     character.set_text(text)
@@ -143,7 +151,10 @@ func add_character(character: Character) -> void:
             "Word.add_character: layout_character was freed before size could be established.")
         return
 
-    self.size = scratch_characters.size
+    #self.size = scratch_characters.size
+    self.size = Vector2(
+        Player.HACK_HARDCODED_CHARACTER_SIZE.x * scratch_characters.get_children().size(),
+        Player.HACK_HARDCODED_CHARACTER_SIZE.y)
 
 
 func delete_last_character() -> bool:
@@ -171,7 +182,10 @@ func delete_last_character() -> bool:
 
     await get_tree().process_frame
 
-    self.size = scratch_characters.size
+    #self.size = scratch_characters.size
+    self.size = Vector2(
+        Player.HACK_HARDCODED_CHARACTER_SIZE.x * scratch_characters.get_children().size(),
+        Player.HACK_HARDCODED_CHARACTER_SIZE.y)
 
     return true
 
@@ -215,7 +229,10 @@ func add_space() -> void:
             "Word.add_space: layout_character was freed before size could be established.")
         return
 
-    self.size = scratch_characters.size
+    #self.size = scratch_characters.size
+    self.size = Vector2(
+        Player.HACK_HARDCODED_CHARACTER_SIZE.x * scratch_characters.get_children().size(),
+        Player.HACK_HARDCODED_CHARACTER_SIZE.y)
 
 
 func get_last_character_size() -> Vector2:
