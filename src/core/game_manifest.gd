@@ -99,8 +99,8 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var pickup_outline_size := 12.0
 
 @export var color_update_period_sec := 1.0
-@export var time_to_max_darkness_sec := 60.0
-@export var time_to_max_difficulty_sec := 240.0
+@export var time_to_max_darkness_sec := 120.0
+@export var time_to_max_difficulty_sec := 300.0
 @export var progress_to_switch_to_light_text_color := 0.5
 
 @export var main_menu_animation_duration_sec := 2.0
@@ -140,8 +140,8 @@ const ENEMY_PROJECTILE_COLLISION_LAYER := 1 << 5
 @export var end_bubble_spawn_interval_min_sec := 0.9
 @export var end_bubble_spawn_interval_max_sec := 1.8
 
-@export var start_scroll_speed := 90.0
-@export var end_scroll_speed := 300.0
+@export var start_scroll_speed := 70.0
+@export var end_scroll_speed := 260.0
 
 @export var main_menu_camera_zoom := 3.0
 @export var gameplay_camera_zoom := 1.0
